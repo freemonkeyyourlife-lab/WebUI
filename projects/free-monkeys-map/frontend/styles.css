@@ -1,0 +1,9 @@
+/* Basic styles for Free Monkeys® GO Map demo */
+:root{--bg:#0b0f12;--panel:#0f1720;--accent:#ff6b6b;--text:#e6eef6}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text)}
+.topbar{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:linear-gradient(90deg,rgba(255,255,255,0.02),transparent);border-bottom:1px solid rgba(255,255,255,0.03)}
+.brand{font-weight:700}
+.actions button{margin-left:8px;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);color:var(--text);cursor:pointer}
+.map{height:calc(100vh - 56px);width:100%}
+.info{position:fixed;left:18px;bottom:18px;background:var(--panel);padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.04)}
