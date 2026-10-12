@@ -1,6 +1,15 @@
-# K.I.T.T. Start Guide
+# K.I.T.T. Local Start Guide
 
-This file explains how to start the K.I.T.T. local stack and what to do after launch.
+This is the main local-first start guide for K.I.T.T. inside the WebUI repository.
+It is designed so you can work without GitHub during runtime and keep a local audit trail.
+
+## Goals
+
+- Start K.I.T.T. locally with one terminal command
+- Keep all runtime use local-first
+- Record chat / request / task activity locally
+- Support MI, Voice, Prompt Builder, and File Operations
+- Provide a safe approval-gated workflow
 
 ## 1) Prerequisites
 
@@ -12,7 +21,9 @@ Install the following if missing:
 - Docker + Docker Compose (optional, recommended)
 - Git (optional but useful)
 
-## 2) Recommended: Start with Docker
+## 2) Recommended start flow
+
+### Docker
 
 From the repository root:
 
@@ -22,155 +33,145 @@ From the repository root:
 
 Then open:
 
-- http://localhost:3005  ← K.I.T.T. Instruct & Repair UI
+- http://localhost:3005
 
-To stop:
+Health check:
+
+- http://localhost:3005/api/health
+
+Stop:
 
 ```bash
 ./WebUI/KITT/installers/docker/stop-local.sh
 ```
 
-## 3) Native start (no Docker)
+### Native start
 
-### Linux / macOS
+#### Linux / macOS
 
 ```bash
-chmod +x WebUI/KITT/installers/native/install-linux.sh
-./WebUI/KITT/installers/native/install-linux.sh
-source .venv/bin/activate
-node WebUI/KITT/instruct-repair/server.js
+cd WebUI/KITT/instruct-repair
+npm install
+node server.js
 ```
 
-### Windows (PowerShell)
+#### Windows PowerShell
 
 ```powershell
-./WebUI/KITT/installers/native/install-windows.ps1
-& .\.venv\Scripts\Activate.ps1
-node WebUI/KITT/instruct-repair/server.js
+cd WebUI\KITT\instruct-repair
+npm install
+node server.js
 ```
 
 Then open:
 
 - http://localhost:3005
 
-## 4) Health check
+## 3) What to do after start
 
-Open in browser:
+1. Open the UI
+2. Create a request
+3. Review the queue
+4. Approve or resolve the task
+5. Use File Ops for upload / import / extract / convert
+6. Register voice samples if needed
+7. Use Prompt Builder templates for repeated actions
+8. Keep all work local-first unless you explicitly export or sync
 
-```text
-http://localhost:3005/api/health
-```
+## 4) Voice workflow
 
-Expected result:
-
-```json
-{"status":"ok","service":"kitt-instruct-repair","mode":"safe-approval-gated"}
-```
-
-## 5) Create your first request
-
-Open the UI at http://localhost:3005 and create a task.
-
-Example values:
-
-- Title: "K.I.T.T. Voice profile"
-- Text: "Create a local voice profile with consent and preview"
-- Requested Capability: "voice"
-
-Then click "Anforderung senden".
-
-## 6) Approve once the task is created
-
-In the queue, click:
-
-- Approve
-- Resolve
-
-This creates a safe plan only. No automatic patch is executed without your approval.
-
-## 7) Voice worker test (optional)
-
-Example:
+Example register call:
 
 ```bash
-python WebUI/KITT/voice/worker/voice_worker.py \
-  --audio /path/to/sample.wav \
-  --name "KITT Primary" \
-  --consent true \
-  --mode rvc
+curl -X POST http://localhost:3005/api/voice/register \
+  -H "Content-Type: application/json" \
+  -d '{"name":"KITT Primary","file_path":"samples/kitt.wav","consent":true,"owner":"chief"}'
 ```
 
-This produces a job metadata file in:
+## 5) File operations
 
-- WebUI/KITT/voice/jobs/
-
-## 8) Prompt builder (optional)
+Example upload:
 
 ```bash
-node WebUI/KITT/prompts/generate_command.js python_voice_worker \
-  REPO_ROOT=/home/user/project \
-  AUDIO_PATH=/home/user/samples/kitt.wav \
-  VOICE_NAME=KITT \
-  CONSENT=true \
-  MODE=rvc
+curl -X POST http://localhost:3005/api/files/upload \
+  -F "file=@/path/to/file.wav" \
+  -F "target=voice" \
+  -F "name=kitt_sample.wav"
 ```
 
-## 9) Important safety defaults
+Example base64 upload:
 
-- Voice uploads require consent
-- API endpoints are approval-gated by design
-- No automatic production change without explicit approval
-- Keep model artifacts and API keys local and protected
+```bash
+curl -X POST http://localhost:3005/api/files/upload_base64 \
+  -H "Content-Type: application/json" \
+  -d '{"filename":"kitt.wav","data_base64":"<BASE64DATA>","target":"voice"}'
+```
 
-## 10) Typical workflow in practice
+Example URL import:
 
-1. Start K.I.T.T.
-2. Open the UI
-3. Create request via text or prompt template
-4. Review the queue and task plan
-5. Approve / resolve the task
-6. Validate locally
-7. Repeat / iterate with new prompts and versions
+```bash
+curl -X POST http://localhost:3005/api/files/import_url \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com/file.zip","target":"files"}'
+```
 
-## 11) What to do next
+## 6) Request workflow
 
-Recommended next tasks:
+Example request:
 
-- add an API key layer
-- connect the Prompt Builder UI fully to the request form
-- integrate Voice validation + preview flow
-- add local preview / dev build views
-- implement the repair patch blueprint generator
+- Title: `K.I.T.T. Voice profile`
+- Text: `Create a local voice profile with consent and preview`
+- Requested Capability: `voice`
 
-## 12) Local file references
+Then click:
 
-Key files:
+- `Anforderung senden`
 
-- WebUI/KITT/instruct-repair/server.js
-- WebUI/KITT/instruct-repair/public/index.html
-- WebUI/KITT/skills/registry.json
-- WebUI/KITT/voice/worker/voice_worker.py
-- WebUI/KITT/prompts/catalog.json
-- WebUI/KITT/installers/docker/start-local.sh
+## 7) Approval-gated behavior
 
-## 13) Troubleshooting
+- No automatic production changes without approval
+- Requests become structured tasks
+- Review the plan first
+- Resolve only when you want the safe plan generated
+
+## 8) Local transcript logging
+
+The long-term goal is to keep the important local history inside the repository structure.
+Suggested places:
+
+- `WebUI/KITT/mi/transcripts/`
+- `WebUI/KITT/mi/audit.log`
+- `WebUI/KITT/instruct-repair/data/`
+
+## 9) Next modules to finish
+
+Priority order:
+
+1. Self-installer scripts
+2. MI profile / consent / memory
+3. Voice workflow UI
+4. Prompt Builder live search
+5. File Ops UI consolidation
+6. Local transcript and audit logging
+
+## 10) Troubleshooting
 
 ### Server not reachable
-- Confirm Node is installed
-- Confirm server is running in the terminal
-- Check port 3005 is free
-- Try: curl http://localhost:3005/api/health
 
-### Docker not found
-- Install Docker Desktop or Docker Engine
+- Check Node installation
+- Check if port 3005 is in use
+- Run: `curl http://localhost:3005/api/health`
 
 ### Permission denied
-- Run chmod +x on shell scripts
 
-### Voice worker rejects sample
-- Ensure file type is WAV or FLAC
-- Ensure consent is true
+- Run `chmod +x` on shell scripts
 
-## 14) Summary
+### Voice sample rejected
 
-This is the local entrypoint for K.I.T.T. Use it to start the secure queue, manage prompts, create requests, validate voice samples, and keep the platform modular and local-first.
+- Use WAV or FLAC
+- Set consent to true
+- Ensure the file exists locally
+
+## 11) Summary
+
+K.I.T.T. is intended as a local-first controller with safe task handling, local logging, and modular extension points for MI, voice, prompt building, and file operations.
