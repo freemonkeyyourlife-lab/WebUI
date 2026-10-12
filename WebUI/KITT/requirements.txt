@@ -1,0 +1,4 @@
+# K.I.T.T. Core requirements
+fastapi
+uvicorn[standard]
+python-multipart
