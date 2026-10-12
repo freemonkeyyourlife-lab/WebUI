@@ -1,0 +1,46 @@
+{
+  "skills": [
+    {
+      "id": "chat",
+      "label": "Chat / Agent Orchestration",
+      "description": "Agent workflows, chat orchestration, conversation memory",
+      "risk": "low",
+      "entrypoint": "/api/skills/chat"
+    },
+    {
+      "id": "voice",
+      "label": "Voice / Audio Models",
+      "description": "Voice upload, cloning, TTS, conversion and synth",
+      "risk": "medium",
+      "entrypoint": "/api/skills/voice"
+    },
+    {
+      "id": "webui",
+      "label": "Web UI / Dashboard",
+      "description": "Frontend pages, dashboard, layout and UX changes",
+      "risk": "low",
+      "entrypoint": "/api/skills/webui"
+    },
+    {
+      "id": "media",
+      "label": "Image / Video / Music Generation",
+      "description": "Image/video/music generation or editing pipelines",
+      "risk": "medium",
+      "entrypoint": "/api/skills/media"
+    },
+    {
+      "id": "repair",
+      "label": "Repair / Maintenance",
+      "description": "Bugfixes, CI, test, refactors",
+      "risk": "medium",
+      "entrypoint": "/api/skills/repair"
+    },
+    {
+      "id": "security",
+      "label": "Security / Privacy",
+      "description": "Auth, secrets, hardening, legal concerns",
+      "risk": "high",
+      "entrypoint": "/api/skills/security"
+    }
+  ]
+}
