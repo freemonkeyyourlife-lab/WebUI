@@ -1,0 +1,89 @@
+openapi: 3.0.0
+info:
+  title: K.I.T.T. Voice Manager API
+  version: 0.1.0
+servers:
+  - url: /api/voice
+paths:
+  /voices:
+    post:
+      summary: Upload a voice sample and create a voice record
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                name:
+                  type: string
+                owner_id:
+                  type: string
+                consent:
+                  type: boolean
+              required: [file, name, consent]
+      responses:
+        '201':
+          description: Created
+  /voices:
+    get:
+      summary: List available voices
+      responses:
+        '200':
+          description: OK
+  /voices/{voiceId}/train:
+    post:
+      summary: Start training / conversion job for a voice
+      parameters:
+        - name: voiceId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mode:
+                  type: string
+                  enum: [rvc, tts]
+                preset:
+                  type: string
+      responses:
+        '202':
+          description: Job accepted
+  /voices/{voiceId}/synthesize:
+    post:
+      summary: Synthesize text with a voice
+      parameters:
+        - name: voiceId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                pitch:
+                  type: number
+                speed:
+                  type: number
+                style:
+                  type: string
+      responses:
+        '200':
+          description: audio/wav
+components:
+  schemas: {}

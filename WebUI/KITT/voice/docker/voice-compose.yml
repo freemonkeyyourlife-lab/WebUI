@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  webui:
+    image: node:18
+    working_dir: /app
+    volumes:
+      - ../../:/app
+    command: sh -c "cd WebUI && npm run dev"
+    ports:
+      - '3000:3000'
+  api:
+    image: python:3.11
+    working_dir: /srv
+    volumes:
+      - ../../:/srv
+    command: sh -c "uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload"
+    ports:
+      - '8000:8000'
+  inference:
+    image: pytorch/pytorch:2.1-cuda11.8-cudnn8-runtime
+    runtime: nvidia
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+    volumes:
+      - ../../:/workspace
+    command: bash -c "sleep infinity"
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - '5432:5432'
+    volumes:
+      - voice_db:/var/lib/postgresql/data
+volumes:
+  voice_db:
