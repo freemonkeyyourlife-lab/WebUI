@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>K.I.T.T. - Datei Upload & Import</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Arial;max-width:900px;margin:24px auto;padding:12px}
+    .card{border:1px solid #ddd;padding:16px;margin-bottom:12px;border-radius:8px}
+    label{display:block;margin-top:8px}
+    input,select,textarea,button{width:100%;padding:8px;margin-top:6px}
+    .row{display:flex;gap:8px}
+    .row > *{flex:1}
+    .inline{display:inline-block;width:auto}
+  </style>
+</head>
+<body>
+  <h1>K.I.T.T. — Datei Upload & Import</h1>
+  <p>Wähle die Eingabequelle und fülle Metadaten. Unterstützte Quellen: lokale Datei, URL‑Import, Base64/Text‑Paste. Danach kann die Datei als Voice‑Sample registriert werden (mit Consent) oder einfach als Projektdatei abgelegt werden.</p>
+
+  <div class="card">
+    <h2>1) Quelle wählen</h2>
+    <label>Quelle</label>
+    <select id="sourceSelect">
+      <option value="file">Lokale Datei (Upload)</option>
+      <option value="url">URL importieren</option>
+      <option value="base64">Base64 / Text Paste</option>
+    </select>
+  </div>
+
+  <div id="fileCard" class="card">
+    <h3>Lokale Datei (multipart upload)</h3>
+    <form id="uploadForm">
+      <label>Datei wählen</label>
+      <input type="file" id="fileInput" name="file" />
+
+      <label>Ziel (target)</label>
+      <select id="targetSelect" name="target">
+        <option value="files">Allgemeine Dateien</option>
+        <option value="voice">Voice Samples</option>
+      </select>
+
+      <label>Dateiname (optional)</label>
+      <input id="uploadName" name="name" placeholder="optional: neuer Dateiname" />
+
+      <label>Software / Quelle (z. B. Recorder-Name, Page, Tool)</label>
+      <input id="softwareName" placeholder="z. B. Audacity, Zoom, WhatsApp" />
+
+      <div class="row">
+        <div>
+          <label>Erstellungs‑Owner</label>
+          <input id="ownerInput" placeholder="chief" />
+        </div>
+        <div>
+          <label>Consent (für Stimme)</label>
+          <select id="consentSelect">
+            <option value="true">true</option>
+            <option value="false">false</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="button" id="doUpload">Upload durchführen</button>
+    </form>
+  </div>
+
+  <div id="urlCard" class="card" style="display:none">
+    <h3>URL importieren</h3>
+    <label>URL</label>
+    <input id="importUrl" placeholder="https://example.com/file.wav" />
+    <label>Zieldateiname (optional)</label>
+    <input id="importFilename" placeholder="optional: name.wav" />
+    <label>Ziel (target)</label>
+    <select id="importTarget">
+      <option value="files">Allgemeine Dateien</option>
+      <option value="voice">Voice Samples</option>
+    </select>
+
+    <label>Software / Quelle</label>
+    <input id="importSoftware" placeholder="z. B. Zoom" />
+
+    <label>Owner</label>
+    <input id="importOwner" placeholder="chief" />
+
+    <label>Consent</label>
+    <select id="importConsent"><option value="true">true</option><option value="false">false</option></select>
+
+    <button id="doImport">Import starten</button>
+  </div>
+
+  <div id="base64Card" class="card" style="display:none">
+    <h3>Base64 / Paste</h3>
+    <label>Dateiname (z. B. sample.wav)</label>
+    <input id="base64Filename" />
+    <label>Base64 Daten</label>
+    <textarea id="base64Data" rows="8"></textarea>
+    <label>Ziel</label>
+    <select id="base64Target"><option value="files">files</option><option value="voice">voice</option></select>
+    <label>Software / Quelle</label>
+    <input id="base64Software" />
+    <label>Owner</label>
+    <input id="base64Owner" />
+    <label>Consent</label>
+    <select id="base64Consent"><option value="true">true</option><option value="false">false</option></select>
+    <button id="doBase64">Base64 Upload</button>
+  </div>
+
+  <div class="card">
+    <h3>Nach dem Upload</h3>
+    <p>Du kannst die hochgeladene Datei als Voice registrieren (POST /api/voice/register) oder einfach in der Dateiliste verwalten (/api/files/list). Wenn du Voice registrierst, wird ein Job erzeugt und unter <code>WebUI/KITT/voice/jobs/</code> angelegt.</p>
+
+    <label>Voice registrieren von Pfad (relativ z. B. samples/name.wav)</label>
+    <input id="registerPath" placeholder="samples/example.wav" />
+    <label>Voice Name</label>
+    <input id="registerName" placeholder="KITT Primary" />
+    <label>Owner</label>
+    <input id="registerOwner" value="chief" />
+    <label>Consent</label>
+    <select id="registerConsent"><option value="true">true</option><option value="false">false</option></select>
+    <button id="doRegister">Voice registrieren</button>
+  </div>
+
+  <div id="result" class="card" style="display:none">
+    <h3>Ergebnis</h3>
+    <pre id="resultText" style="white-space:pre-wrap"></pre>
+  </div>
+
+  <script>
+    const sourceSelect = document.getElementById('sourceSelect');
+    const fileCard = document.getElementById('fileCard');
+    const urlCard = document.getElementById('urlCard');
+    const base64Card = document.getElementById('base64Card');
+    const result = document.getElementById('result');
+    const resultText = document.getElementById('resultText');
+
+    sourceSelect.addEventListener('change', () => {
+      const v = sourceSelect.value;
+      fileCard.style.display = v === 'file' ? '' : 'none';
+      urlCard.style.display = v === 'url' ? '' : 'none';
+      base64Card.style.display = v === 'base64' ? '' : 'none';
+    });
+
+    function showResult(obj){
+      result.style.display = '';
+      resultText.textContent = JSON.stringify(obj, null, 2);
+    }
+
+    document.getElementById('doUpload').addEventListener('click', async () => {
+      const fileInput = document.getElementById('fileInput');
+      if (!fileInput.files.length) return alert('Bitte Datei wählen');
+      const form = new FormData();
+      form.append('file', fileInput.files[0]);
+      form.append('target', document.getElementById('targetSelect').value);
+      form.append('name', document.getElementById('uploadName').value || fileInput.files[0].name);
+      form.append('software', document.getElementById('softwareName').value || 'unknown');
+      form.append('owner', document.getElementById('ownerInput').value || 'chief');
+      form.append('consent', document.getElementById('consentSelect').value || 'false');
+
+      const res = await fetch('/api/files/upload', { method: 'POST', body: form });
+      const j = await res.json();
+      showResult(j);
+      if (j.ok && document.getElementById('targetSelect').value === 'voice') {
+        // pre-fill register path
+        const rel = j.path.split('/WebUI/KITT/').pop() || j.path;
+        document.getElementById('registerPath').value = rel.replace(/^\/*/, '');
+      }
+    });
+
+    document.getElementById('doImport').addEventListener('click', async () => {
+      const payload = {
+        url: document.getElementById('importUrl').value,
+        filename: document.getElementById('importFilename').value,
+        target: document.getElementById('importTarget').value,
+        software: document.getElementById('importSoftware').value,
+        owner: document.getElementById('importOwner').value,
+        consent: document.getElementById('importConsent').value
+      };
+      const res = await fetch('/api/files/import_url', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      const j = await res.json();
+      showResult(j);
+      if (j.ok && payload.target === 'voice') {
+        const rel = j.path.split('/WebUI/KITT/').pop() || j.path;
+        document.getElementById('registerPath').value = rel.replace(/^\/*/, '');
+      }
+    });
+
+    document.getElementById('doBase64').addEventListener('click', async () => {
+      const payload = {
+        filename: document.getElementById('base64Filename').value,
+        data_base64: document.getElementById('base64Data').value.trim(),
+        target: document.getElementById('base64Target').value,
+        software: document.getElementById('base64Software').value,
+        owner: document.getElementById('base64Owner').value,
+        consent: document.getElementById('base64Consent').value
+      };
+      if (!payload.filename || !payload.data_base64) return alert('filename und base64 data erforderlich');
+      const res = await fetch('/api/files/upload_base64', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+      const j = await res.json();
+      showResult(j);
+      if (j.ok && payload.target === 'voice') {
+        const rel = j.path.split('/WebUI/KITT/').pop() || j.path;
+        document.getElementById('registerPath').value = rel.replace(/^\/*/, '');
+      }
+    });
+
+    document.getElementById('doRegister').addEventListener('click', async () => {
+      const payload = {
+        name: document.getElementById('registerName').value,
+        file_path: document.getElementById('registerPath').value,
+        owner: document.getElementById('registerOwner').value,
+        consent: document.getElementById('registerConsent').value === 'true',
+        mode: 'rvc'
+      };
+      if (!payload.name || !payload.file_path) return alert('Name und file_path erforderlich');
+      const res = await fetch('/api/voice/register', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      const j = await res.json();
+      showResult(j);
+    });
+  </script>
+
+</body>
+</html>
