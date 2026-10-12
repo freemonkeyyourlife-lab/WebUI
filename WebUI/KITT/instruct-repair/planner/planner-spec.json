@@ -1,0 +1,20 @@
+{
+  "name": "kitt-repair-planner",
+  "version": "0.1.0",
+  "description": "Repair and feature blueprint planner for K.I.T.T.",
+  "inputs": [
+    "issueSummary",
+    "requestText",
+    "link",
+    "environment",
+    "expectedOutcome"
+  ],
+  "outputs": [
+    "taskSummary",
+    "impactedModules",
+    "riskLevel",
+    "validationSteps",
+    "rollbackPlan",
+    "approvalRequired"
+  ]
+}
