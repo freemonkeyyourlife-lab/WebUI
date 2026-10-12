@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>K.I.T.T. Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">K.I.T.T.</div>
+          <div class="brand-sub">Knight Integrated Tooling & Tasking</div>
+        </div>
+
+        <nav>
+          <button class="nav active">Dashboard</button>
+          <button class="nav">Agents</button>
+          <button class="nav">Voice</button>
+          <button class="nav">Projects</button>
+          <button class="nav">Media</button>
+          <button class="nav">Research</button>
+          <button class="nav">Installer</button>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <h1>K.I.T.T. Control Center</h1>
+            <p>Central orchestrator for the Free Monkeys ecosystem</p>
+          </div>
+          <div class="status-pill online">System ONLINE</div>
+        </header>
+
+        <section class="hero">
+          <div class="hero-copy">
+            <h2>Mission</h2>
+            <p>
+              Unite agents, tools, models, voice pipelines and media services into one controllable local platform.
+            </p>
+          </div>
+          <div class="actionstack">
+            <button class="primary">Start Local Platform</button>
+            <button class="secondary">Run Agent Scan</button>
+          </div>
+        </section>
+
+        <section class="grid top-grid">
+          <div class="panel">
+            <h3>System Status</h3>
+            <ul class="metric-list">
+              <li><span>Core</span><strong>Online</strong></li>
+              <li><span>Voice Manager</span><strong>Ready</strong></li>
+              <li><span>Jobs Queue</span><strong>Queued: 3</strong></li>
+              <li><span>Local Models</span><strong>Planned</strong></li>
+            </ul>
+          </div>
+
+          <div class="panel">
+            <h3>Agent Overview</h3>
+            <div id="agentsTable" class="agent-list"></div>
+          </div>
+        </section>
+
+        <section class="grid bottom-grid">
+          <div class="panel">
+            <h3>Current Jobs</h3>
+            <ul class="jobs">
+              <li><span>Voice pre-check</span><strong>Running</strong></li>
+              <li><span>News archive refresh</span><strong>Queued</strong></li>
+              <li><span>Media conversion</span><strong>Waiting</strong></li>
+            </ul>
+          </div>
+
+          <div class="panel">
+            <h3>Voice Profile</h3>
+            <div class="voice-box">
+              <div class="voice-pill">K.I.T.T. voice preset</div>
+              <div class="voice-controls">
+                <label>Pitch <input type="range" min="-10" max="10" value="0" /></label>
+                <label>Energy <input type="range" min="0" max="100" value="55" /></label>
+                <label>Warmth <input type="range" min="0" max="100" value="62" /></label>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

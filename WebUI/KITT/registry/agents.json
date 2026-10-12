@@ -1,0 +1,120 @@
+{
+  "system": "K.I.T.T.",
+  "name": "Knight Integrated Tooling & Tasking",
+  "version": "0.1.0",
+  "mode": "local-first",
+  "description": "Central orchestrator for the Free Monkeys ecosystem.",
+  "chief": "Chief",
+  "default_status": "idle",
+  "agents": [
+    {
+      "id": "illuminati",
+      "name": "Illuminati",
+      "category": "research",
+      "owner": "freemonkeyswabackuponly@gmail.com",
+      "status": "online",
+      "description": "Research, archive, statistics, fact checking, news aggregation, backoffice memory."
+    },
+    {
+      "id": "daniel",
+      "name": "Daniel Düsentrieb",
+      "category": "systems",
+      "owner": "free_monkeys.official@gmail.com",
+      "status": "online",
+      "description": "Tooling, conversion, graphics, automation, office replacement, smart home, system engineering."
+    },
+    {
+      "id": "spielberg_dali",
+      "name": "Spielberg-Dali",
+      "category": "creative",
+      "owner": "davidspringer.trades@gmail.com",
+      "status": "online",
+      "description": "Images, scripts, videos, platform aesthetics, creative content, games."
+    },
+    {
+      "id": "marketing",
+      "name": "Social Media AI",
+      "category": "marketing",
+      "owner": "davidspringer.trade@gmail.com",
+      "status": "online",
+      "description": "Social media research, marketing, SEO, content generation, job portals."
+    },
+    {
+      "id": "mj",
+      "name": "MJ",
+      "category": "audio",
+      "owner": "davidspringer@gmx.de",
+      "status": "online",
+      "description": "Music studio, songwriting, voice coaching, AI audio adaptation."
+    },
+    {
+      "id": "mattlock",
+      "name": "Mattlock",
+      "category": "legal_security",
+      "owner": "ppeglovesgownsuits@gmail.com",
+      "status": "online",
+      "description": "Legal reasoning, problem solving, technical architecture, academy support."
+    },
+    {
+      "id": "bill_jobs",
+      "name": "Bill Jobs",
+      "category": "training",
+      "owner": "springerdavid.ds@gmail.com",
+      "status": "online",
+      "description": "AI academy, model training, Linux automation, prompt engineering and digital clone modeling."
+    },
+    {
+      "id": "kit",
+      "name": "K.I.T.T.",
+      "category": "orchestrator",
+      "status": "online",
+      "description": "Main orchestrator and interface intelligence for the complete platform."
+    },
+    {
+      "id": "phantom",
+      "name": "Phantom",
+      "category": "memory",
+      "status": "online",
+      "description": "Shared knowledge memory for the platform and team archive."
+    }
+  ],
+  "skills": [
+    "voice_manager",
+    "research_archive",
+    "news_center",
+    "media_converter",
+    "image_generation",
+    "video_generation",
+    "music_generation",
+    "social_media_pipeline",
+    "legal_review",
+    "ai_training_shell",
+    "installer_builder"
+  ],
+  "services": [
+    {
+      "id": "ollama",
+      "name": "Ollama local runtime",
+      "type": "llm",
+      "status": "planned"
+    },
+    {
+      "id": "voice_manager",
+      "name": "Voice Manager",
+      "type": "voice",
+      "status": "active"
+    },
+    {
+      "id": "jobs_queue",
+      "name": "Jobs Queue",
+      "type": "queue",
+      "status": "active"
+    },
+    {
+      "id": "knowledge_archive",
+      "name": "Knowledge Archive",
+      "type": "memory",
+      "status": "planned"
+    }
+  ]
+}
