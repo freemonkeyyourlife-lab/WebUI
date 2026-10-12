@@ -1,4 +1,4 @@
-// Modified server.js to integrate the Skill Registry suggestions
+// Modified server.js to integrate MI and File routes
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
@@ -10,8 +10,16 @@ const PORT = process.env.PORT || 3005;
 const DATA_DIR = path.join(__dirname, 'data');
 const TASKS_FILE = path.join(DATA_DIR, 'tasks.json');
 
-app.use(express.json({ limit: '2mb' }));
+// parse larger bodies for uploads
+app.use(express.json({ limit: '8mb' }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Mount file handlers and MI API routes (provide flexible file ops + MI settings)
+const fileHandlers = require('./api_file_handlers');
+const miRoutes = require('./routes/mi_api');
+app.use('/api/files', fileHandlers);
+app.use('/api/mi', miRoutes);
 
 ensureStorage();
 
@@ -175,7 +183,60 @@ app.post('/api/requests/:id/resolve', (req, res) => {
   res.json({ task, extensionResult });
 });
 
+// Voice register endpoint (exists earlier) - keep compatibility
+app.post('/api/voice/register', (req, res) => {
+  const payload = req.body || {};
+  const name = (payload.name || '').trim();
+  const filePath = payload.file_path || payload.path || '';
+  const owner = payload.owner || 'local';
+  const consent = payload.consent === true || payload.consent === 'true';
+
+  if (!name || !filePath) return res.status(400).json({ error: 'name and file_path are required' });
+  if (!consent) return res.status(400).json({ error: 'consent flag must be true to register voice sample' });
+
+  const samplesDir = path.join(__dirname, '..', 'voice', 'samples');
+  const resolved = path.isAbsolute(filePath) ? filePath : path.join(samplesDir, filePath);
+  if (!fs.existsSync(resolved)) return res.status(404).json({ error: 'audio file not found', path: resolved });
+
+  const metaFile = path.join(__dirname, '..', 'voice', 'metadata.json');
+  let meta = [];
+  try { meta = JSON.parse(fs.readFileSync(metaFile, 'utf8')); } catch (e) { meta = []; }
+
+  const voiceId = `voice-${Date.now()}-${Math.random().toString(16).slice(2,6)}`;
+  const entry = {
+    id: voiceId,
+    name,
+    owner,
+    file: resolved,
+    consent: true,
+    createdAt: new Date().toISOString(),
+    status: 'registered'
+  };
+  meta.push(entry);
+  fs.writeFileSync(metaFile, JSON.stringify(meta, null, 2));
+
+  const jobsDir = path.join(__dirname, '..', 'voice', 'jobs');
+  const job = {
+    id: `job-${Date.now()}-${Math.random().toString(16).slice(2,6)}`,
+    voiceId,
+    mode: payload.mode || 'rvc',
+    status: 'queued',
+    audio: resolved,
+    createdAt: new Date().toISOString(),
+    logs: []
+  };
+  const jobFile = path.join(jobsDir, `${job.id}.json`);
+  fs.writeFileSync(jobFile, JSON.stringify(job, null, 2));
+
+  res.status(201).json({ voice: entry, job });
+});
+
 app.get('*', (req, res) => {
+  // allow file upload page and mi settings page as direct routes
+  const reqPath = req.path || '';
+  if (reqPath === '/file_upload.html' || reqPath === '/mi_settings.html') {
+    return res.sendFile(path.join(__dirname, 'public', reqPath));
+  }
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
