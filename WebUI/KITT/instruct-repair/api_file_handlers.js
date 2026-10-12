@@ -57,14 +57,12 @@ function downloadToFile(url, destPath) {
 }
 
 // 1) Multipart upload (files)
-// POST /api/files/upload (multipart/form-data) { file, target }
 router.post('/upload', upload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
   res.json({ ok: true, path: req.file.path, filename: req.file.filename, size: req.file.size });
 });
 
 // 2) Base64 upload
-// POST /api/files/upload_base64 { filename, data_base64, target }
 router.post('/upload_base64', (req, res) => {
   const { filename, data_base64, target } = req.body;
   if (!filename || !data_base64) return res.status(400).json({ error: 'filename and data_base64 required' });
@@ -77,7 +75,6 @@ router.post('/upload_base64', (req, res) => {
 });
 
 // 3) Import from URL
-// POST /api/files/import_url { url, filename?, target }
 router.post('/import_url', async (req, res) => {
   const { url, filename, target } = req.body;
   if (!url) return res.status(400).json({ error: 'url required' });
@@ -94,7 +91,6 @@ router.post('/import_url', async (req, res) => {
 });
 
 // 4) List files
-// GET /api/files/list?dir=voice/samples or dir=.
 router.get('/list', (req, res) => {
   const dir = req.query.dir || '.';
   try {
@@ -112,12 +108,10 @@ router.get('/list', (req, res) => {
 });
 
 // 5) Download file
-// GET /api/files/download?path=relative/path
 router.get('/download', (req, res) => {
   const p = req.query.path;
   if (!p) return res.status(400).json({ error: 'path query required' });
   try {
-    // allow 'voice/samples/..' or files relative
     let resolved;
     if (p.startsWith('voice/')) resolved = safeJoin(VOICE_DIR, p.replace(/^voice\//, ''));
     else resolved = safeJoin(FILES_DIR, p);
@@ -128,8 +122,7 @@ router.get('/download', (req, res) => {
   }
 });
 
-// 6) Extract zip (uses system 'unzip' if present)
-// POST /api/files/extract_zip { path, dest? }
+// 6) Extract zip
 router.post('/extract_zip', (req, res) => {
   const { path: p, dest } = req.body;
   if (!p) return res.status(400).json({ error: 'path required' });
@@ -138,7 +131,6 @@ router.post('/extract_zip', (req, res) => {
     if (!fs.existsSync(src)) return res.status(404).json({ error: 'source not found' });
     const outDir = dest ? (dest.startsWith('voice/') ? safeJoin(VOICE_DIR, dest.replace(/^voice\//, '')) : safeJoin(FILES_DIR, dest)) : path.dirname(src);
     if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
-    // prefer system unzip
     const unzip = spawn('unzip', ['-o', src, '-d', outDir]);
     unzip.on('close', (code) => {
       if (code === 0) return res.json({ ok: true, extractedTo: outDir });
@@ -150,8 +142,7 @@ router.post('/extract_zip', (req, res) => {
   }
 });
 
-// 7) Metadata extraction (basic)
-// POST /api/files/metadata { path }
+// 7) Metadata extraction
 router.post('/metadata', (req, res) => {
   const { path: p } = req.body;
   if (!p) return res.status(400).json({ error: 'path required' });
@@ -166,8 +157,7 @@ router.post('/metadata', (req, res) => {
   }
 });
 
-// 8) Convert audio using ffmpeg if available (stub)
-// POST /api/files/convert_audio { path, format }
+// 8) Convert audio using ffmpeg if available
 router.post('/convert_audio', (req, res) => {
   const { path: p, format } = req.body;
   if (!p || !format) return res.status(400).json({ error: 'path and format required' });
@@ -187,7 +177,6 @@ router.post('/convert_audio', (req, res) => {
 });
 
 // 9) Delete file
-// DELETE /api/files { path }
 router.delete('/', (req, res) => {
   const p = req.body.path || req.query.path;
   if (!p) return res.status(400).json({ error: 'path required' });
@@ -199,8 +188,7 @@ router.delete('/', (req, res) => {
   } catch (err) { res.status(400).json({ error: err.message }); }
 });
 
-// 10) Scan & extract text (PDF / images) - best-effort using system tools (pdftotext, tesseract)
-// POST /api/files/extract_text { path }
+// 10) extract text (pdf -> pdftotext, image -> tesseract)
 router.post('/extract_text', (req, res) => {
   const { path: p } = req.body;
   if (!p) return res.status(400).json({ error: 'path required' });
@@ -209,7 +197,6 @@ router.post('/extract_text', (req, res) => {
     if (!fs.existsSync(resolved)) return res.status(404).json({ error: 'not found' });
     const ext = path.extname(resolved).toLowerCase();
     if (ext === '.pdf') {
-      // try pdftotext
       const out = resolved + '.txt';
       const pdftotext = spawn('pdftotext', [resolved, out]);
       pdftotext.on('close', (code) => {
@@ -218,7 +205,6 @@ router.post('/extract_text', (req, res) => {
       });
       pdftotext.on('error', (err) => res.status(500).json({ error: 'pdftotext not available: ' + err.message }));
     } else {
-      // try tesseract for images
       const out = resolved + '.txt';
       const tess = spawn('tesseract', [resolved, out.replace(/\.txt$/, '')]);
       tess.on('close', (code) => {
@@ -230,8 +216,7 @@ router.post('/extract_text', (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// 11) Register webhook to notify when file job completes (simple file)
-// POST /api/files/webhook_register { url }
+// 11) webhook registration
 const webhooksFile = path.join(__dirname, 'data', 'file_webhooks.json');
 if (!fs.existsSync(webhooksFile)) fs.writeFileSync(webhooksFile, JSON.stringify([], null, 2));
 
