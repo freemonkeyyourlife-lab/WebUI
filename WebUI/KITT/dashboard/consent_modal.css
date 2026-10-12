@@ -1,0 +1,10 @@
+/* Theme snippet: small helper styles for consent modal (Deutsch) */
+.modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); z-index: 2000; }
+.modal-content { width: 720px; max-width: 92%; background: var(--panel, #0b0b0b); color: var(--text, #f1f1f1); padding: 22px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); font-family: 'Montserrat', system-ui, sans-serif; }
+.consent-block { margin: 16px 0; }
+.consent-text { margin-left: 10px; }
+.optional-doc { margin: 10px 0 18px 0; }
+.modal-actions { display:flex; gap:12px; justify-content: flex-end; }
+.btn { padding: 10px 14px; border-radius: 10px; border: none; cursor: pointer; background: rgba(255,255,255,0.06); color: var(--text, #f1f1f1); }
+.btn.primary { background: linear-gradient(135deg,#ff2d2d,#d94b4b); color: #070707; font-weight:700; }
+.small.muted { color: #9bb6d1; font-size: 0.9rem; margin-top: 10px; }

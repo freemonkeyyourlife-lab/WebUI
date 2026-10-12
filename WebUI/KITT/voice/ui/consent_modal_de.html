@@ -1,0 +1,51 @@
+<!-- VOICE CONSENT MODAL (Deutsch) -->
+<div id="voiceConsentModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="vc-title">
+  <div class="modal-content">
+    <h2 id="vc-title">Nutzungsbedingungen für Stimm‑Uploads</h2>
+    <p class="muted">Bitte bestätige vor dem Hochladen, dass du die Rechte an den Audiodateien besitzt und die erzeugten Stimmen nur privat verwendet werden.</p>
+
+    <div class="consent-block">
+      <label for="consentCheckbox">
+        <input type="checkbox" id="consentCheckbox" name="consent" />
+        <span class="consent-text">Ich bestätige, dass ich die Rechte an den hochgeladenen Audio‑Dateien habe und die erzeugten Stimmen ausschließlich privat nutze. Ich weiß, dass Veröffentlichung oder Weitergabe rechtliche Folgen haben kann.</span>
+      </label>
+    </div>
+
+    <div class="optional-doc">
+      <label for="consentDoc">Optional: Einwilligungs‑/Nutzungsdokument hochladen (PDF, JPG)</label>
+      <input id="consentDoc" name="consentDoc" type="file" accept="application/pdf,image/*" />
+      <small class="muted">Falls du ausdrücklich die Zustimmung einer realen Person dokumentieren kannst, lade sie hier hoch.</small>
+    </div>
+
+    <div class="modal-actions">
+      <button id="consentCancel" class="btn">Abbrechen</button>
+      <button id="consentAccept" class="btn primary" disabled>Hochladen & bestätigen</button>
+    </div>
+
+    <p class="note small muted">Hinweis: Diese Funktion ist für private Zwecke gedacht. Öffentliche Verbreitung oder Weitergabe ist ohne Genehmigung nicht gestattet.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  const checkbox = document.getElementById('consentCheckbox');
+  const accept = document.getElementById('consentAccept');
+  const cancel = document.getElementById('consentCancel');
+  checkbox.addEventListener('change', () => { accept.disabled = !checkbox.checked; });
+  cancel.addEventListener('click', () => { document.getElementById('voiceConsentModal').style.display = 'none'; });
+  accept.addEventListener('click', () => {
+    // On accept: validate and submit the upload form (stub: trigger existing upload form)
+    const uploadForm = document.querySelector('form[action="/api/voice/voices"]');
+    if (uploadForm) {
+      const consentInput = document.createElement('input');
+      consentInput.type = 'hidden';
+      consentInput.name = 'consent';
+      consentInput.value = 'true';
+      uploadForm.appendChild(consentInput);
+      uploadForm.submit();
+    } else {
+      alert('Upload‑Formular nicht gefunden.');
+    }
+  });
+})();
+</script>
