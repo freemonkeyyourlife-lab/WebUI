@@ -86,6 +86,7 @@ function getRecentLogs(limit = 100, filterType = null) {
 
 module.exports = {
   logAudit,
+  audit: logAudit,
   logAction,
   readAuditLog,
   getRecentLogs,
