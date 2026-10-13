@@ -1,0 +1,174 @@
+:root {
+  --bg-primary: #0a0f18;
+  --bg-secondary: #111b2b;
+  --bg-card: #162438;
+  --bg-input: #0d1624;
+  --border-color: #213854;
+  --accent: #00b4d8;
+  --accent-hover: #90e0ef;
+  --text-main: #f0f6fc;
+  --text-muted: #8b9bb4;
+  --status-running: #2ea043;
+  --status-stopped: #da3633;
+  --status-pending: #d29922;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  line-height: 1.5;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-running { background: #1c4b27; color: #56d364; border: 1px solid #2ea043; }
+.badge-stopped { background: #4c1d1d; color: #f85149; border: 1px solid #da3633; }
+.badge-pending { background: #4d3800; color: #e3b341; border: 1px solid #d29922; }
+.badge-approval { background: #3d1f4d; color: #d2a8ff; border: 1px solid #a371f7; }
+
+.nav-links {
+  display: flex;
+  gap: 12px;
+}
+
+.nav-links a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 6px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+}
+
+.nav-links a:hover, .nav-links a.active {
+  background: var(--accent);
+  color: #04101d;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+button {
+  background: var(--accent);
+  color: #04101d;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+button:hover {
+  background: var(--accent-hover);
+}
+
+button.btn-danger {
+  background: var(--status-stopped);
+  color: white;
+}
+
+button.btn-success {
+  background: var(--status-running);
+  color: white;
+}
+
+button.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: 6px;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  font-family: inherit;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.log-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 12px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  max-height: 250px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+.approval-item {
+  background: var(--bg-secondary);
+  border-left: 4px solid var(--status-pending);
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

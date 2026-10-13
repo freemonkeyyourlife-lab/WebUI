@@ -1,0 +1,49 @@
+[
+  {
+    "id": "req-1791852722989-967174",
+    "title": "Agent [kitt] command: Execute System Command",
+    "sourceType": "agent",
+    "agentId": "kitt",
+    "command": "execute_system_command",
+    "capability": "execute_system_command",
+    "params": {
+      "command": "status"
+    },
+    "text": "",
+    "status": "completed",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T00:52:02.989Z",
+    "plan": {
+      "taskId": "req-1791852722989-967174",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "execute_system_command",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": {
+      "agentId": "kitt",
+      "capability": "execute_system_command",
+      "executedAt": "2026-10-13T00:52:09.231Z",
+      "summary": "System command 'status' executed after explicit approval",
+      "command": "status",
+      "result": "Safe execution confirmed for status",
+      "completedAt": "2026-10-13T00:52:09.231Z"
+    },
+    "approved": true,
+    "approvedAt": "2026-10-13T00:52:09.231Z",
+    "approver": "chief",
+    "executedAt": "2026-10-13T00:52:09.231Z"
+  }
+]

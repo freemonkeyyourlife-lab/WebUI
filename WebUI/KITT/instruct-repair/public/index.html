@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>K.I.T.T. — Local AI Orchestrator</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>K.I.T.T. Local Platform</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Knight Integrated Tooling & Tasking — Free Monkeys Ecosystem</p>
+      </div>
+      <div id="healthBadge" style="display: flex; align-items: center; gap: 8px;">
+        <span class="badge badge-running">Local System Online</span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-header">
+          <h3>Agents & Capabilities</h3>
+          <span class="badge badge-running">Active</span>
+        </div>
+        <p style="color: var(--text-muted); margin-bottom: 12px;">
+          Manage local agents (K.I.T.T., Observer, Listener, Talker, Artanis), review capabilities, inspect lifecycle states, and execute commands under the approval gate.
+        </p>
+        <a href="/agents.html"><button>Open Agents Dashboard</button></a>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Prompt Builder</h3>
+          <span class="badge badge-running">Active</span>
+        </div>
+        <p style="color: var(--text-muted); margin-bottom: 12px;">
+          Build, save, and render prompt templates with <code>{{variable}}</code> placeholders, then insert directly into the approval-gated request queue.
+        </p>
+        <a href="/prompt_builder.html"><button>Open Prompt Builder</button></a>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>MI / MIO Personal Profile</h3>
+          <span class="badge badge-running">Active</span>
+        </div>
+        <p style="color: var(--text-muted); margin-bottom: 12px;">
+          Local-first personal instance: memory store, digest synthesis, strict outbound consent enforcement, voice profile, and audit inspection.
+        </p>
+        <a href="/mi_settings.html"><button>Open MI Settings</button></a>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Free Monkeys GO!</h3>
+          <span class="badge badge-pending">Stage 4</span>
+        </div>
+        <p style="color: var(--text-muted); margin-bottom: 12px;">
+          Comic-style mobile-first local mission game with the Three Monkeys, real POI points of interest, 15-minute reward ticks, and opt-in social actions.
+        </p>
+        <a href="/game.html"><button>Open Game Module</button></a>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>File & Voice Samples</h3>
+          <span class="badge badge-running">Active</span>
+        </div>
+        <p style="color: var(--text-muted); margin-bottom: 12px;">
+          Upload project files and register voice samples with required human consent flags and local job queue records.
+        </p>
+        <a href="/file_upload.html"><button>Open File Upload</button></a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

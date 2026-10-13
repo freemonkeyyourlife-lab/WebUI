@@ -18,8 +18,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Mount file handlers and MI API routes (provide flexible file ops + MI settings)
 const fileHandlers = require('./api_file_handlers');
 const miRoutes = require('./routes/mi_api');
+const agentsRoutes = require('./routes/agents_api');
+const promptsRoutes = require('./routes/prompts_api');
+const { readRequests, createRequest, approveRequest, resolveRequest } = require('./requests_store');
+const { logAudit } = require('./audit_helper');
+
+if (process.env.ENABLE_CORS === 'true') {
+  const cors = require('cors');
+  app.use(cors());
+}
+
 app.use('/api/files', fileHandlers);
 app.use('/api/mi', miRoutes);
+app.use('/api/agents', agentsRoutes);
+app.use('/api/prompts', promptsRoutes);
 
 ensureStorage();
 
@@ -96,12 +108,12 @@ app.get('/api/health', (req, res) => {
 });
 
 app.get('/api/requests', (req, res) => {
-  const tasks = readTasks();
+  const tasks = readRequests();
   res.json(tasks);
 });
 
 app.get('/api/requests/:id', (req, res) => {
-  const tasks = readTasks();
+  const tasks = readRequests();
   const task = tasks.find((entry) => entry.id === req.params.id);
   if (!task) return res.status(404).json({ error: 'task not found' });
   res.json(task);
@@ -116,71 +128,32 @@ app.post('/api/requests', (req, res) => {
     return res.status(400).json({ error: 'Provide text, a link or a request payload.' });
   }
 
-  // suggest a skill using the registry
   const suggestedSkill = registry.suggestSkillForText(`${text} ${link}`);
-
-  const tasks = readTasks();
-  const task = {
-    id: `task-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+  const task = createRequest({
     title: (payload.title || 'New instruction request').slice(0, 120),
     sourceType: payload.sourceType || (link ? 'link' : 'text'),
     text,
     link,
-    requestedCapability: payload.requestedCapability || 'general extension',
-    category: suggestedSkill?.id || classifyRequest(payload),
-    suggestedModule: suggestedSkill?.label || null,
-    status: 'queued',
-    secureMode: true,
-    createdAt: new Date().toISOString(),
-    plan: buildSafetyPlan({ ...payload, id: 'temp', requestedCapability: payload.requestedCapability || 'general extension' }, suggestedSkill)
-  };
-
-  tasks.unshift(task);
-  writeTasks(tasks);
+    agentId: payload.agentId || null,
+    capability: payload.requestedCapability || suggestedSkill?.id || classifyRequest(payload),
+    requiresApproval: payload.requiresApproval !== undefined ? payload.requiresApproval : true,
+    status: 'pending_approval'
+  });
 
   res.status(201).json(task);
 });
 
-app.post('/api/requests/:id/approve', (req, res) => {
-  const tasks = readTasks();
-  const task = tasks.find((entry) => entry.id === req.params.id);
+app.post('/api/requests/:id/approve', async (req, res) => {
+  const approver = req.body?.approver || 'chief';
+  const task = await approveRequest(req.params.id, approver);
   if (!task) return res.status(404).json({ error: 'task not found' });
-
-  task.status = 'approved';
-  task.plan = task.plan || buildSafetyPlan(task, registry.suggestSkillForText(task.text || ''));
-  task.plan.approvedAt = new Date().toISOString();
-  task.approved = true;
-  writeTasks(tasks);
-
   res.json(task);
 });
 
 app.post('/api/requests/:id/resolve', (req, res) => {
-  const tasks = readTasks();
-  const task = tasks.find((entry) => entry.id === req.params.id);
-  if (!task) return res.status(404).json({ error: 'task not found' });
-
-  const suggestedSkill = registry.suggestSkillForText(task.text || '');
-  const plan = buildSafetyPlan(task, suggestedSkill);
-  task.status = 'ready';
-  task.plan = plan;
-
-  const extensionResult = {
-    id: task.id,
-    resolved: true,
-    type: 'extension-plan',
-    summary: `Task classified as ${plan.category}. Review required before code changes are executed.`,
-    startPoint: 'Collect the exact file(s) and acceptance criteria first.',
-    safeActions: plan.actions,
-    risk: plan.risk,
-    acceptanceCriteria: plan.acceptanceCriteria,
-    suggestedModule: suggestedSkill?.label,
-    suggestedEntrypoint: suggestedSkill?.entrypoint,
-    generatedAt: new Date().toISOString()
-  };
-
-  writeTasks(tasks);
-  res.json({ task, extensionResult });
+  const result = resolveRequest(req.params.id);
+  if (!result) return res.status(404).json({ error: 'task not found' });
+  res.json(result);
 });
 
 // Voice register endpoint (exists earlier) - keep compatibility
