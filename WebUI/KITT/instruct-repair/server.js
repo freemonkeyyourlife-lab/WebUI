@@ -10,9 +10,12 @@ const PORT = process.env.PORT || 3005;
 const DATA_DIR = path.join(__dirname, 'data');
 const TASKS_FILE = path.join(DATA_DIR, 'tasks.json');
 
+const { rateLimit } = require('./rate_limiter');
+
 // parse larger bodies for uploads
 app.use(express.json({ limit: '8mb' }));
 app.use(express.urlencoded({ extended: true }));
+app.use(rateLimit({ windowMs: 60 * 1000, max: 600 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Mount file handlers and MI API routes (provide flexible file ops + MI settings)

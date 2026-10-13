@@ -4,8 +4,10 @@ const fs = require('fs');
 const multer = require('multer');
 const auditHelper = require('../audit_helper');
 const requestsStore = require('../requests_store');
+const { rateLimit } = require('../rate_limiter');
 
 const router = express.Router();
+router.use(rateLimit({ windowMs: 60 * 1000, max: 200 }));
 
 const VOICE_DIR = path.join(__dirname, '..', '..', 'voice');
 const SAMPLES_DIR = path.join(VOICE_DIR, 'samples');
