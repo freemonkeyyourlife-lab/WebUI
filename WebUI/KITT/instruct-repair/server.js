@@ -21,6 +21,7 @@ const miRoutes = require('./routes/mi_api');
 const agentsRoutes = require('./routes/agents_api');
 const promptsRoutes = require('./routes/prompts_api');
 const voiceRoutes = require('./routes/voice_api');
+const artanisRoutes = require('./routes/artanis_api');
 const { readRequests, createRequest, approveRequest, resolveRequest } = require('./requests_store');
 const { logAudit } = require('./audit_helper');
 
@@ -34,6 +35,7 @@ app.use('/api/mi', miRoutes);
 app.use('/api/agents', agentsRoutes);
 app.use('/api/prompts', promptsRoutes);
 app.use('/api/voice', voiceRoutes);
+app.use('/api/artanis', artanisRoutes);
 
 ensureStorage();
 

@@ -1,0 +1,86 @@
+[
+  {
+    "planId": "plan-1791853377703-49n4",
+    "goal": "Perform network scan and speak summary",
+    "status": "submitted",
+    "createdAt": "2026-10-13T01:02:57.703Z",
+    "stepCount": 4,
+    "requiresApproval": false,
+    "steps": [
+      {
+        "step": 1,
+        "agentId": "listener",
+        "capability": "parse_instructions",
+        "title": "Analyze and parse instruction syntax",
+        "params": {
+          "text": "Perform network scan and speak summary"
+        },
+        "requiresApproval": false
+      },
+      {
+        "step": 2,
+        "agentId": "observer",
+        "capability": "network_scan",
+        "title": "Inspect local environment boundary and files",
+        "params": {
+          "path": "."
+        },
+        "requiresApproval": false
+      },
+      {
+        "step": 3,
+        "agentId": "kitt",
+        "capability": "orchestrate_agents",
+        "title": "Synchronize agent execution state",
+        "params": {
+          "goal": "Perform network scan and speak summary"
+        },
+        "requiresApproval": false
+      },
+      {
+        "step": 4,
+        "agentId": "talker",
+        "capability": "speak_local",
+        "title": "Emit local speech completion notification",
+        "params": {
+          "text": "Plan execution prepared: Perform network scan and speak summ"
+        },
+        "requiresApproval": false
+      }
+    ],
+    "submittedTasks": [
+      {
+        "step": 1,
+        "taskId": "req-1791853377704-b67823",
+        "agentId": "listener",
+        "capability": "parse_instructions",
+        "requiresApproval": false,
+        "status": "pending_approval"
+      },
+      {
+        "step": 2,
+        "taskId": "req-1791853377704-ef878f",
+        "agentId": "observer",
+        "capability": "network_scan",
+        "requiresApproval": false,
+        "status": "pending_approval"
+      },
+      {
+        "step": 3,
+        "taskId": "req-1791853377705-d3d9c7",
+        "agentId": "kitt",
+        "capability": "orchestrate_agents",
+        "requiresApproval": false,
+        "status": "pending_approval"
+      },
+      {
+        "step": 4,
+        "taskId": "req-1791853377705-a3cc79",
+        "agentId": "talker",
+        "capability": "speak_local",
+        "requiresApproval": false,
+        "status": "pending_approval"
+      }
+    ]
+  }
+]

@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Artanis — Autonomous Planner & Digital Buddy Engine</title>
+  <link rel="stylesheet" href="/app.css" />
+  <style>
+    .step-badge { display: inline-block; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #000; text-align: center; font-weight: bold; line-height: 22px; margin-right: 8px; font-size: 0.85rem; }
+    .step-item { background: rgba(0,0,0,0.25); border-left: 3px solid var(--accent); padding: 12px; margin: 8px 0; border-radius: 4px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="nav-links">
+      <a href="/index.html" class="logo">⚡ K.I.T.T. Local</a>
+      <a href="/agents.html" class="nav-link">Agents</a>
+      <a href="/artanis.html" class="nav-link active">Artanis Planner</a>
+      <a href="/mi_settings.html" class="nav-link">MI & Memory Hub</a>
+      <a href="/prompt_builder.html" class="nav-link">Prompt Builder</a>
+      <a href="/game.html" class="nav-link">Free Monkeys GO!</a>
+    </div>
+  </header>
+
+  <main class="page">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <div>
+        <h1>Artanis — Autonomous Planner & Digital Buddy Engine</h1>
+        <p class="text-muted">Multi-agent goal decomposition, approval-gated delegation, and digital buddy persona extraction.</p>
+      </div>
+      <div>
+        <span class="badge badge-ok" id="artanisStatusBadge">Role: Planner & Buddy Modeler</span>
+      </div>
+    </div>
+
+    <!-- Agent Lifecycle & Capabilities Header -->
+    <section class="card" style="margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <h3>Agent Status: <span id="agentStatusText" style="color: var(--accent);">running</span></h3>
+          <p class="text-muted" style="margin: 4px 0; font-size: 0.85rem;">
+            Heritage: Persona modeler & autonomous task planner integrated with K.I.T.T. controller.
+          </p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button id="startAgentBtn" class="btn btn-primary">Start Agent</button>
+          <button id="stopAgentBtn" class="btn btn-secondary">Stop Agent</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Goal Decomposition Section -->
+    <section class="card" style="margin-bottom: 24px;">
+      <h2>🎯 Autonomous Plan Decomposition</h2>
+      <p class="text-muted" style="font-size: 0.9rem;">
+        Enter a complex user objective. Artanis decomposes it into structured steps assigned across specialized agents (Listener, Observer, KITT, Talker). Sensitive actions require approval before execution.
+      </p>
+
+      <div style="margin: 12px 0; display: flex; gap: 8px;">
+        <input id="goalInput" placeholder="e.g. 'Perform local system diagnostic, scan filesystem, and speak report'..." style="flex: 1;" />
+        <button id="decomposeBtn" class="btn btn-primary">Decompose Goal</button>
+      </div>
+
+      <div id="activePlanBox" style="margin-top: 16px; display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 id="planTitle">Generated Execution Plan</h3>
+          <button id="submitPlanBtn" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">
+            Submit All Steps to K.I.T.T. Approval Gate
+          </button>
+        </div>
+        <div id="planStepsList" style="margin-top: 10px;"></div>
+      </div>
+    </section>
+
+    <div class="grid-2">
+      <!-- Digital Buddy Persona Modeler -->
+      <section class="card">
+        <h2>🧬 Digital Buddy Persona Extractor</h2>
+        <p class="text-muted" style="font-size: 0.85rem;">
+          Synthesize digital persona models from text and dialogue. Formulates traits, tone, and training recipes.
+        </p>
+
+        <label>Persona / Buddy Name
+          <input id="personaName" placeholder="e.g. Frankenstein Buddy, Tactical Copilot" />
+        </label>
+
+        <label>Role & Description
+          <input id="personaRole" placeholder="e.g. Autonomous companion for local diagnostics" />
+        </label>
+
+        <label>Traits (Comma-separated)
+          <input id="personaTraits" value="analytical, resilient, protective, humorous" />
+        </label>
+
+        <label>Style
+          <input id="personaStyle" value="mentor-buddy" />
+        </label>
+
+        <button id="savePersonaBtn" class="btn btn-primary" style="margin-top: 10px;">Synthesize & Save Buddy</button>
+
+        <h4 style="margin-top: 16px;">Registered Buddy Personas</h4>
+        <div id="personasContainer" style="max-height: 220px; overflow-y: auto;">Loading personas...</div>
+      </section>
+
+      <!-- History of Decomposed Plans -->
+      <section class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2>📋 Stored Execution Plans</h2>
+          <button id="refreshPlansBtn" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.8rem;">Refresh</button>
+        </div>
+        <div id="plansHistory" style="max-height: 380px; overflow-y: auto; margin-top: 10px;">Loading plan history...</div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    let currentPlan = null;
+
+    async function loadStatus() {
+      try {
+        const res = await fetch('/api/artanis/status');
+        const data = await res.json();
+        document.getElementById('artanisStatusBadge').textContent = `Role: ${data.role} (${data.status})`;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function loadPersonas() {
+      const container = document.getElementById('personasContainer');
+      try {
+        const res = await fetch('/api/artanis/personas');
+        const list = await res.json();
+        if (!list || list.length === 0) {
+          container.innerHTML = '<p class="text-muted">No personas registered yet.</p>';
+          return;
+        }
+        container.innerHTML = list.map(p => `
+          <div style="border-bottom: 1px solid var(--border); padding: 8px 0;">
+            <strong>${p.name}</strong> <span class="badge badge-ok" style="font-size:0.7em;">${p.style || 'buddy'}</span>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">${p.role || ''}</div>
+            <div style="font-size: 0.75rem; margin-top: 2px;">Traits: ${Array.isArray(p.traits) ? p.traits.join(', ') : p.traits}</div>
+          </div>
+        `).join('');
+      } catch (e) {
+        container.textContent = 'Error loading personas: ' + e.message;
+      }
+    }
+
+    async function savePersona() {
+      const name = document.getElementById('personaName').value.trim();
+      const role = document.getElementById('personaRole').value.trim();
+      const traits = document.getElementById('personaTraits').value.split(',').map(t => t.trim()).filter(Boolean);
+      const style = document.getElementById('personaStyle').value.trim();
+
+      if (!name) {
+        alert('Please provide a persona name.');
+        return;
+      }
+
+      const res = await fetch('/api/artanis/personas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, role, traits, style })
+      });
+      if (res.ok) {
+        document.getElementById('personaName').value = '';
+        document.getElementById('personaRole').value = '';
+        await loadPersonas();
+      }
+    }
+
+    async function decompose() {
+      const goal = document.getElementById('goalInput').value.trim();
+      if (!goal) return;
+
+      const res = await fetch('/api/artanis/plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ goal })
+      });
+      const data = await res.json();
+      currentPlan = data.plan;
+      renderActivePlan(currentPlan);
+      await loadPlansHistory();
+    }
+
+    function renderActivePlan(plan) {
+      const box = document.getElementById('activePlanBox');
+      const title = document.getElementById('planTitle');
+      const stepsDiv = document.getElementById('planStepsList');
+
+      title.innerHTML = `Plan: "${plan.goal}" (${plan.stepCount} Steps, Requires Approval: <strong>${plan.requiresApproval ? 'YES' : 'NO'}</strong>)`;
+      box.style.display = 'block';
+
+      stepsDiv.innerHTML = plan.steps.map(s => `
+        <div class="step-item">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <span class="step-badge">${s.step}</span>
+              <strong>${s.title}</strong>
+            </div>
+            <div>
+              <span class="badge badge-ok">${s.agentId}</span>
+              <span class="badge ${s.requiresApproval ? 'badge-warn' : 'badge-ok'}">${s.capability}</span>
+            </div>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; margin-left: 30px;">
+            Params: <code>${JSON.stringify(s.params)}</code> | Approval Required: ${s.requiresApproval ? 'Yes' : 'No'}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function submitPlan() {
+      if (!currentPlan) return;
+      const res = await fetch(`/api/artanis/plans/${currentPlan.planId}/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ actor: 'chief' })
+      });
+      const d = await res.json();
+      alert(`Submitted ${d.result.tasksGenerated} steps to K.I.T.T. task and approval runner! Check Agents Dashboard for pending approval items.`);
+      await loadPlansHistory();
+    }
+
+    async function loadPlansHistory() {
+      const hist = document.getElementById('plansHistory');
+      try {
+        const res = await fetch('/api/artanis/plans');
+        const plans = await res.json();
+        if (!plans || plans.length === 0) {
+          hist.innerHTML = '<p class="text-muted">No plans generated yet.</p>';
+          return;
+        }
+        hist.innerHTML = plans.map(p => `
+          <div style="border-bottom: 1px solid var(--border); padding: 8px 0;">
+            <div style="display:flex; justify-content:space-between;">
+              <strong>${p.goal}</strong>
+              <span class="badge ${p.status === 'submitted' ? 'badge-ok' : 'badge-warn'}">${p.status}</span>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">
+              Steps: ${p.stepCount} | Approval Needed: ${p.requiresApproval ? 'Yes' : 'No'} | ${new Date(p.createdAt).toLocaleTimeString()}
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        hist.textContent = 'Error loading plans: ' + e.message;
+      }
+    }
+
+    // Lifecycle
+    document.getElementById('startAgentBtn').addEventListener('click', async () => {
+      await fetch('/api/agents/artanis/start', { method: 'POST' });
+      document.getElementById('agentStatusText').textContent = 'running';
+      document.getElementById('agentStatusText').style.color = '#00c853';
+    });
+    document.getElementById('stopAgentBtn').addEventListener('click', async () => {
+      await fetch('/api/agents/artanis/stop', { method: 'POST' });
+      document.getElementById('agentStatusText').textContent = 'stopped';
+      document.getElementById('agentStatusText').style.color = '#d50000';
+    });
+
+    document.getElementById('decomposeBtn').addEventListener('click', decompose);
+    document.getElementById('submitPlanBtn').addEventListener('click', submitPlan);
+    document.getElementById('savePersonaBtn').addEventListener('click', savePersona);
+    document.getElementById('refreshPlansBtn').addEventListener('click', loadPlansHistory);
+
+    loadStatus();
+    loadPersonas();
+    loadPlansHistory();
+  </script>
+</body>
+</html>

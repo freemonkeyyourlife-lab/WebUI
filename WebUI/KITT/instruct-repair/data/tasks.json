@@ -1,5 +1,145 @@
 [
   {
+    "id": "req-1791853377705-a3cc79",
+    "title": "[Artanis Plan: Perform network scan and speak summary] Step 4: Emit local speech completion notification",
+    "sourceType": "artanis_plan",
+    "agentId": "talker",
+    "command": "speak_local",
+    "capability": "speak_local",
+    "params": {
+      "text": "Plan execution prepared: Perform network scan and speak summ"
+    },
+    "text": "Plan Step 4: Emit local speech completion notification",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:02:57.705Z",
+    "plan": {
+      "taskId": "req-1791853377705-a3cc79",
+      "category": "agent_execution",
+      "module": "Agent: talker",
+      "risk": "low",
+      "requestedCapability": "speak_local",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791853377705-d3d9c7",
+    "title": "[Artanis Plan: Perform network scan and speak summary] Step 3: Synchronize agent execution state",
+    "sourceType": "artanis_plan",
+    "agentId": "kitt",
+    "command": "orchestrate_agents",
+    "capability": "orchestrate_agents",
+    "params": {
+      "goal": "Perform network scan and speak summary"
+    },
+    "text": "Plan Step 3: Synchronize agent execution state",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:02:57.705Z",
+    "plan": {
+      "taskId": "req-1791853377705-d3d9c7",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "low",
+      "requestedCapability": "orchestrate_agents",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791853377704-ef878f",
+    "title": "[Artanis Plan: Perform network scan and speak summary] Step 2: Inspect local environment boundary and files",
+    "sourceType": "artanis_plan",
+    "agentId": "observer",
+    "command": "network_scan",
+    "capability": "network_scan",
+    "params": {
+      "path": "."
+    },
+    "text": "Plan Step 2: Inspect local environment boundary and files",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:02:57.704Z",
+    "plan": {
+      "taskId": "req-1791853377704-ef878f",
+      "category": "agent_execution",
+      "module": "Agent: observer",
+      "risk": "low",
+      "requestedCapability": "network_scan",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791853377704-b67823",
+    "title": "[Artanis Plan: Perform network scan and speak summary] Step 1: Analyze and parse instruction syntax",
+    "sourceType": "artanis_plan",
+    "agentId": "listener",
+    "command": "parse_instructions",
+    "capability": "parse_instructions",
+    "params": {
+      "text": "Perform network scan and speak summary"
+    },
+    "text": "Plan Step 1: Analyze and parse instruction syntax",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:02:57.704Z",
+    "plan": {
+      "taskId": "req-1791853377704-b67823",
+      "category": "agent_execution",
+      "module": "Agent: listener",
+      "risk": "low",
+      "requestedCapability": "parse_instructions",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
     "id": "req-1791853168807-e7e956",
     "title": "Voice Model Training Approval: Chief Voice",
     "sourceType": "voice_training",
