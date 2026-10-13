@@ -1,0 +1,15 @@
+{
+  "name": "kitt-instruct-repair",
+  "version": "1.0.0",
+  "description": "K.I.T.T. Instruct & Repair Service with local agent orchestration, MI profile, voice workflow and game engine",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --check server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "multer": "^2.4.0"
+  }
+}
