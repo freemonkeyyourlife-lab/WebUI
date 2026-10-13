@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 const router = express.Router();
+const requestLimit = require('./request_limit');
 const KITT_DIR = path.join(__dirname, '..', '..');
 const USERS_DIR = path.join(KITT_DIR, 'mi', 'users');
 const MEMORY_DIR = path.join(KITT_DIR, 'mi', 'memory');
@@ -21,12 +22,20 @@ function validUser(userId) {
   return /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(userId);
 }
 
+function localUserFile(directory, userId, suffix = '.json') {
+  if (!validUser(userId)) throw new Error('Invalid user ID');
+  const root = path.resolve(directory);
+  const file = path.resolve(root, `${userId}${suffix}`);
+  if (!file.startsWith(`${root}${path.sep}`)) throw new Error('Invalid local path');
+  return file;
+}
+
 function profilePath(userId) {
-  return path.join(USERS_DIR, `${userId}.json`);
+  return localUserFile(USERS_DIR, userId);
 }
 
 function memoryPath(userId) {
-  return path.join(MEMORY_DIR, `${userId}.json`);
+  return localUserFile(MEMORY_DIR, userId);
 }
 
 function defaultProfile(userId) {
@@ -94,6 +103,7 @@ function validUserRequest(req, res, next) {
   next();
 }
 
+router.use(requestLimit);
 router.use('/:user', validUserRequest);
 
 router.get('/:user/profile', (req, res) => {
@@ -196,7 +206,7 @@ router.post('/:user/speak', (req, res) => {
   }
   const entry = { text: text.trim(), status: 'approval_required', createdAt: new Date().toISOString() };
   try {
-    fs.appendFileSync(path.join(TRANSCRIPTS_DIR, `${req.params.user}.jsonl`), `${JSON.stringify(entry)}\n`);
+    fs.appendFileSync(localUserFile(TRANSCRIPTS_DIR, req.params.user, '.jsonl'), `${JSON.stringify(entry)}\n`);
     appendAudit(req.params.user, 'speak_request', { status: entry.status });
     res.status(202).json({ ok: true, request: entry, externalAIUsed: false });
   } catch (error) {
@@ -208,7 +218,7 @@ router.post('/:user/export', (req, res) => {
   try {
     const profile = readProfile(req.params.user);
     if (!profile) return res.status(404).json({ error: 'profile not found' });
-    const file = path.join(REGISTRY_OUT_DIR, `${req.params.user}-profile-${Date.now()}.json`);
+    const file = localUserFile(REGISTRY_OUT_DIR, req.params.user, `-profile-${Date.now()}.json`);
     fs.writeFileSync(file, JSON.stringify({ exportedAt: new Date().toISOString(), profile }, null, 2));
     appendAudit(req.params.user, 'export_profile', { file: path.basename(file) });
     res.json({ ok: true, path: file });

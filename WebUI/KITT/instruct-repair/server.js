@@ -236,14 +236,6 @@ app.post('/api/voice/register', (req, res) => {
   res.status(201).json({ voice: entry, job });
 });
 
-app.get('*', (req, res) => {
-  const pages = ['/file_upload.html', '/mi_settings.html', '/prompt_builder.html'];
-  if (pages.includes(req.path)) {
-    return res.sendFile(path.join(__dirname, 'public', req.path.slice(1)));
-  }
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 app.listen(PORT, HOST, () => {
   console.log(`K.I.T.T. Instruct & Repair Service running on http://${HOST}:${PORT}`);
 });

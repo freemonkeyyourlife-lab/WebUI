@@ -3,7 +3,10 @@ const fs = require('fs');
 const path = require('path');
 
 const router = express.Router();
+const requestLimit = require('./request_limit');
 const CATALOG_FILE = path.join(__dirname, '..', '..', 'prompts', 'catalog.json');
+
+router.use(requestLimit);
 
 router.get('/', (req, res) => {
   try {
