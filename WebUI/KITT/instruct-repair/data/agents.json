@@ -1,0 +1,650 @@
+[
+  {
+    "id": "kitt",
+    "label": "K.I.T.T.",
+    "role": "controller",
+    "status": "stopped",
+    "lastSeen": "2026-10-13T01:20:36.309Z",
+    "pid": null,
+    "capabilities": [
+      {
+        "name": "orchestrate_agents",
+        "label": "Orchestrate Agents",
+        "description": "Coordinates tasks and routing across all local agents",
+        "requiresApproval": false
+      },
+      {
+        "name": "system_status",
+        "label": "System Status",
+        "description": "Inspects CPU, memory, uptime, and local service health",
+        "requiresApproval": false
+      },
+      {
+        "name": "execute_system_command",
+        "label": "Execute System Command",
+        "description": "Executes sensitive system diagnostic and maintenance commands",
+        "requiresApproval": true
+      },
+      {
+        "name": "config_override",
+        "label": "Configuration Override",
+        "description": "Modifies core system parameters and security limits",
+        "requiresApproval": true
+      }
+    ],
+    "history": [
+      {
+        "id": "cmd-1791854436347",
+        "command": null,
+        "capability": "config_override",
+        "params": {
+          "key": "test"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "config_override",
+          "executedAt": "2026-10-13T01:20:36.347Z",
+          "summary": "Configuration override applied",
+          "updatedKeys": [],
+          "overrideTimestamp": "2026-10-13T01:20:36.347Z"
+        },
+        "requestId": "req-1791854436321-fbf0d1",
+        "timestamp": "2026-10-13T01:20:36.347Z"
+      },
+      {
+        "id": "cmd-1791854436310-7751",
+        "command": "execute_system_command",
+        "capability": "execute_system_command",
+        "params": {
+          "command": "whoami"
+        },
+        "status": "pending_approval",
+        "requestId": "req-1791854436309-efe282",
+        "timestamp": "2026-10-13T01:20:36.310Z"
+      },
+      {
+        "id": "cmd-1791854436304-8809",
+        "command": "orchestrate_agents",
+        "capability": "orchestrate_agents",
+        "params": {
+          "goal": "test"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "orchestrate_agents",
+          "executedAt": "2026-10-13T01:20:36.304Z",
+          "summary": "Orchestration status synchronized",
+          "activeAgents": [
+            "kitt",
+            "observer",
+            "listener",
+            "talker",
+            "artanis"
+          ],
+          "mode": "local-first",
+          "target": "all",
+          "coordinationTimestamp": "2026-10-13T01:20:36.304Z"
+        },
+        "timestamp": "2026-10-13T01:20:36.304Z"
+      },
+      {
+        "id": "cmd-1791854286325",
+        "command": null,
+        "capability": "config_override",
+        "params": {
+          "key": "test"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "config_override",
+          "executedAt": "2026-10-13T01:18:06.324Z",
+          "summary": "Configuration override applied",
+          "updatedKeys": [],
+          "overrideTimestamp": "2026-10-13T01:18:06.324Z"
+        },
+        "requestId": "req-1791854286300-bcedca",
+        "timestamp": "2026-10-13T01:18:06.324Z"
+      },
+      {
+        "id": "cmd-1791854286288-a72c",
+        "command": "execute_system_command",
+        "capability": "execute_system_command",
+        "params": {
+          "command": "whoami"
+        },
+        "status": "pending_approval",
+        "requestId": "req-1791854286288-b3478c",
+        "timestamp": "2026-10-13T01:18:06.288Z"
+      },
+      {
+        "id": "cmd-1791854286283-fd7e",
+        "command": "orchestrate_agents",
+        "capability": "orchestrate_agents",
+        "params": {
+          "goal": "test"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "orchestrate_agents",
+          "executedAt": "2026-10-13T01:18:06.283Z",
+          "summary": "Orchestration status synchronized",
+          "activeAgents": [
+            "kitt",
+            "observer",
+            "listener",
+            "talker",
+            "artanis"
+          ],
+          "mode": "local-first",
+          "target": "all",
+          "coordinationTimestamp": "2026-10-13T01:18:06.282Z"
+        },
+        "timestamp": "2026-10-13T01:18:06.283Z"
+      },
+      {
+        "id": "cmd-1791854257888",
+        "command": null,
+        "capability": "config_override",
+        "params": {
+          "key": "test"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "config_override",
+          "executedAt": "2026-10-13T01:17:37.888Z",
+          "summary": "Configuration override applied",
+          "updatedKeys": [],
+          "overrideTimestamp": "2026-10-13T01:17:37.888Z"
+        },
+        "requestId": "req-1791854257863-a307c0",
+        "timestamp": "2026-10-13T01:17:37.888Z"
+      },
+      {
+        "id": "cmd-1791854257852-994a",
+        "command": "execute_system_command",
+        "capability": "execute_system_command",
+        "params": {
+          "command": "whoami"
+        },
+        "status": "pending_approval",
+        "requestId": "req-1791854257851-8f91fb",
+        "timestamp": "2026-10-13T01:17:37.852Z"
+      },
+      {
+        "id": "cmd-1791854257846-2029",
+        "command": "orchestrate_agents",
+        "capability": "orchestrate_agents",
+        "params": {
+          "goal": "test"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "orchestrate_agents",
+          "executedAt": "2026-10-13T01:17:37.846Z",
+          "summary": "Orchestration status synchronized",
+          "activeAgents": [
+            "kitt",
+            "observer",
+            "listener",
+            "talker",
+            "artanis"
+          ],
+          "mode": "local-first",
+          "target": "all",
+          "coordinationTimestamp": "2026-10-13T01:17:37.846Z"
+        },
+        "timestamp": "2026-10-13T01:17:37.846Z"
+      },
+      {
+        "id": "cmd-1791854228657",
+        "command": null,
+        "capability": "config_override",
+        "params": {
+          "key": "test"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "config_override",
+          "executedAt": "2026-10-13T01:17:08.657Z",
+          "summary": "Configuration override applied",
+          "updatedKeys": [],
+          "overrideTimestamp": "2026-10-13T01:17:08.657Z"
+        },
+        "requestId": "req-1791854228632-b62056",
+        "timestamp": "2026-10-13T01:17:08.657Z"
+      },
+      {
+        "id": "cmd-1791854228621-c869",
+        "command": "execute_system_command",
+        "capability": "execute_system_command",
+        "params": {
+          "command": "whoami"
+        },
+        "status": "pending_approval",
+        "requestId": "req-1791854228620-79eec7",
+        "timestamp": "2026-10-13T01:17:08.621Z"
+      },
+      {
+        "id": "cmd-1791854228615-70bf",
+        "command": "orchestrate_agents",
+        "capability": "orchestrate_agents",
+        "params": {
+          "goal": "test"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "orchestrate_agents",
+          "executedAt": "2026-10-13T01:17:08.615Z",
+          "summary": "Orchestration status synchronized",
+          "activeAgents": [
+            "kitt",
+            "observer",
+            "listener",
+            "talker",
+            "artanis"
+          ],
+          "mode": "local-first",
+          "target": "all",
+          "coordinationTimestamp": "2026-10-13T01:17:08.615Z"
+        },
+        "timestamp": "2026-10-13T01:17:08.615Z"
+      },
+      {
+        "id": "cmd-1791854190507",
+        "command": null,
+        "capability": "config_override",
+        "params": {
+          "key": "test"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "config_override",
+          "executedAt": "2026-10-13T01:16:30.507Z",
+          "summary": "Configuration override applied",
+          "updatedKeys": [],
+          "overrideTimestamp": "2026-10-13T01:16:30.507Z"
+        },
+        "requestId": "req-1791854190483-a6063b",
+        "timestamp": "2026-10-13T01:16:30.507Z"
+      },
+      {
+        "id": "cmd-1791854190471-d38d",
+        "command": "execute_system_command",
+        "capability": "execute_system_command",
+        "params": {
+          "command": "whoami"
+        },
+        "status": "pending_approval",
+        "requestId": "req-1791854190471-4e1e7d",
+        "timestamp": "2026-10-13T01:16:30.471Z"
+      },
+      {
+        "id": "cmd-1791854190466-c043",
+        "command": "orchestrate_agents",
+        "capability": "orchestrate_agents",
+        "params": {
+          "goal": "test"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "orchestrate_agents",
+          "executedAt": "2026-10-13T01:16:30.466Z",
+          "summary": "Orchestration status synchronized",
+          "activeAgents": [
+            "kitt",
+            "observer",
+            "listener",
+            "talker",
+            "artanis"
+          ],
+          "mode": "local-first",
+          "target": "all",
+          "coordinationTimestamp": "2026-10-13T01:16:30.466Z"
+        },
+        "timestamp": "2026-10-13T01:16:30.466Z"
+      },
+      {
+        "id": "cmd-1791854156660",
+        "command": null,
+        "capability": "config_override",
+        "params": {
+          "key": "test"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "config_override",
+          "executedAt": "2026-10-13T01:15:56.660Z",
+          "summary": "Configuration override applied",
+          "updatedKeys": [],
+          "overrideTimestamp": "2026-10-13T01:15:56.660Z"
+        },
+        "requestId": "req-1791854156635-a00cb3",
+        "timestamp": "2026-10-13T01:15:56.660Z"
+      },
+      {
+        "id": "cmd-1791854156623-230c",
+        "command": "execute_system_command",
+        "capability": "execute_system_command",
+        "params": {
+          "command": "whoami"
+        },
+        "status": "pending_approval",
+        "requestId": "req-1791854156623-23d410",
+        "timestamp": "2026-10-13T01:15:56.623Z"
+      },
+      {
+        "id": "cmd-1791854156618-d7a4",
+        "command": "orchestrate_agents",
+        "capability": "orchestrate_agents",
+        "params": {
+          "goal": "test"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "orchestrate_agents",
+          "executedAt": "2026-10-13T01:15:56.618Z",
+          "summary": "Orchestration status synchronized",
+          "activeAgents": [
+            "kitt",
+            "observer",
+            "listener",
+            "talker",
+            "artanis"
+          ],
+          "mode": "local-first",
+          "target": "all",
+          "coordinationTimestamp": "2026-10-13T01:15:56.618Z"
+        },
+        "timestamp": "2026-10-13T01:15:56.618Z"
+      },
+      {
+        "id": "cmd-1791854114930-57be",
+        "command": "execute_system_command",
+        "capability": "execute_system_command",
+        "params": {
+          "command": "whoami"
+        },
+        "status": "pending_approval",
+        "requestId": "req-1791854114930-44d859",
+        "timestamp": "2026-10-13T01:15:14.930Z"
+      },
+      {
+        "id": "cmd-1791854114925-3b57",
+        "command": "orchestrate_agents",
+        "capability": "orchestrate_agents",
+        "params": {
+          "goal": "test"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "orchestrate_agents",
+          "executedAt": "2026-10-13T01:15:14.925Z",
+          "summary": "Orchestration status synchronized",
+          "activeAgents": [
+            "kitt",
+            "observer",
+            "listener",
+            "talker",
+            "artanis"
+          ],
+          "mode": "local-first",
+          "target": "all",
+          "coordinationTimestamp": "2026-10-13T01:15:14.925Z"
+        },
+        "timestamp": "2026-10-13T01:15:14.925Z"
+      },
+      {
+        "id": "cmd-1791854046664-8bb9",
+        "command": "system_status",
+        "capability": "system_status",
+        "params": {
+          "command": "whoami"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "system_status",
+          "executedAt": "2026-10-13T01:14:06.664Z",
+          "summary": "Local host health report",
+          "platform": "linux",
+          "release": "6.17.0-1022-azure",
+          "uptimeSeconds": 1,
+          "nodeVersion": "v24.21.0",
+          "memoryMb": {
+            "total": 15990,
+            "free": 13815,
+            "processHeapUsed": 11
+          },
+          "loopbackOnly": true
+        },
+        "timestamp": "2026-10-13T01:14:06.664Z"
+      },
+      {
+        "id": "cmd-1791854038472-d85e",
+        "command": "system_status",
+        "capability": "system_status",
+        "params": {
+          "command": "whoami"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "system_status",
+          "executedAt": "2026-10-13T01:13:58.472Z",
+          "summary": "Local host health report",
+          "platform": "linux",
+          "release": "6.17.0-1022-azure",
+          "uptimeSeconds": 1,
+          "nodeVersion": "v24.21.0",
+          "memoryMb": {
+            "total": 15990,
+            "free": 13820,
+            "processHeapUsed": 12
+          },
+          "loopbackOnly": true
+        },
+        "timestamp": "2026-10-13T01:13:58.472Z"
+      },
+      {
+        "id": "cmd-1791854038466-e205",
+        "command": "system_status",
+        "capability": "orchestrate_agents",
+        "params": {
+          "goal": "test"
+        },
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "orchestrate_agents",
+          "executedAt": "2026-10-13T01:13:58.466Z",
+          "summary": "Orchestration status synchronized",
+          "activeAgents": [
+            "kitt",
+            "observer",
+            "listener",
+            "talker",
+            "artanis"
+          ],
+          "mode": "local-first",
+          "target": "all",
+          "coordinationTimestamp": "2026-10-13T01:13:58.466Z"
+        },
+        "timestamp": "2026-10-13T01:13:58.466Z"
+      },
+      {
+        "id": "cmd-1791852722989-2a11",
+        "command": "execute_system_command",
+        "capability": "execute_system_command",
+        "params": {
+          "command": "status"
+        },
+        "status": "executed",
+        "requestId": "req-1791852722989-967174",
+        "timestamp": "2026-10-13T00:52:02.989Z",
+        "result": {
+          "agentId": "kitt",
+          "capability": "execute_system_command",
+          "executedAt": "2026-10-13T00:52:09.231Z",
+          "summary": "System command 'status' executed after explicit approval",
+          "command": "status",
+          "result": "Safe execution confirmed for status",
+          "completedAt": "2026-10-13T00:52:09.231Z"
+        },
+        "executedAt": "2026-10-13T00:52:09.231Z"
+      },
+      {
+        "id": "cmd-1791852722984-4702",
+        "command": "orchestrate_agents",
+        "capability": "orchestrate_agents",
+        "params": {},
+        "status": "executed",
+        "result": {
+          "agentId": "kitt",
+          "capability": "orchestrate_agents",
+          "executedAt": "2026-10-13T00:52:02.984Z",
+          "summary": "Orchestration status synchronized",
+          "activeAgents": [
+            "kitt",
+            "observer",
+            "listener",
+            "talker",
+            "artanis"
+          ],
+          "mode": "local-first",
+          "target": "all",
+          "coordinationTimestamp": "2026-10-13T00:52:02.983Z"
+        },
+        "timestamp": "2026-10-13T00:52:02.984Z"
+      }
+    ]
+  },
+  {
+    "id": "observer",
+    "label": "Observer",
+    "role": "observer",
+    "status": "stopped",
+    "lastSeen": null,
+    "pid": null,
+    "capabilities": [
+      {
+        "name": "monitor_filesystem",
+        "label": "Monitor Filesystem",
+        "description": "Monitors file changes in the local storage and MI directory",
+        "requiresApproval": false
+      },
+      {
+        "name": "inspect_environment",
+        "label": "Inspect Environment",
+        "description": "Reports local node environment and hardware architecture",
+        "requiresApproval": false
+      },
+      {
+        "name": "network_scan",
+        "label": "Network Scan",
+        "description": "Inspects loopback network bindings and port listeners",
+        "requiresApproval": true
+      }
+    ],
+    "history": []
+  },
+  {
+    "id": "listener",
+    "label": "Listener",
+    "role": "listener",
+    "status": "stopped",
+    "lastSeen": null,
+    "pid": null,
+    "capabilities": [
+      {
+        "name": "parse_instructions",
+        "label": "Parse Instructions",
+        "description": "Parses incoming user instructions and extracts intent",
+        "requiresApproval": false
+      },
+      {
+        "name": "transcribe_audio",
+        "label": "Transcribe Audio",
+        "description": "Ingests local audio samples and produces text transcripts",
+        "requiresApproval": false
+      },
+      {
+        "name": "ingest_external_stream",
+        "label": "Ingest External Stream",
+        "description": "Captures and processes live loopback or authorized audio input streams",
+        "requiresApproval": true
+      }
+    ],
+    "history": []
+  },
+  {
+    "id": "talker",
+    "label": "Talker",
+    "role": "talker",
+    "status": "stopped",
+    "lastSeen": null,
+    "pid": null,
+    "capabilities": [
+      {
+        "name": "speak_local",
+        "label": "Speak Local",
+        "description": "Plays synthesized speech through local audio output",
+        "requiresApproval": false
+      },
+      {
+        "name": "relay_message",
+        "label": "Relay Message",
+        "description": "Relays textual status messages to active UI subscribers",
+        "requiresApproval": false
+      },
+      {
+        "name": "broadcast_remote",
+        "label": "Broadcast Remote",
+        "description": "Transmits speech notifications across authorized network relays",
+        "requiresApproval": true
+      }
+    ],
+    "history": []
+  },
+  {
+    "id": "artanis",
+    "label": "Artanis",
+    "role": "planner",
+    "status": "registered",
+    "lastSeen": null,
+    "pid": null,
+    "capabilities": [
+      {
+        "name": "plan_decomposition",
+        "label": "Plan Decomposition",
+        "description": "Decomposes complex human instructions into structured agent task plans",
+        "requiresApproval": false
+      },
+      {
+        "name": "persona_extractor",
+        "label": "Persona Extractor",
+        "description": "Extracts personality traits and builds buddy models locally",
+        "requiresApproval": true
+      },
+      {
+        "name": "model_trainer",
+        "label": "Model Trainer",
+        "description": "Trains and refines local buddy and assistant models",
+        "requiresApproval": true
+      }
+    ],
+    "history": []
+  }
+]

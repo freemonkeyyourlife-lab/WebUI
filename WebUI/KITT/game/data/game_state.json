@@ -1,0 +1,361 @@
+{
+  "player": {
+    "id": "player-chief",
+    "username": "Chief Monkey",
+    "level": 2,
+    "levelTitle": "Urban Branch Climber",
+    "xp": 200,
+    "coins": 195,
+    "selectedMonkey": "go",
+    "inventory": [
+      {
+        "id": "item-scout-whistle",
+        "name": "Brass Scout Whistle",
+        "type": "gear",
+        "quantity": 1
+      },
+      {
+        "id": "item-banana-snack",
+        "name": "Golden Energy Banana",
+        "type": "consumable",
+        "quantity": 3
+      }
+    ],
+    "highFivesGiven": 0,
+    "highFivesReceived": 1
+  },
+  "rewards": {
+    "lastRewardTick": 1791853749505,
+    "tickIntervalMs": 900000,
+    "lastReturnDate": "2026-10-13",
+    "returnStreak": 1
+  },
+  "privacy": {
+    "notificationsEnabled": false,
+    "notificationFrequency": "hourly",
+    "proactiveMuted": false,
+    "ghostMode": true,
+    "mockAnchor": {
+      "lat": 48.1375,
+      "lon": 11.5756,
+      "name": "Monkey Central Market"
+    },
+    "localOnly": true,
+    "sharingLevel": "none"
+  },
+  "missions": {
+    "active": null,
+    "available": [
+      {
+        "id": "mis-1791853757279-qbhx",
+        "type": "trivia",
+        "title": "Useless Knowledge Trivia",
+        "description": "Couchmonkey challenges your neural cortex with an obscure factoid! Select the correct answer.",
+        "durationSec": 90,
+        "difficulty": "medium",
+        "reward": {
+          "xp": 60,
+          "coins": 30
+        },
+        "assignedMonkey": "couchmonkey",
+        "monkeyAvatar": "🛋️🐵",
+        "monkeyComment": "Sip your coffee, analyze the problem, then strike calmly.",
+        "targetPoi": {
+          "id": "poi-rooftop-antenna",
+          "title": "Skyline Telemetry Tower",
+          "category": "monument",
+          "coordinates": [
+            11.572,
+            48.14
+          ]
+        },
+        "triviaData": {
+          "question": "How many muscles do domestic cats have in each ear?",
+          "options": [
+            "12",
+            "6",
+            "32",
+            "54"
+          ],
+          "answer": "32",
+          "funFact": "Cats can rotate each ear independently up to 180 degrees using 32 muscles!"
+        },
+        "status": "available",
+        "createdAt": "2026-10-13T01:09:17.279Z",
+        "acceptedAt": null,
+        "expiresAt": null,
+        "completedAt": null
+      },
+      {
+        "id": "mis-1791853749516-9ao7",
+        "type": "trivia",
+        "title": "Useless Knowledge Trivia",
+        "description": "Couchmonkey challenges your neural cortex with an obscure factoid! Select the correct answer.",
+        "durationSec": 90,
+        "difficulty": "medium",
+        "reward": {
+          "xp": 60,
+          "coins": 30
+        },
+        "assignedMonkey": "couchmonkey",
+        "monkeyAvatar": "🛋️🐵",
+        "monkeyComment": "No rush. Mind over muscle. Read the fine print first.",
+        "targetPoi": {
+          "id": "poi-sun-park",
+          "title": "Sunbeam Monkey Park",
+          "category": "park",
+          "coordinates": [
+            11.589,
+            48.145
+          ]
+        },
+        "triviaData": {
+          "question": "Which animal holds hands while sleeping so they do not drift apart in the current?",
+          "options": [
+            "Dolphins",
+            "Beavers",
+            "Sea Otters",
+            "Penguins"
+          ],
+          "answer": "Sea Otters",
+          "funFact": "Sea otters wrap themselves in kelp and hold paws to stay together while dozing!"
+        },
+        "status": "available",
+        "createdAt": "2026-10-13T01:09:09.516Z",
+        "acceptedAt": null,
+        "expiresAt": null,
+        "completedAt": null
+      },
+      {
+        "id": "mis-1791853749505-y6qc",
+        "type": "search",
+        "title": "Architectural Detail Scan",
+        "description": "Locate any circular clock face, gauge, or dial within visible range.",
+        "durationSec": 180,
+        "difficulty": "medium",
+        "reward": {
+          "xp": 60,
+          "coins": 25
+        },
+        "assignedMonkey": "go",
+        "monkeyAvatar": "🐒⚡",
+        "monkeyComment": "Full speed ahead! Nothing can slow us down!",
+        "targetPoi": {
+          "id": "poi-sun-park",
+          "title": "Sunbeam Monkey Park",
+          "category": "park",
+          "coordinates": [
+            11.589,
+            48.145
+          ]
+        },
+        "triviaData": null,
+        "status": "available",
+        "createdAt": "2026-10-13T01:09:09.505Z",
+        "acceptedAt": null,
+        "expiresAt": null,
+        "completedAt": null
+      },
+      {
+        "id": "mis-1791853749505-e3vq",
+        "type": "trivia",
+        "title": "Useless Knowledge Trivia",
+        "description": "Couchmonkey challenges your neural cortex with an obscure factoid! Select the correct answer.",
+        "durationSec": 90,
+        "difficulty": "medium",
+        "reward": {
+          "xp": 60,
+          "coins": 30
+        },
+        "assignedMonkey": "couchmonkey",
+        "monkeyAvatar": "🛋️🐵",
+        "monkeyComment": "No rush. Mind over muscle. Read the fine print first.",
+        "targetPoi": {
+          "id": "poi-rooftop-antenna",
+          "title": "Skyline Telemetry Tower",
+          "category": "monument",
+          "coordinates": [
+            11.572,
+            48.14
+          ]
+        },
+        "triviaData": {
+          "question": "How many muscles do domestic cats have in each ear?",
+          "options": [
+            "6",
+            "12",
+            "32",
+            "54"
+          ],
+          "answer": "32",
+          "funFact": "Cats can rotate each ear independently up to 180 degrees using 32 muscles!"
+        },
+        "status": "available",
+        "createdAt": "2026-10-13T01:09:09.505Z",
+        "acceptedAt": null,
+        "expiresAt": null,
+        "completedAt": null
+      },
+      {
+        "id": "mis-1791853749505-8efh",
+        "type": "time_pressure",
+        "title": "Quick-Draw Reflex Check",
+        "description": "Rapidly verify 3 system telemetry items on the game dashboard in under 60 seconds.",
+        "durationSec": 60,
+        "difficulty": "medium",
+        "reward": {
+          "xp": 75,
+          "coins": 35
+        },
+        "assignedMonkey": "go",
+        "monkeyAvatar": "🐒⚡",
+        "monkeyComment": "Full speed ahead! Nothing can slow us down!",
+        "targetPoi": {
+          "id": "poi-market",
+          "title": "Monkey Central Market",
+          "category": "market",
+          "coordinates": [
+            11.5756,
+            48.1375
+          ]
+        },
+        "triviaData": null,
+        "status": "available",
+        "createdAt": "2026-10-13T01:09:09.505Z",
+        "acceptedAt": null,
+        "expiresAt": null,
+        "completedAt": null
+      }
+    ],
+    "completedCount": 3,
+    "history": [
+      {
+        "id": "mis-1791854436540-eil7",
+        "type": "search",
+        "title": "Perimeter Visual Search",
+        "description": "Scan your immediate surroundings and spot an item that is vivid bright yellow (like a banana peel or sign).",
+        "durationSec": 120,
+        "difficulty": "easy",
+        "reward": {
+          "xp": 45,
+          "coins": 20
+        },
+        "assignedMonkey": "go",
+        "monkeyAvatar": "🐒⚡",
+        "monkeyComment": "Timer is ticking! Pump those legs!",
+        "targetPoi": {
+          "id": "poi-retro-garage",
+          "title": "Retro Garage & Sound Lab",
+          "category": "hub",
+          "coordinates": [
+            11.58,
+            48.142
+          ]
+        },
+        "triviaData": null,
+        "status": "completed",
+        "createdAt": "2026-10-13T01:20:36.540Z",
+        "acceptedAt": "2026-10-13T01:20:36.565Z",
+        "expiresAt": "2026-10-13T01:22:36.565Z",
+        "completedAt": "2026-10-13T01:20:36.570Z"
+      },
+      {
+        "id": "mis-1791854286511-02dl",
+        "type": "search",
+        "title": "Architectural Detail Scan",
+        "description": "Locate any circular clock face, gauge, or dial within visible range.",
+        "durationSec": 180,
+        "difficulty": "medium",
+        "reward": {
+          "xp": 60,
+          "coins": 25
+        },
+        "assignedMonkey": "go",
+        "monkeyAvatar": "🐒⚡",
+        "monkeyComment": "Timer is ticking! Pump those legs!",
+        "targetPoi": {
+          "id": "poi-retro-garage",
+          "title": "Retro Garage & Sound Lab",
+          "category": "hub",
+          "coordinates": [
+            11.58,
+            48.142
+          ]
+        },
+        "triviaData": null,
+        "status": "completed",
+        "createdAt": "2026-10-13T01:18:06.511Z",
+        "acceptedAt": "2026-10-13T01:18:06.534Z",
+        "expiresAt": "2026-10-13T01:21:06.534Z",
+        "completedAt": "2026-10-13T01:18:06.540Z"
+      },
+      {
+        "id": "mis-1791853779656-7414",
+        "type": "trivia",
+        "title": "Useless Knowledge Trivia",
+        "description": "Couchmonkey challenges your neural cortex with an obscure factoid! Select the correct answer.",
+        "durationSec": 90,
+        "difficulty": "medium",
+        "reward": {
+          "xp": 60,
+          "coins": 30
+        },
+        "assignedMonkey": "couchmonkey",
+        "monkeyAvatar": "🛋️🐵",
+        "monkeyComment": "Sip your coffee, analyze the problem, then strike calmly.",
+        "targetPoi": {
+          "id": "poi-fm-hub",
+          "title": "Free Monkeys Dev Hub",
+          "category": "hub",
+          "coordinates": [
+            11.58,
+            48.135
+          ]
+        },
+        "triviaData": {
+          "question": "Which animal holds hands while sleeping so they do not drift apart in the current?",
+          "options": [
+            "Sea Otters",
+            "Dolphins",
+            "Penguins",
+            "Beavers"
+          ],
+          "answer": "Sea Otters",
+          "funFact": "Sea otters wrap themselves in kelp and hold paws to stay together while dozing!"
+        },
+        "status": "completed",
+        "createdAt": "2026-10-13T01:09:39.656Z",
+        "acceptedAt": "2026-10-13T01:09:39.657Z",
+        "expiresAt": "2026-10-13T01:11:09.657Z",
+        "completedAt": "2026-10-13T01:09:39.658Z"
+      }
+    ]
+  },
+  "social": {
+    "activeHighFiveCodes": [
+      {
+        "code": "HF-727389",
+        "creatorId": "player-chief",
+        "createdAt": 1791854286549,
+        "expiresAt": 1791854886549,
+        "redeemed": false,
+        "reward": {
+          "coins": 20,
+          "xp": 35
+        }
+      },
+      {
+        "code": "HF-0D14A5",
+        "creatorId": "player-chief",
+        "createdAt": 1791854436580,
+        "expiresAt": 1791855036580,
+        "redeemed": false,
+        "reward": {
+          "coins": 20,
+          "xp": 35
+        }
+      }
+    ],
+    "invites": []
+  }
+}

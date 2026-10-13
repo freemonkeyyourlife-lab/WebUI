@@ -1,0 +1,40 @@
+{
+  "userId": "chief",
+  "displayName": "K.I.T.T. Prime",
+  "mode": "assistant",
+  "proactive": true,
+  "mutedUntil": null,
+  "proactiveFrequency": "daily",
+  "notifyChannels": [
+    "ui",
+    "audio"
+  ],
+  "voiceProfile": {
+    "enabled": true,
+    "engine": "local",
+    "voiceName": "KITT Primary",
+    "gender": "neutral",
+    "style": "authoritative-friendly",
+    "pitch": "medium",
+    "speed": "normal"
+  },
+  "mapFilters": {
+    "watchOffers": true,
+    "watchNeeds": true,
+    "watchJobs": true,
+    "areas": []
+  },
+  "memory": {
+    "enabled": true,
+    "scope": "local",
+    "retentionDays": 90
+  },
+  "externalAIConsent": {
+    "allowInbound": false,
+    "allowOutbound": false
+  },
+  "sharingLevel": "none",
+  "sensitivity": "medium",
+  "createdAt": "2026-10-13T00:57:57.369Z",
+  "updatedAt": "2026-10-13T01:20:36.416Z"
+}

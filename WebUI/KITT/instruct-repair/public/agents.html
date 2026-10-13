@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>K.I.T.T. — Agents Dashboard</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>K.I.T.T. Local Agent Orchestration</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Local-First, Approval-Gated Capability Dispatch</p>
+      </div>
+      <nav class="nav-links">
+        <a href="/agents.html" class="active">Agents</a>
+        <a href="/prompt_builder.html">Prompt Builder</a>
+        <a href="/mi_settings.html">MI Profile</a>
+        <a href="/artanis.html">Artanis Planner</a>
+        <a href="/game.html">Free Monkeys GO!</a>
+        <a href="/file_upload.html">Files</a>
+      </nav>
+    </header>
+
+    <!-- M.I. Companion Integration Card -->
+    <section class="card" style="margin-bottom: 24px; border-left: 4px solid var(--accent);">
+      <div class="card-header">
+        <h2>M.I. Companion Status & Memory Hub</h2>
+        <a href="/mi_settings.html" class="btn-secondary" style="text-decoration:none; display:inline-block; padding: 6px 12px;">Open Full MI Hub</a>
+      </div>
+      <div id="miStatusSummary" style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 10px; font-size: 0.9rem;">
+        <div>Instance: <strong id="miName">Loading...</strong> (<span id="miMode">-</span>)</div>
+        <div>Proactive: <span id="miProactive">-</span></div>
+        <div>Outbound Sharing: <span id="miConsent">-</span></div>
+        <div>Local Memories: <strong id="miMemCount">0</strong></div>
+      </div>
+      <div id="miRecentDigest" style="margin-top: 8px; font-size: 0.85rem; color: var(--text-muted); font-style: italic;">
+        Loading latest memory digest...
+      </div>
+    </section>
+
+    <!-- Pending Approvals Section -->
+    <section class="card" style="margin-bottom: 24px; border-left: 4px solid var(--status-pending);">
+      <div class="card-header">
+        <h2>Pending Approvals (Consent Gate)</h2>
+        <button id="refreshApprovalsBtn" class="btn-secondary">Refresh</button>
+      </div>
+      <div id="approvalsList">Loading pending approval requests...</div>
+    </section>
+
+    <!-- Agent Cards Grid -->
+    <h2>Registered Agents</h2>
+    <div id="agentsGrid" class="grid">Loading agent registry...</div>
+
+    <!-- Command Execution Response Console -->
+    <section class="card">
+      <div class="card-header">
+        <h3>Execution & Audit Output Console</h3>
+        <button id="clearConsoleBtn" class="btn-secondary">Clear</button>
+      </div>
+      <div id="outputConsole" class="log-box">Ready. Actions and capability dispatch outputs appear here.</div>
+    </section>
+  </div>
+
+  <script>
+    const approvalsList = document.getElementById('approvalsList');
+    const agentsGrid = document.getElementById('agentsGrid');
+    const outputConsole = document.getElementById('outputConsole');
+
+    function logToConsole(title, data) {
+      const ts = new Date().toLocaleTimeString();
+      const formatted = typeof data === 'object' ? JSON.stringify(data, null, 2) : data;
+      outputConsole.textContent = `[${ts}] ${title}\n${formatted}\n\n` + outputConsole.textContent;
+    }
+
+    async function loadApprovals() {
+      try {
+        const res = await fetch('/api/requests');
+        const tasks = await res.json();
+        const pending = tasks.filter(t => t.requiresApproval && t.status === 'pending_approval');
+        if (pending.length === 0) {
+          approvalsList.innerHTML = '<p style="color: var(--text-muted);">No pending requests requiring approval.</p>';
+          return;
+        }
+
+        approvalsList.innerHTML = pending.map(t => `
+          <div class="approval-item">
+            <div>
+              <strong>${t.title}</strong>
+              <div style="font-size: 0.85rem; color: var(--text-muted);">
+                Agent: <code>${t.agentId || 'direct'}</code> | Capability: <code>${t.capability || 'none'}</code> | Created: ${t.createdAt}
+              </div>
+              <div style="font-size: 0.85rem; margin-top: 4px;">
+                Params: <code>${JSON.stringify(t.params || {})}</code>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn-success" onclick="approveRequest('${t.id}')">Approve & Execute</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        approvalsList.innerHTML = `<p style="color: var(--status-stopped);">Failed to load approvals: ${err.message}</p>`;
+      }
+    }
+
+    async function approveRequest(id) {
+      try {
+        const res = await fetch(`/api/requests/${encodeURIComponent(id)}/approve`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ approver: 'chief' })
+        });
+        const data = await res.json();
+        logToConsole(`Request ${id} Approved`, data);
+        loadApprovals();
+        loadAgents();
+      } catch (err) {
+        logToConsole(`Approval Error for ${id}`, err.message);
+      }
+    }
+
+    async function loadAgents() {
+      try {
+        const res = await fetch('/api/agents');
+        const agents = await res.json();
+
+        agentsGrid.innerHTML = agents.map(agent => {
+          const statusBadge = agent.status === 'running' 
+            ? '<span class="badge badge-running">running</span>'
+            : (agent.status === 'registered' ? '<span class="badge badge-pending">registered</span>' : '<span class="badge badge-stopped">stopped</span>');
+
+          const capList = (agent.capabilities || []).map(c => `
+            <li style="margin-bottom: 6px; font-size: 0.85rem;">
+              <strong>${c.label || c.name}</strong> 
+              ${c.requiresApproval ? '<span class="badge badge-approval">Gated</span>' : ''}
+              <div style="color: var(--text-muted); font-size: 0.8rem;">${c.description}</div>
+            </li>
+          `).join('');
+
+          const capOptions = (agent.capabilities || []).map(c => `
+            <option value="${c.name}">${c.label || c.name} ${c.requiresApproval ? '(Approval Required)' : ''}</option>
+          `).join('');
+
+          return `
+            <div class="card" id="card-${agent.id}">
+              <div class="card-header">
+                <div>
+                  <h3>${agent.label}</h3>
+                  <small style="color: var(--text-muted);">Role: ${agent.role}</small>
+                </div>
+                <div>${statusBadge}</div>
+              </div>
+
+              <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                <button class="btn-success" onclick="startAgent('${agent.id}')">Start</button>
+                <button class="btn-danger" onclick="stopAgent('${agent.id}')">Stop</button>
+                <button class="btn-secondary" onclick="viewHistory('${agent.id}')">History</button>
+              </div>
+
+              <div style="margin-bottom: 12px;">
+                <h4 style="font-size: 0.9rem; margin-bottom: 6px; color: var(--accent);">Capabilities:</h4>
+                <ul style="padding-left: 18px; margin-bottom: 8px;">
+                  ${capList}
+                </ul>
+              </div>
+
+              <div style="border-top: 1px solid var(--border-color); padding-top: 10px;">
+                <h4 style="font-size: 0.9rem; margin-bottom: 6px;">Dispatch Command:</h4>
+                <select id="cap-select-${agent.id}">
+                  ${capOptions}
+                </select>
+                <input id="param-input-${agent.id}" placeholder='Params (text or JSON, e.g. {"text":"hello"})' />
+                <button onclick="sendCommand('${agent.id}')">Send Command</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        agentsGrid.innerHTML = `<p style="color: var(--status-stopped);">Failed to load agents: ${err.message}</p>`;
+      }
+    }
+
+    async function startAgent(id) {
+      const res = await fetch(`/api/agents/${id}/start`, { method: 'POST' });
+      const data = await res.json();
+      logToConsole(`Agent ${id} Started`, data);
+      loadAgents();
+    }
+
+    async function stopAgent(id) {
+      const res = await fetch(`/api/agents/${id}/stop`, { method: 'POST' });
+      const data = await res.json();
+      logToConsole(`Agent ${id} Stopped`, data);
+      loadAgents();
+    }
+
+    async function sendCommand(id) {
+      const select = document.getElementById(`cap-select-${id}`);
+      const input = document.getElementById(`param-input-${id}`);
+      const capability = select.value;
+      let params = {};
+      const raw = input.value.trim();
+      if (raw) {
+        if (raw.startsWith('{')) {
+          try { params = JSON.parse(raw); } catch (e) { params = { text: raw }; }
+        } else {
+          params = { text: raw };
+        }
+      }
+
+      const res = await fetch(`/api/agents/${id}/command`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command: capability, capability, params })
+      });
+      const data = await res.json();
+      logToConsole(`Command Dispatched to ${id} (${capability})`, data);
+      loadApprovals();
+      loadAgents();
+    }
+
+    async function viewHistory(id) {
+      const res = await fetch(`/api/agents/${id}/history`);
+      const history = await res.json();
+      logToConsole(`Agent ${id} Command History`, history);
+    }
+
+    async function loadMiStatus() {
+      try {
+        const [profRes, digestRes, memRes] = await Promise.all([
+          fetch('/api/mi/chief/profile'),
+          fetch('/api/mi/chief/digest'),
+          fetch('/api/mi/chief/memory')
+        ]);
+        const prof = await profRes.json();
+        const digest = await digestRes.json();
+        const mem = await memRes.json();
+
+        document.getElementById('miName').textContent = prof.displayName || 'K.I.T.T.';
+        document.getElementById('miMode').textContent = prof.mode || 'assistant';
+        document.getElementById('miProactive').textContent = prof.proactive ? (prof.proactiveFrequency || 'daily') : 'off';
+        const allowsOut = prof.externalAIConsent && prof.externalAIConsent.allowOutbound;
+        document.getElementById('miConsent').textContent = allowsOut ? `allowed (${prof.sharingLevel})` : 'blocked (local-only)';
+        document.getElementById('miMemCount').textContent = Array.isArray(mem) ? mem.length : 0;
+        document.getElementById('miRecentDigest').textContent = digest.digestText || 'No memories recorded yet.';
+      } catch (e) {
+        console.error('Failed to load MI status:', e);
+      }
+    }
+
+    document.getElementById('refreshApprovalsBtn').addEventListener('click', () => {
+      loadApprovals();
+      loadMiStatus();
+    });
+    document.getElementById('clearConsoleBtn').addEventListener('click', () => {
+      outputConsole.textContent = 'Cleared.';
+    });
+
+    loadApprovals();
+    loadAgents();
+    loadMiStatus();
+    setInterval(loadApprovals, 5000);
+  </script>
+</body>
+</html>

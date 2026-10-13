@@ -1,0 +1,107 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "poi-market",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [11.5756, 48.1375]
+      },
+      "properties": {
+        "id": "poi-market",
+        "title": "Monkey Central Market",
+        "category": "market",
+        "description": "Vibrant local marketplace with fresh bananas, vintage goods, and tech spares.",
+        "monkeyNote": "GO! loves climbing the market stalls; Couchmonkey recommends the fruit smoothie stand.",
+        "secretBonus": 25,
+        "discovered": true
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi-retro-garage",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [11.58, 48.142]
+      },
+      "properties": {
+        "id": "poi-retro-garage",
+        "title": "Retro Garage & Sound Lab",
+        "category": "hub",
+        "description": "Restoration workshop for classic hardware, modular synths, and vehicle diagnostics.",
+        "monkeyNote": "K.I.T.T. sensors align perfectly here; look for vintage vacuum tubes.",
+        "secretBonus": 30,
+        "discovered": true
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi-fm-hub",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [11.58, 48.135]
+      },
+      "properties": {
+        "id": "poi-fm-hub",
+        "title": "Free Monkeys Dev Hub",
+        "category": "hub",
+        "description": "Open hacker lounge with local server racks, beanbags, and high-speed loopback Wi-Fi.",
+        "monkeyNote": "Home base for Couchmonkey and MI Companion. Great coffee spot.",
+        "secretBonus": 20,
+        "discovered": true
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi-sun-park",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [11.589, 48.145]
+      },
+      "properties": {
+        "id": "poi-sun-park",
+        "title": "Sunbeam Monkey Park",
+        "category": "park",
+        "description": "Lush green urban oasis with mature oak trees, sunny benches, and a small duck pond.",
+        "monkeyNote": "Ideal running track for GO! to set a new 60-second dash record.",
+        "secretBonus": 15,
+        "discovered": false
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi-rooftop-antenna",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [11.572, 48.14]
+      },
+      "properties": {
+        "id": "poi-rooftop-antenna",
+        "title": "Skyline Telemetry Tower",
+        "category": "monument",
+        "description": "Historic radio tower offering high altitude observation across the city.",
+        "monkeyNote": "MI Companion reports 100% signal coverage from the upper observation tier.",
+        "secretBonus": 40,
+        "discovered": false
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "poi-banana-cafe",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [11.578, 48.139]
+      },
+      "properties": {
+        "id": "poi-banana-cafe",
+        "title": "The Golden Banana Café",
+        "category": "cafe",
+        "description": "Artsy café serving specialty banana bread, cold brew espresso, and organic teas.",
+        "monkeyNote": "Couchmonkey has a reserved velvet armchair in the corner.",
+        "secretBonus": 20,
+        "discovered": false
+      }
+    }
+  ]
+}

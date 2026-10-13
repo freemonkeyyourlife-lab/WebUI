@@ -1,0 +1,1042 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FREE MONKEYS® GO! — Urban Exploration & Micro-Missions</title>
+  <link rel="stylesheet" href="/app.css" />
+  <style>
+    :root {
+      --comic-yellow: #ffd000;
+      --comic-orange: #ff7700;
+      --comic-blue: #00d4ff;
+      --comic-purple: #9d4edd;
+      --comic-green: #38b000;
+      --comic-dark: #0f141c;
+      --comic-card: #16202c;
+      --comic-border: #ffd000;
+      --comic-shadow: 4px 4px 0px #000000;
+    }
+
+    body {
+      background: var(--comic-dark);
+      background-image: radial-gradient(#1e2c3d 1px, transparent 1px);
+      background-size: 18px 18px;
+      color: #f0f6fc;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .game-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .comic-banner {
+      background: linear-gradient(135deg, #ff7700 0%, #ffd000 100%);
+      color: #111;
+      border: 3px solid #111;
+      box-shadow: 6px 6px 0px #000;
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .comic-title {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-shadow: 2px 2px 0px #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .stat-badge {
+      background: #111;
+      color: #ffd000;
+      border: 2px solid #fff;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-weight: 800;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+    }
+
+    .stat-badge.coins { color: #ffd000; }
+    .stat-badge.xp { color: #00d4ff; }
+    .stat-badge.level { color: #38b000; }
+
+    .comic-card {
+      background: var(--comic-card);
+      border: 3px solid #283a4e;
+      border-radius: 16px;
+      box-shadow: var(--comic-shadow);
+      padding: 18px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .comic-card.active-mission {
+      border-color: #ffd000;
+      background: #1a2736;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffd000;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Companion Trio Bar */
+    .trio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .monkey-card {
+      background: #101923;
+      border: 2px solid #233446;
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .monkey-card:hover {
+      transform: translateY(-2px);
+      border-color: #4bb3fd;
+    }
+
+    .monkey-card.selected {
+      border: 3px solid #ffd000;
+      background: #182736;
+      box-shadow: 3px 3px 0px #ffd000;
+    }
+
+    .monkey-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .monkey-avatar {
+      font-size: 28px;
+    }
+
+    .monkey-name {
+      font-weight: 800;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .monkey-badge {
+      font-size: 11px;
+      background: #233446;
+      color: #9db3c9;
+      padding: 2px 6px;
+      border-radius: 6px;
+      display: inline-block;
+      width: fit-content;
+    }
+
+    .speech-bubble {
+      background: #203144;
+      border: 2px solid #ffd000;
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: #fff;
+      font-style: italic;
+      position: relative;
+      margin: 12px 0;
+      box-shadow: 3px 3px 0px #000;
+    }
+
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 24px;
+      border-width: 0 10px 10px;
+      border-style: solid;
+      border-color: #ffd000 transparent;
+      display: block;
+      width: 0;
+    }
+
+    /* Mission Loop */
+    .timer-display {
+      font-size: 28px;
+      font-weight: 900;
+      font-family: monospace;
+      color: #ff5555;
+      background: #111;
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 2px solid #ff5555;
+      display: inline-block;
+      box-shadow: 2px 2px 0px #000;
+    }
+
+    .mission-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      background: #00d4ff;
+      color: #111;
+    }
+
+    .mission-badge.trivia { background: #9d4edd; color: #fff; }
+    .mission-badge.time_pressure { background: #ff5555; color: #fff; }
+    .mission-badge.search { background: #ffd000; color: #111; }
+    .mission-badge.build_care { background: #38b000; color: #fff; }
+
+    .btn-comic {
+      background: #ffd000;
+      color: #111;
+      border: 2px solid #111;
+      border-radius: 8px;
+      font-weight: 900;
+      padding: 8px 16px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0px #000;
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      transition: transform 0.1s;
+    }
+
+    .btn-comic:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0px #000;
+    }
+
+    .btn-comic:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #000;
+    }
+
+    .btn-comic.green { background: #38b000; color: #fff; }
+    .btn-comic.blue { background: #00d4ff; color: #111; }
+    .btn-comic.red { background: #ff4757; color: #fff; }
+    .btn-comic.purple { background: #9d4edd; color: #fff; }
+
+    .trivia-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .trivia-option-label {
+      background: #111923;
+      border: 2px solid #233446;
+      border-radius: 8px;
+      padding: 10px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #f0f6fc;
+      transition: border-color 0.2s;
+    }
+
+    .trivia-option-label:hover {
+      border-color: #ffd000;
+    }
+
+    .poi-card {
+      background: #101923;
+      border: 2px solid #233446;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 8px 0;
+    }
+
+    .form-row input, .form-row select {
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      color: #9db3c9;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .nav-link:hover { color: #ffd000; }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <div class="nav-links">
+      <a href="/agents.html" class="nav-link">← Agents Dashboard</a>
+      <a href="/mi_settings.html" class="nav-link">MI Settings</a>
+      <a href="/artanis.html" class="nav-link">Artanis Planner</a>
+      <a href="/prompt_builder.html" class="nav-link">Prompt Builder</a>
+    </div>
+
+    <!-- Comic Header Banner -->
+    <header class="comic-banner">
+      <div class="comic-title">
+        <span>🐒⚡</span>
+        <div>
+          <div>FREE MONKEYS® GO!</div>
+          <div style="font-size: 12px; font-weight: 700; text-shadow: none; color: #222;">
+            Local-First Urban Micro-Missions (1–3 Min)
+          </div>
+        </div>
+      </div>
+      <div class="stats-bar">
+        <div class="stat-badge coins">🍌 <span id="statCoins">100</span> Coins</div>
+        <div class="stat-badge xp">⭐ <span id="statXp">0</span> XP</div>
+        <div class="stat-badge level">🏆 Lvl <span id="statLevel">1</span> (<span id="statLevelTitle">Scout</span>)</div>
+      </div>
+    </header>
+
+    <!-- Companion Trio Section -->
+    <section class="comic-card">
+      <div class="card-header">
+        <div class="card-title"><span>👥</span> Monkey Companion Trio</div>
+        <span style="font-size: 12px; color: #9db3c9;">Select active co-pilot:</span>
+      </div>
+
+      <div class="trio-grid" id="monkeysGrid">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="speech-bubble" id="speechBubble">
+        <span id="speakerAvatar">🐒⚡</span> <strong id="speakerName">GO!</strong>:
+        <span id="speakerComment">"Run fast, climb trees, find bananas! Let's GO!"</span>
+      </div>
+    </section>
+
+    <!-- Active Mission Section -->
+    <section class="comic-card active-mission" id="activeMissionPanel">
+      <div class="card-header">
+        <div class="card-title">
+          <span>🎯</span> Active Mission
+          <span class="mission-badge" id="activeMissionBadge">SEARCH</span>
+        </div>
+        <div class="timer-display" id="missionTimer">02:00</div>
+      </div>
+
+      <div id="activeMissionContent">
+        <p style="color: #9db3c9;">No active mission right now. Pick an available mission below or generate a rapid 1-3 minute challenge!</p>
+      </div>
+    </section>
+
+    <!-- Available Missions & Quick Generator -->
+    <section class="comic-card">
+      <div class="card-header">
+        <div class="card-title"><span>⚡</span> Mission Command (1–3 Min Missions)</div>
+        <div style="display: flex; gap: 8px;">
+          <select id="genTypeSelect" style="padding: 6px; font-size: 12px;">
+            <option value="">🎲 Random Type</option>
+            <option value="search">🔍 Search</option>
+            <option value="fetch">📦 Fetch</option>
+            <option value="mark">📍 Mark</option>
+            <option value="bring">🚚 Bring</option>
+            <option value="build_care">🌱 Build / Care</option>
+            <option value="time_pressure">⏱️ Time-Pressure</option>
+            <option value="trivia">💡 Useless Knowledge Trivia</option>
+            <option value="social_help">🤝 Social / Help</option>
+          </select>
+          <button class="btn-comic" id="btnGenMission">⚡ Generate</button>
+        </div>
+      </div>
+
+      <div id="availableMissionsList">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Reward Engine & Banana Bank -->
+    <section class="comic-card">
+      <div class="card-header">
+        <div class="card-title"><span>🍌</span> Banana Bank & Timed Rewards</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px;">
+        <div style="background: #111923; border: 2px solid #233446; border-radius: 12px; padding: 14px;">
+          <h4 style="margin: 0 0 6px 0; color: #ffd000;">⏱️ 15-Minute Reward Tick</h4>
+          <p style="font-size: 13px; color: #9db3c9; margin: 0 0 10px 0;">
+            Claim idle bananas & XP every 15 minutes of play.
+          </p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span id="tickTimerDisplay" style="font-weight: 800; color: #00d4ff;">--:--</span>
+            <button class="btn-comic green" id="btnClaimTick">Claim Tick (+35🍌)</button>
+          </div>
+        </div>
+
+        <div style="background: #111923; border: 2px solid #233446; border-radius: 12px; padding: 14px;">
+          <h4 style="margin: 0 0 6px 0; color: #ffd000;">🎁 Daily Return Bonus</h4>
+          <p style="font-size: 13px; color: #9db3c9; margin: 0 0 10px 0;">
+            Streak: <span id="streakCount">1</span> days. Daily recurring loyalty gift.
+          </p>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span id="returnStatusText" style="font-size: 12px; color: #38b000;">Available</span>
+            <button class="btn-comic purple" id="btnClaimReturn">Claim Daily Gift</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Social & Opt-in High-Five -->
+    <section class="comic-card">
+      <div class="card-header">
+        <div class="card-title"><span>✋</span> High-Five & Social Co-Op (Opt-In)</div>
+        <span style="font-size: 12px; color: #38b000; font-weight: 700;">Local-Only & Consent-First</span>
+      </div>
+
+      <p style="font-size: 13px; color: #9db3c9; margin-top: 0;">
+        Share high-five codes with fellow monkeys or co-op partners locally to unlock energy bonuses.
+      </p>
+
+      <div class="form-row">
+        <button class="btn-comic blue" id="btnGenHighFive">Generate High-Five Code</button>
+        <input id="redeemCodeInput" placeholder="Enter code (e.g. HF-AB12CD)" style="max-width: 220px;" />
+        <button class="btn-comic green" id="btnRedeemHighFive">Redeem High-Five</button>
+      </div>
+
+      <div id="highFiveOutput" style="font-size: 13px; margin-top: 8px;"></div>
+    </section>
+
+    <!-- Points of Interest Exploration Radar -->
+    <section class="comic-card">
+      <div class="card-header">
+        <div class="card-title"><span>🗺️</span> Points of Interest (GeoJSON Content Model)</div>
+        <button class="btn-comic" id="btnToggleNewPoi">+ Add Local POI</button>
+      </div>
+
+      <div id="newPoiForm" style="display: none; background: #111923; border: 2px solid #233446; border-radius: 10px; padding: 12px; margin-bottom: 12px;">
+        <div class="form-row">
+          <input id="newPoiTitle" placeholder="POI Title (e.g. Riverside Monkey Bench)" />
+          <select id="newPoiCategory">
+            <option value="market">Market</option>
+            <option value="park">Park</option>
+            <option value="hub">Hub</option>
+            <option value="cafe">Café</option>
+            <option value="monument">Monument</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <input id="newPoiDesc" placeholder="Description of the place" />
+          <input id="newPoiNote" placeholder="Monkey observation note" />
+        </div>
+        <button class="btn-comic green" id="btnSavePoi">Save POI Locally</button>
+      </div>
+
+      <div id="poisContainer">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Privacy & Notification Controls -->
+    <section class="comic-card">
+      <div class="card-header">
+        <div class="card-title"><span>🛡️</span> Privacy & Notification Controls</div>
+        <span style="font-size: 12px; color: #38b000; font-weight: 700;">100% Loopback Sovereign</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px;">
+          <input type="checkbox" id="chkNotifications" checked />
+          Enable Companion Notifications
+        </label>
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 13px;">
+          <input type="checkbox" id="chkGhostMode" />
+          Ghost Mode (Mock GPS Coordinates)
+        </label>
+        <label style="font-size: 13px;">
+          Proactive Frequency:
+          <select id="selFrequency" style="width: 100%; margin-top: 4px;">
+            <option value="realtime">Realtime</option>
+            <option value="hourly" selected>Hourly</option>
+            <option value="daily">Daily</option>
+            <option value="off">Off (Silent)</option>
+          </select>
+        </label>
+      </div>
+      <div style="margin-top: 12px;">
+        <button class="btn-comic" id="btnSavePrivacy">Save Privacy Settings</button>
+        <span id="privacySaveMsg" style="font-size: 12px; margin-left: 10px; color: #38b000;"></span>
+      </div>
+    </section>
+
+    <!-- Custom Mission Creator Modal -->
+    <section class="comic-card">
+      <div class="card-header">
+        <div class="card-title"><span>🛠️</span> Custom Mission Creator</div>
+      </div>
+      <div class="form-row">
+        <input id="customTitle" placeholder="Mission Title (e.g. Find 3 Blue Cars)" />
+        <select id="customType">
+          <option value="search">Search</option>
+          <option value="fetch">Fetch</option>
+          <option value="mark">Mark</option>
+          <option value="bring">Bring</option>
+          <option value="build_care">Build / Care</option>
+          <option value="time_pressure">Time-Pressure</option>
+          <option value="trivia">Trivia</option>
+          <option value="social_help">Social Help</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <input id="customDesc" placeholder="Mission Description / Instructions" />
+        <select id="customDuration">
+          <option value="60">60 Seconds (1 Min)</option>
+          <option value="120" selected>120 Seconds (2 Min)</option>
+          <option value="180">180 Seconds (3 Min)</option>
+        </select>
+      </div>
+      <button class="btn-comic green" id="btnCreateCustomMission">Create Mission</button>
+    </section>
+  </div>
+
+  <script>
+    let currentProfile = null;
+    let timerInterval = null;
+    let tickInterval = null;
+    let selectedMonkey = 'go';
+
+    async function loadAll() {
+      await loadProfile();
+      await loadMonkeys();
+      await loadMissions();
+      await loadPois();
+      startTickTimer();
+    }
+
+    async function loadProfile() {
+      try {
+        const res = await fetch('/api/game/profile');
+        const data = await res.json();
+        currentProfile = data;
+
+        document.getElementById('statCoins').textContent = data.player.coins;
+        document.getElementById('statXp').textContent = data.player.xp;
+        document.getElementById('statLevel').textContent = data.player.level;
+        document.getElementById('statLevelTitle').textContent = data.player.levelTitle;
+        document.getElementById('streakCount').textContent = data.rewards.returnBonus.streak || 1;
+
+        selectedMonkey = data.player.selectedMonkey || 'go';
+
+        // Update privacy toggles
+        document.getElementById('chkNotifications').checked = !!data.privacy.notificationsEnabled;
+        document.getElementById('chkGhostMode').checked = !!data.privacy.ghostMode;
+        document.getElementById('selFrequency').value = data.privacy.notificationFrequency || 'hourly';
+
+        // Update return bonus button
+        const btnReturn = document.getElementById('btnClaimReturn');
+        const returnTxt = document.getElementById('returnStatusText');
+        if (!data.rewards.returnBonus.canClaim) {
+          btnReturn.disabled = true;
+          btnReturn.style.opacity = '0.5';
+          returnTxt.textContent = 'Claimed Today';
+          returnTxt.style.color = '#9db3c9';
+        } else {
+          btnReturn.disabled = false;
+          btnReturn.style.opacity = '1';
+          returnTxt.textContent = 'Available Now!';
+          returnTxt.style.color = '#38b000';
+        }
+
+        renderActiveMission(data.activeMission);
+      } catch (err) {
+        console.error('Error loading profile:', err);
+      }
+    }
+
+    async function loadMonkeys() {
+      try {
+        const res = await fetch('/api/game/monkeys');
+        const monkeys = await res.json();
+        const grid = document.getElementById('monkeysGrid');
+        grid.innerHTML = '';
+
+        monkeys.forEach((m) => {
+          const card = document.createElement('div');
+          card.className = `monkey-card ${m.id === selectedMonkey ? 'selected' : ''}`;
+          card.innerHTML = `
+            <div class="monkey-top">
+              <span class="monkey-avatar">${m.avatar}</span>
+              <div>
+                <div class="monkey-name">${m.name}</div>
+                <span class="monkey-badge">${m.badge}</span>
+              </div>
+            </div>
+            <div style="font-size: 12px; color: #9db3c9;">${m.bio}</div>
+          `;
+          card.onclick = () => selectMonkey(m.id);
+          grid.appendChild(card);
+        });
+
+        updateMonkeyComment('idle');
+      } catch (err) {
+        console.error('Error loading monkeys:', err);
+      }
+    }
+
+    async function selectMonkey(monkeyId) {
+      selectedMonkey = monkeyId;
+      await fetch('/api/game/profile/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ selectedMonkey: monkeyId })
+      });
+      loadMonkeys();
+      loadProfile();
+    }
+
+    async function updateMonkeyComment(situation = 'idle') {
+      try {
+        const res = await fetch(`/api/game/monkeys/${selectedMonkey}/comment?situation=${situation}`);
+        const data = await res.json();
+        document.getElementById('speakerAvatar').textContent = data.avatar;
+        document.getElementById('speakerName').textContent = data.monkeyName;
+        document.getElementById('speakerComment').textContent = `"${data.comment}"`;
+      } catch (e) {}
+    }
+
+    async function loadMissions() {
+      try {
+        const res = await fetch('/api/game/missions');
+        const data = await res.json();
+
+        renderActiveMission(data.active);
+        renderAvailableMissions(data.available);
+      } catch (err) {
+        console.error('Error loading missions:', err);
+      }
+    }
+
+    function renderActiveMission(mission) {
+      const panel = document.getElementById('activeMissionPanel');
+      const content = document.getElementById('activeMissionContent');
+      const badge = document.getElementById('activeMissionBadge');
+
+      if (!mission) {
+        badge.textContent = 'STANDBY';
+        badge.className = 'mission-badge';
+        content.innerHTML = '<p style="color: #9db3c9;">No active mission right now. Pick an available mission below or generate a rapid 1-3 minute challenge!</p>';
+        document.getElementById('missionTimer').textContent = '00:00';
+        if (timerInterval) clearInterval(timerInterval);
+        return;
+      }
+
+      badge.textContent = mission.type.toUpperCase();
+      badge.className = `mission-badge ${mission.type}`;
+
+      let interactiveHtml = '';
+      if (mission.type === 'trivia' && mission.triviaData) {
+        interactiveHtml = `
+          <div style="margin: 12px 0;">
+            <p style="font-weight: 700; color: #ffd000; margin-bottom: 6px;">💡 Question: ${mission.triviaData.question}</p>
+            <div class="trivia-options">
+              ${mission.triviaData.options.map((opt) => `
+                <label class="trivia-option-label">
+                  <input type="radio" name="triviaChoice" value="${opt}" />
+                  <span>${opt}</span>
+                </label>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } else {
+        interactiveHtml = `
+          <label style="display: flex; align-items: center; gap: 8px; margin: 12px 0; font-size: 14px; cursor: pointer;">
+            <input type="checkbox" id="chkObjectiveDone" />
+            <strong>I have accomplished this objective in the real world!</strong>
+          </label>
+        `;
+      }
+
+      content.innerHTML = `
+        <h3 style="margin: 0 0 6px 0; color: #fff;">${mission.title}</h3>
+        <p style="margin: 0 0 8px 0; color: #9db3c9; font-size: 14px;">${mission.description}</p>
+        <div style="font-size: 12px; color: #00d4ff; margin-bottom: 8px;">
+          Reward: +${mission.reward.xp} XP | +${mission.reward.coins} Coins
+          ${mission.targetPoi ? ` | Target POI: <strong>${mission.targetPoi.title}</strong>` : ''}
+        </div>
+        ${interactiveHtml}
+        <div style="display: flex; gap: 10px; margin-top: 12px;">
+          <button class="btn-comic green" id="btnCompleteMission">Complete Mission</button>
+          <button class="btn-comic red" id="btnAbandonMission">Abandon</button>
+        </div>
+      `;
+
+      document.getElementById('btnCompleteMission').onclick = () => completeActiveMission(mission);
+      document.getElementById('btnAbandonMission').onclick = () => abandonActiveMission(mission);
+
+      startMissionTimer(mission.expiresAt);
+    }
+
+    function startMissionTimer(expiresAt) {
+      if (timerInterval) clearInterval(timerInterval);
+      const timerDisplay = document.getElementById('missionTimer');
+
+      function update() {
+        const diff = new Date(expiresAt).getTime() - Date.now();
+        if (diff <= 0) {
+          timerDisplay.textContent = 'EXPIRED!';
+          timerDisplay.style.color = '#ff4757';
+          return;
+        }
+        const totalSec = Math.floor(diff / 1000);
+        const mins = Math.floor(totalSec / 60);
+        const secs = totalSec % 60;
+        timerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        timerDisplay.style.color = totalSec < 30 ? '#ff4757' : '#ffd000';
+      }
+
+      update();
+      timerInterval = setInterval(update, 1000);
+    }
+
+    async function completeActiveMission(mission) {
+      let payload = {};
+      if (mission.type === 'trivia') {
+        const checked = document.querySelector('input[name="triviaChoice"]:checked');
+        if (!checked) {
+          alert('Please select an answer for the trivia challenge!');
+          return;
+        }
+        payload.answer = checked.value;
+      } else {
+        const chk = document.getElementById('chkObjectiveDone');
+        if (chk && !chk.checked) {
+          alert('Please verify you accomplished the mission!');
+          return;
+        }
+      }
+
+      try {
+        const res = await fetch(`/api/game/missions/${mission.id}/complete`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!data.ok) {
+          alert(data.error || 'Could not complete mission');
+          return;
+        }
+        alert(`🎉 Mission Complete!\nAwarded: +${data.awarded.coins} Coins, +${data.awarded.xp} XP!`);
+        await loadAll();
+        updateMonkeyComment('mission_complete');
+      } catch (err) {
+        console.error('Error completing mission:', err);
+      }
+    }
+
+    async function abandonActiveMission(mission) {
+      if (!confirm('Abandon current mission?')) return;
+      try {
+        await fetch(`/api/game/missions/${mission.id}/abandon`, { method: 'POST' });
+        await loadAll();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderAvailableMissions(list) {
+      const container = document.getElementById('availableMissionsList');
+      if (!list || list.length === 0) {
+        container.innerHTML = '<p style="font-size: 13px; color: #9db3c9;">No missions available. Click "Generate" above!</p>';
+        return;
+      }
+
+      container.innerHTML = list.map((m) => `
+        <div style="background: #111923; border: 2px solid #233446; border-radius: 10px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="mission-badge ${m.type}">${m.type}</span>
+              <strong style="color: #ffd000;">${m.title}</strong>
+              <span style="font-size: 11px; color: #9db3c9;">(${m.durationSec}s)</span>
+            </div>
+            <div style="font-size: 13px; color: #9db3c9; margin-top: 4px;">${m.description}</div>
+            <div style="font-size: 11px; color: #00d4ff; margin-top: 2px;">
+              +${m.reward.xp} XP | +${m.reward.coins} Coins
+            </div>
+          </div>
+          <button class="btn-comic blue" onclick="acceptMission('${m.id}')">Start (1-3m)</button>
+        </div>
+      `).join('');
+    }
+
+    async function acceptMission(id) {
+      try {
+        const res = await fetch(`/api/game/missions/${id}/accept`, { method: 'POST' });
+        const data = await res.json();
+        if (data.ok) {
+          await loadAll();
+          updateMonkeyComment('mission_start');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // Generator handler
+    document.getElementById('btnGenMission').onclick = async () => {
+      const selType = document.getElementById('genTypeSelect').value;
+      const res = await fetch('/api/game/missions/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: selType || null, monkey: selectedMonkey })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        loadMissions();
+      }
+    };
+
+    // Custom Mission handler
+    document.getElementById('btnCreateCustomMission').onclick = async () => {
+      const title = document.getElementById('customTitle').value;
+      const type = document.getElementById('customType').value;
+      const desc = document.getElementById('customDesc').value;
+      const durationSec = document.getElementById('customDuration').value;
+
+      if (!title) {
+        alert('Please specify a mission title');
+        return;
+      }
+
+      const res = await fetch('/api/game/missions/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, type, description: desc, durationSec, assignedMonkey: selectedMonkey })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        alert('Custom mission added to available list!');
+        document.getElementById('customTitle').value = '';
+        document.getElementById('customDesc').value = '';
+        loadMissions();
+      }
+    };
+
+    // 15-Minute Reward Tick Timer
+    function startTickTimer() {
+      if (tickInterval) clearInterval(tickInterval);
+      const display = document.getElementById('tickTimerDisplay');
+      const btn = document.getElementById('btnClaimTick');
+
+      function check() {
+        if (!currentProfile || !currentProfile.rewards || !currentProfile.rewards.tick) return;
+        const tick = currentProfile.rewards.tick;
+        if (tick.canClaim) {
+          display.textContent = 'READY!';
+          display.style.color = '#38b000';
+          btn.disabled = false;
+          btn.style.opacity = '1';
+        } else {
+          btn.disabled = true;
+          btn.style.opacity = '0.5';
+          const totalSec = tick.timeRemainingSec || 0;
+          const mins = Math.floor(totalSec / 60);
+          const secs = totalSec % 60;
+          display.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+          display.style.color = '#00d4ff';
+          if (tick.timeRemainingSec > 0) tick.timeRemainingSec--;
+          if (tick.timeRemainingSec <= 0) tick.canClaim = true;
+        }
+      }
+
+      check();
+      tickInterval = setInterval(check, 1000);
+    }
+
+    document.getElementById('btnClaimTick').onclick = async () => {
+      const res = await fetch('/api/game/rewards/tick', { method: 'POST' });
+      const data = await res.json();
+      if (data.ok) {
+        alert(`🍌 Banana Tick Claimed! +${data.claimed.coins} Coins, +${data.claimed.xp} XP`);
+        loadProfile();
+      } else {
+        alert(data.error);
+      }
+    };
+
+    document.getElementById('btnClaimReturn').onclick = async () => {
+      const res = await fetch('/api/game/rewards/return', { method: 'POST' });
+      const data = await res.json();
+      if (data.ok) {
+        alert(`🎁 Daily Return Gift Claimed!\nStreak: ${data.streak} Days!\n+${data.bonus.coins} Coins, +${data.bonus.xp} XP`);
+        loadProfile();
+      } else {
+        alert(data.error);
+      }
+    };
+
+    // Social & High-Five
+    document.getElementById('btnGenHighFive').onclick = async () => {
+      const res = await fetch('/api/game/social/highfive', { method: 'POST' });
+      const data = await res.json();
+      document.getElementById('highFiveOutput').innerHTML = `
+        <div style="background: #111; border: 2px solid #ffd000; padding: 10px; border-radius: 8px; margin-top: 8px;">
+          <strong style="color: #ffd000; font-size: 16px;">Scan/Share Code: ${data.code}</strong>
+          <div style="font-size: 11px; color: #9db3c9; margin-top: 4px;">Valid for 10 minutes. Tell a fellow player to enter this code!</div>
+        </div>
+      `;
+    };
+
+    document.getElementById('btnRedeemHighFive').onclick = async () => {
+      const code = document.getElementById('redeemCodeInput').value.trim();
+      if (!code) return;
+      const res = await fetch('/api/game/social/highfive', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'redeem', code })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        alert(`✋ High-Five Exchanged!\n+${data.reward.coins} Coins, +${data.reward.xp} XP!`);
+        document.getElementById('redeemCodeInput').value = '';
+        loadProfile();
+      } else {
+        alert(data.error || 'Failed to redeem');
+      }
+    };
+
+    // POIs
+    async function loadPois() {
+      try {
+        const res = await fetch('/api/game/pois');
+        const data = await res.json();
+        const container = document.getElementById('poisContainer');
+        container.innerHTML = (data.features || []).map((f) => `
+          <div class="poi-card">
+            <div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="mission-badge ${f.properties.category}">${f.properties.category}</span>
+                <strong style="color: #ffd000;">${f.properties.title}</strong>
+              </div>
+              <div style="font-size: 12px; color: #9db3c9; margin-top: 2px;">${f.properties.description}</div>
+              <div style="font-size: 11px; color: #00d4ff; font-style: italic; margin-top: 2px;">"${f.properties.monkeyNote}"</div>
+            </div>
+            <div style="font-size: 11px; color: #9db3c9; text-align: right;">
+              [${f.geometry.coordinates[0]}, ${f.geometry.coordinates[1]}]
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    document.getElementById('btnToggleNewPoi').onclick = () => {
+      const form = document.getElementById('newPoiForm');
+      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    };
+
+    document.getElementById('btnSavePoi').onclick = async () => {
+      const title = document.getElementById('newPoiTitle').value;
+      const category = document.getElementById('newPoiCategory').value;
+      const desc = document.getElementById('newPoiDesc').value;
+      const note = document.getElementById('newPoiNote').value;
+
+      if (!title) {
+        alert('Please enter a POI title');
+        return;
+      }
+
+      await fetch('/api/game/pois', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, category, description: desc, monkeyNote: note })
+      });
+
+      document.getElementById('newPoiTitle').value = '';
+      document.getElementById('newPoiDesc').value = '';
+      document.getElementById('newPoiNote').value = '';
+      document.getElementById('newPoiForm').style.display = 'none';
+      loadPois();
+    };
+
+    // Privacy Controls
+    document.getElementById('btnSavePrivacy').onclick = async () => {
+      const notificationsEnabled = document.getElementById('chkNotifications').checked;
+      const ghostMode = document.getElementById('chkGhostMode').checked;
+      const notificationFrequency = document.getElementById('selFrequency').value;
+
+      await fetch('/api/game/profile/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          privacy: {
+            notificationsEnabled,
+            ghostMode,
+            notificationFrequency
+          }
+        })
+      });
+
+      const msg = document.getElementById('privacySaveMsg');
+      msg.textContent = 'Settings saved locally!';
+      setTimeout(() => msg.textContent = '', 2500);
+    };
+
+    loadAll();
+  </script>
+</body>
+</html>

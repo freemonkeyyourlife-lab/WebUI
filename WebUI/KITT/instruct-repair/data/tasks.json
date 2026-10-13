@@ -1,0 +1,1057 @@
+[
+  {
+    "id": "req-1791854436514-f4e7c7",
+    "title": "[Artanis Plan: Inspect local storage and announce telem] Step 4: Emit local speech completion notification",
+    "sourceType": "artanis_plan",
+    "agentId": "talker",
+    "command": "speak_local",
+    "capability": "speak_local",
+    "params": {
+      "text": "Plan execution prepared: Inspect local storage and announce "
+    },
+    "text": "Plan Step 4: Emit local speech completion notification",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:20:36.514Z",
+    "plan": {
+      "taskId": "req-1791854436514-f4e7c7",
+      "category": "agent_execution",
+      "module": "Agent: talker",
+      "risk": "low",
+      "requestedCapability": "speak_local",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791854436514-9a74d6",
+    "title": "[Artanis Plan: Inspect local storage and announce telem] Step 3: Synchronize agent execution state",
+    "sourceType": "artanis_plan",
+    "agentId": "kitt",
+    "command": "orchestrate_agents",
+    "capability": "orchestrate_agents",
+    "params": {
+      "goal": "Inspect local storage and announce telemetry"
+    },
+    "text": "Plan Step 3: Synchronize agent execution state",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:20:36.514Z",
+    "plan": {
+      "taskId": "req-1791854436514-9a74d6",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "low",
+      "requestedCapability": "orchestrate_agents",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791854436513-09fab2",
+    "title": "[Artanis Plan: Inspect local storage and announce telem] Step 2: Verify system resources and isolation boundaries",
+    "sourceType": "artanis_plan",
+    "agentId": "observer",
+    "command": "inspect_environment",
+    "capability": "inspect_environment",
+    "params": {},
+    "text": "Plan Step 2: Verify system resources and isolation boundaries",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:20:36.513Z",
+    "plan": {
+      "taskId": "req-1791854436513-09fab2",
+      "category": "agent_execution",
+      "module": "Agent: observer",
+      "risk": "low",
+      "requestedCapability": "inspect_environment",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791854436513-d36d2f",
+    "title": "[Artanis Plan: Inspect local storage and announce telem] Step 1: Analyze and parse instruction syntax",
+    "sourceType": "artanis_plan",
+    "agentId": "listener",
+    "command": "parse_instructions",
+    "capability": "parse_instructions",
+    "params": {
+      "text": "Inspect local storage and announce telemetry"
+    },
+    "text": "Plan Step 1: Analyze and parse instruction syntax",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:20:36.513Z",
+    "plan": {
+      "taskId": "req-1791854436513-d36d2f",
+      "category": "agent_execution",
+      "module": "Agent: listener",
+      "risk": "low",
+      "requestedCapability": "parse_instructions",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791854436321-fbf0d1",
+    "title": "config_override",
+    "sourceType": "text",
+    "agentId": "kitt",
+    "command": null,
+    "capability": "config_override",
+    "params": {
+      "key": "test"
+    },
+    "text": "config_override",
+    "status": "completed",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T01:20:36.321Z",
+    "plan": {
+      "taskId": "req-1791854436321-fbf0d1",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "config_override",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": {
+      "agentId": "kitt",
+      "capability": "config_override",
+      "executedAt": "2026-10-13T01:20:36.347Z",
+      "summary": "Configuration override applied",
+      "updatedKeys": [],
+      "overrideTimestamp": "2026-10-13T01:20:36.347Z"
+    },
+    "approved": true,
+    "approvedAt": "2026-10-13T01:20:36.347Z",
+    "approver": "chief",
+    "executedAt": "2026-10-13T01:20:36.347Z"
+  },
+  {
+    "id": "req-1791854436309-efe282",
+    "title": "Agent [kitt] command: Execute System Command",
+    "sourceType": "agent",
+    "agentId": "kitt",
+    "command": "execute_system_command",
+    "capability": "execute_system_command",
+    "params": {
+      "command": "whoami"
+    },
+    "text": "",
+    "status": "pending_approval",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T01:20:36.309Z",
+    "plan": {
+      "taskId": "req-1791854436309-efe282",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "execute_system_command",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791854286487-2a618b",
+    "title": "[Artanis Plan: Inspect local storage and announce telem] Step 4: Emit local speech completion notification",
+    "sourceType": "artanis_plan",
+    "agentId": "talker",
+    "command": "speak_local",
+    "capability": "speak_local",
+    "params": {
+      "text": "Plan execution prepared: Inspect local storage and announce "
+    },
+    "text": "Plan Step 4: Emit local speech completion notification",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:18:06.487Z",
+    "plan": {
+      "taskId": "req-1791854286487-2a618b",
+      "category": "agent_execution",
+      "module": "Agent: talker",
+      "risk": "low",
+      "requestedCapability": "speak_local",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791854286486-7a7c4b",
+    "title": "[Artanis Plan: Inspect local storage and announce telem] Step 3: Synchronize agent execution state",
+    "sourceType": "artanis_plan",
+    "agentId": "kitt",
+    "command": "orchestrate_agents",
+    "capability": "orchestrate_agents",
+    "params": {
+      "goal": "Inspect local storage and announce telemetry"
+    },
+    "text": "Plan Step 3: Synchronize agent execution state",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:18:06.486Z",
+    "plan": {
+      "taskId": "req-1791854286486-7a7c4b",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "low",
+      "requestedCapability": "orchestrate_agents",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791854286486-7dd6fc",
+    "title": "[Artanis Plan: Inspect local storage and announce telem] Step 2: Verify system resources and isolation boundaries",
+    "sourceType": "artanis_plan",
+    "agentId": "observer",
+    "command": "inspect_environment",
+    "capability": "inspect_environment",
+    "params": {},
+    "text": "Plan Step 2: Verify system resources and isolation boundaries",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:18:06.486Z",
+    "plan": {
+      "taskId": "req-1791854286486-7dd6fc",
+      "category": "agent_execution",
+      "module": "Agent: observer",
+      "risk": "low",
+      "requestedCapability": "inspect_environment",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791854286485-9b7c21",
+    "title": "[Artanis Plan: Inspect local storage and announce telem] Step 1: Analyze and parse instruction syntax",
+    "sourceType": "artanis_plan",
+    "agentId": "listener",
+    "command": "parse_instructions",
+    "capability": "parse_instructions",
+    "params": {
+      "text": "Inspect local storage and announce telemetry"
+    },
+    "text": "Plan Step 1: Analyze and parse instruction syntax",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:18:06.485Z",
+    "plan": {
+      "taskId": "req-1791854286485-9b7c21",
+      "category": "agent_execution",
+      "module": "Agent: listener",
+      "risk": "low",
+      "requestedCapability": "parse_instructions",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791854286300-bcedca",
+    "title": "config_override",
+    "sourceType": "text",
+    "agentId": "kitt",
+    "command": null,
+    "capability": "config_override",
+    "params": {
+      "key": "test"
+    },
+    "text": "config_override",
+    "status": "completed",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T01:18:06.300Z",
+    "plan": {
+      "taskId": "req-1791854286300-bcedca",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "config_override",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": {
+      "agentId": "kitt",
+      "capability": "config_override",
+      "executedAt": "2026-10-13T01:18:06.324Z",
+      "summary": "Configuration override applied",
+      "updatedKeys": [],
+      "overrideTimestamp": "2026-10-13T01:18:06.324Z"
+    },
+    "approved": true,
+    "approvedAt": "2026-10-13T01:18:06.324Z",
+    "approver": "chief",
+    "executedAt": "2026-10-13T01:18:06.324Z"
+  },
+  {
+    "id": "req-1791854286288-b3478c",
+    "title": "Agent [kitt] command: Execute System Command",
+    "sourceType": "agent",
+    "agentId": "kitt",
+    "command": "execute_system_command",
+    "capability": "execute_system_command",
+    "params": {
+      "command": "whoami"
+    },
+    "text": "",
+    "status": "pending_approval",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T01:18:06.288Z",
+    "plan": {
+      "taskId": "req-1791854286288-b3478c",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "execute_system_command",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791854257863-a307c0",
+    "title": "config_override",
+    "sourceType": "text",
+    "agentId": "kitt",
+    "command": null,
+    "capability": "config_override",
+    "params": {
+      "key": "test"
+    },
+    "text": "config_override",
+    "status": "completed",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T01:17:37.863Z",
+    "plan": {
+      "taskId": "req-1791854257863-a307c0",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "config_override",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": {
+      "agentId": "kitt",
+      "capability": "config_override",
+      "executedAt": "2026-10-13T01:17:37.888Z",
+      "summary": "Configuration override applied",
+      "updatedKeys": [],
+      "overrideTimestamp": "2026-10-13T01:17:37.888Z"
+    },
+    "approved": true,
+    "approvedAt": "2026-10-13T01:17:37.888Z",
+    "approver": "chief",
+    "executedAt": "2026-10-13T01:17:37.888Z"
+  },
+  {
+    "id": "req-1791854257851-8f91fb",
+    "title": "Agent [kitt] command: Execute System Command",
+    "sourceType": "agent",
+    "agentId": "kitt",
+    "command": "execute_system_command",
+    "capability": "execute_system_command",
+    "params": {
+      "command": "whoami"
+    },
+    "text": "",
+    "status": "pending_approval",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T01:17:37.851Z",
+    "plan": {
+      "taskId": "req-1791854257851-8f91fb",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "execute_system_command",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791854228632-b62056",
+    "title": "config_override",
+    "sourceType": "text",
+    "agentId": "kitt",
+    "command": null,
+    "capability": "config_override",
+    "params": {
+      "key": "test"
+    },
+    "text": "config_override",
+    "status": "completed",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T01:17:08.632Z",
+    "plan": {
+      "taskId": "req-1791854228632-b62056",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "config_override",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": {
+      "agentId": "kitt",
+      "capability": "config_override",
+      "executedAt": "2026-10-13T01:17:08.657Z",
+      "summary": "Configuration override applied",
+      "updatedKeys": [],
+      "overrideTimestamp": "2026-10-13T01:17:08.657Z"
+    },
+    "approved": true,
+    "approvedAt": "2026-10-13T01:17:08.657Z",
+    "approver": "chief",
+    "executedAt": "2026-10-13T01:17:08.657Z"
+  },
+  {
+    "id": "req-1791854228620-79eec7",
+    "title": "Agent [kitt] command: Execute System Command",
+    "sourceType": "agent",
+    "agentId": "kitt",
+    "command": "execute_system_command",
+    "capability": "execute_system_command",
+    "params": {
+      "command": "whoami"
+    },
+    "text": "",
+    "status": "pending_approval",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T01:17:08.620Z",
+    "plan": {
+      "taskId": "req-1791854228620-79eec7",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "execute_system_command",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791854190483-a6063b",
+    "title": "config_override",
+    "sourceType": "text",
+    "agentId": "kitt",
+    "command": null,
+    "capability": "config_override",
+    "params": {
+      "key": "test"
+    },
+    "text": "config_override",
+    "status": "completed",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T01:16:30.483Z",
+    "plan": {
+      "taskId": "req-1791854190483-a6063b",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "config_override",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": {
+      "agentId": "kitt",
+      "capability": "config_override",
+      "executedAt": "2026-10-13T01:16:30.507Z",
+      "summary": "Configuration override applied",
+      "updatedKeys": [],
+      "overrideTimestamp": "2026-10-13T01:16:30.507Z"
+    },
+    "approved": true,
+    "approvedAt": "2026-10-13T01:16:30.507Z",
+    "approver": "chief",
+    "executedAt": "2026-10-13T01:16:30.507Z"
+  },
+  {
+    "id": "req-1791854190471-4e1e7d",
+    "title": "Agent [kitt] command: Execute System Command",
+    "sourceType": "agent",
+    "agentId": "kitt",
+    "command": "execute_system_command",
+    "capability": "execute_system_command",
+    "params": {
+      "command": "whoami"
+    },
+    "text": "",
+    "status": "pending_approval",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T01:16:30.471Z",
+    "plan": {
+      "taskId": "req-1791854190471-4e1e7d",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "execute_system_command",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791854156635-a00cb3",
+    "title": "config_override",
+    "sourceType": "text",
+    "agentId": "kitt",
+    "command": null,
+    "capability": "config_override",
+    "params": {
+      "key": "test"
+    },
+    "text": "config_override",
+    "status": "completed",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T01:15:56.635Z",
+    "plan": {
+      "taskId": "req-1791854156635-a00cb3",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "config_override",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": {
+      "agentId": "kitt",
+      "capability": "config_override",
+      "executedAt": "2026-10-13T01:15:56.660Z",
+      "summary": "Configuration override applied",
+      "updatedKeys": [],
+      "overrideTimestamp": "2026-10-13T01:15:56.660Z"
+    },
+    "approved": true,
+    "approvedAt": "2026-10-13T01:15:56.660Z",
+    "approver": "chief",
+    "executedAt": "2026-10-13T01:15:56.660Z"
+  },
+  {
+    "id": "req-1791854156623-23d410",
+    "title": "Agent [kitt] command: Execute System Command",
+    "sourceType": "agent",
+    "agentId": "kitt",
+    "command": "execute_system_command",
+    "capability": "execute_system_command",
+    "params": {
+      "command": "whoami"
+    },
+    "text": "",
+    "status": "pending_approval",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T01:15:56.623Z",
+    "plan": {
+      "taskId": "req-1791854156623-23d410",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "execute_system_command",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791854114930-44d859",
+    "title": "Agent [kitt] command: Execute System Command",
+    "sourceType": "agent",
+    "agentId": "kitt",
+    "command": "execute_system_command",
+    "capability": "execute_system_command",
+    "params": {
+      "command": "whoami"
+    },
+    "text": "",
+    "status": "pending_approval",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T01:15:14.930Z",
+    "plan": {
+      "taskId": "req-1791854114930-44d859",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "execute_system_command",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791853377705-a3cc79",
+    "title": "[Artanis Plan: Perform network scan and speak summary] Step 4: Emit local speech completion notification",
+    "sourceType": "artanis_plan",
+    "agentId": "talker",
+    "command": "speak_local",
+    "capability": "speak_local",
+    "params": {
+      "text": "Plan execution prepared: Perform network scan and speak summ"
+    },
+    "text": "Plan Step 4: Emit local speech completion notification",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:02:57.705Z",
+    "plan": {
+      "taskId": "req-1791853377705-a3cc79",
+      "category": "agent_execution",
+      "module": "Agent: talker",
+      "risk": "low",
+      "requestedCapability": "speak_local",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791853377705-d3d9c7",
+    "title": "[Artanis Plan: Perform network scan and speak summary] Step 3: Synchronize agent execution state",
+    "sourceType": "artanis_plan",
+    "agentId": "kitt",
+    "command": "orchestrate_agents",
+    "capability": "orchestrate_agents",
+    "params": {
+      "goal": "Perform network scan and speak summary"
+    },
+    "text": "Plan Step 3: Synchronize agent execution state",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:02:57.705Z",
+    "plan": {
+      "taskId": "req-1791853377705-d3d9c7",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "low",
+      "requestedCapability": "orchestrate_agents",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791853377704-ef878f",
+    "title": "[Artanis Plan: Perform network scan and speak summary] Step 2: Inspect local environment boundary and files",
+    "sourceType": "artanis_plan",
+    "agentId": "observer",
+    "command": "network_scan",
+    "capability": "network_scan",
+    "params": {
+      "path": "."
+    },
+    "text": "Plan Step 2: Inspect local environment boundary and files",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:02:57.704Z",
+    "plan": {
+      "taskId": "req-1791853377704-ef878f",
+      "category": "agent_execution",
+      "module": "Agent: observer",
+      "risk": "low",
+      "requestedCapability": "network_scan",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791853377704-b67823",
+    "title": "[Artanis Plan: Perform network scan and speak summary] Step 1: Analyze and parse instruction syntax",
+    "sourceType": "artanis_plan",
+    "agentId": "listener",
+    "command": "parse_instructions",
+    "capability": "parse_instructions",
+    "params": {
+      "text": "Perform network scan and speak summary"
+    },
+    "text": "Plan Step 1: Analyze and parse instruction syntax",
+    "status": "pending_approval",
+    "requiresApproval": false,
+    "createdAt": "2026-10-13T01:02:57.704Z",
+    "plan": {
+      "taskId": "req-1791853377704-b67823",
+      "category": "agent_execution",
+      "module": "Agent: listener",
+      "risk": "low",
+      "requestedCapability": "parse_instructions",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Ready for execution"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791853168807-e7e956",
+    "title": "Voice Model Training Approval: Chief Voice",
+    "sourceType": "voice_training",
+    "agentId": "talker",
+    "command": "model_trainer",
+    "capability": "model_trainer",
+    "params": {
+      "jobId": "job-voice-1791853168803-ji3p",
+      "voiceId": "voice-1791853168803-ji3p"
+    },
+    "text": "Approve local AI voice model training for Chief Voice",
+    "status": "pending_approval",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T00:59:28.807Z",
+    "plan": {
+      "taskId": "req-1791853168807-e7e956",
+      "category": "agent_execution",
+      "module": "Agent: talker",
+      "risk": "high",
+      "requestedCapability": "model_trainer",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791853168801-a5f94e",
+    "title": "MI User [chief] command: Execute System Command",
+    "sourceType": "mi_command",
+    "agentId": "kitt",
+    "command": "execute_system_command",
+    "capability": "execute_system_command",
+    "params": {
+      "command": "Reboot the system"
+    },
+    "text": "Reboot the system",
+    "status": "pending_approval",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T00:59:28.801Z",
+    "plan": {
+      "taskId": "req-1791853168801-a5f94e",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "execute_system_command",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791852722989-967174",
+    "title": "Agent [kitt] command: Execute System Command",
+    "sourceType": "agent",
+    "agentId": "kitt",
+    "command": "execute_system_command",
+    "capability": "execute_system_command",
+    "params": {
+      "command": "status"
+    },
+    "text": "",
+    "status": "completed",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T00:52:02.989Z",
+    "plan": {
+      "taskId": "req-1791852722989-967174",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "execute_system_command",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": {
+      "agentId": "kitt",
+      "capability": "execute_system_command",
+      "executedAt": "2026-10-13T00:52:09.231Z",
+      "summary": "System command 'status' executed after explicit approval",
+      "command": "status",
+      "result": "Safe execution confirmed for status",
+      "completedAt": "2026-10-13T00:52:09.231Z"
+    },
+    "approved": true,
+    "approvedAt": "2026-10-13T00:52:09.231Z",
+    "approver": "chief",
+    "executedAt": "2026-10-13T00:52:09.231Z"
+  }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "prompt-1791854156670-b3bd",
+    "title": "Smoke Test Prompt",
+    "description": "",
+    "template": "Hello {{name}}, code is {{code}}",
+    "variables": [
+      "name",
+      "code"
+    ],
+    "tags": [
+      "test"
+    ],
+    "updatedAt": "2026-10-13T01:15:56.670Z"
+  },
+  {
+    "id": "prompt-diag",
+    "title": "System Diagnostics",
+    "description": "Trigger local diagnostic probe on a specific subsystem",
+    "template": "K.I.T.T., perform local health check on {{target}} with verbosity {{level}}.",
+    "variables": [
+      "target",
+      "level"
+    ],
+    "tags": [
+      "diagnostics",
+      "system"
+    ]
+  },
+  {
+    "id": "prompt-task",
+    "title": "Agent Task Dispatch",
+    "description": "Dispatch a structured task to a specific local agent",
+    "template": "Assign task {{task_name}} to agent {{agent_id}} with priority {{priority}}.",
+    "variables": [
+      "task_name",
+      "agent_id",
+      "priority"
+    ],
+    "tags": [
+      "orchestration",
+      "agents"
+    ]
+  },
+  {
+    "id": "prompt-voice",
+    "title": "Voice Synthesis Relay",
+    "description": "Relay a local spoken alert",
+    "template": "Speak announcement '{{message}}' using local voice profile {{voice_name}}.",
+    "variables": [
+      "message",
+      "voice_name"
+    ],
+    "tags": [
+      "voice",
+      "audio"
+    ]
+  },
+  {
+    "id": "prompt-artanis-plan",
+    "title": "Artanis Decomposition",
+    "description": "Decompose complex mission into sequential agent steps",
+    "template": "Decompose objective '{{goal}}' into sequential sub-tasks for local agents under approval gate.",
+    "variables": [
+      "goal"
+    ],
+    "tags": [
+      "artanis",
+      "planning"
+    ]
+  }
+]

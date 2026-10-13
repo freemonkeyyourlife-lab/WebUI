@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>K.I.T.T. & Free Monkeys — Base44 Exportable Hub</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090d16;
+      --panel: #121a27;
+      --card: #182334;
+      --border: #24354c;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --green: #3fb950;
+      --yellow: #f1e05a;
+      --red: #f85149;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    h1 { margin: 0; font-size: 20px; color: var(--accent); }
+    h2 { margin: 0 0 10px 0; font-size: 16px; color: var(--yellow); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    button, input, select {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    button {
+      cursor: pointer;
+      background: var(--accent);
+      color: #0d1117;
+      font-weight: 700;
+      border: none;
+    }
+
+    button:hover { opacity: 0.9; }
+
+    .btn-green { background: var(--green); color: #fff; }
+    .btn-yellow { background: var(--yellow); color: #111; }
+
+    .status-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge-ok { background: rgba(63, 185, 80, 0.2); color: var(--green); }
+    .badge-stopped { background: rgba(248, 81, 73, 0.2); color: var(--red); }
+
+    pre {
+      background: #0d1117;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-size: 12px;
+      overflow-x: auto;
+      max-height: 200px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>⚡ K.I.T.T. Base44 Export Hub</h1>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">
+          Standalone static frontend entry for Base44 workspace integration
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <label style="font-size: 12px; color: var(--muted);">API Base:</label>
+        <input id="apiBase" value="http://localhost:3005" style="width: 200px;" />
+        <button id="btnRefresh">Connect</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- System Health Card -->
+      <div class="card">
+        <h2>System Status</h2>
+        <div>Health: <span id="healthBadge" class="status-badge badge-stopped">Disconnected</span></div>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 6px;" id="healthInfo">-</div>
+      </div>
+
+      <!-- MI Profile Card -->
+      <div class="card">
+        <h2>Personal MI Instance</h2>
+        <div>Instance: <strong id="miName">-</strong> (<span id="miMode">-</span>)</div>
+        <div>Consent Outbound: <span id="miConsent">-</span></div>
+        <div style="margin-top: 8px;">
+          <button class="btn-yellow" id="btnMiDigest">Fetch Daily Digest</button>
+        </div>
+      </div>
+
+      <!-- Free Monkeys GO! Card -->
+      <div class="card">
+        <h2>Free Monkeys® GO!</h2>
+        <div>Coins: <strong id="gameCoins">0</strong> 🍌 | Level: <span id="gameLevel">1</span></div>
+        <div>Companion: <span id="gameMonkey">-</span></div>
+        <div style="margin-top: 8px; display: flex; gap: 6px;">
+          <button class="btn-green" id="btnGenMission">⚡ Quick Mission</button>
+          <button id="btnClaimTick">⏱️ Reward Tick</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Multi-Agent Registry Card -->
+    <div class="card" style="margin-bottom: 20px;">
+      <h2>Multi-Agent Registry & Approval Gate</h2>
+      <div id="agentsList" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;"></div>
+      <div style="font-size: 12px; color: var(--muted);">
+        Pending Approval-Gated Requests: <strong id="pendingCount">0</strong>
+      </div>
+    </div>
+
+    <!-- Artanis Planner Card -->
+    <div class="card" style="margin-bottom: 20px;">
+      <h2>Artanis Autonomous Goal Planner</h2>
+      <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+        <input id="artanisGoal" placeholder="Enter objective (e.g. Inspect network and summarize)" style="flex: 1;" />
+        <button id="btnArtanisPlan">Decompose Goal</button>
+      </div>
+      <pre id="artanisOutput">Plan details will appear here...</pre>
+    </div>
+
+    <!-- Console Output -->
+    <div class="card">
+      <h2>Live Telemetry Console</h2>
+      <pre id="consoleLog">Ready. Connect to K.I.T.T. API...</pre>
+    </div>
+  </div>
+
+  <script>
+    const apiBaseInput = document.getElementById('apiBase');
+    if (window.KITT_API_BASE) {
+      apiBaseInput.value = window.KITT_API_BASE;
+    }
+
+    function getBaseUrl() {
+      return apiBaseInput.value.replace(/\/+$/, '');
+    }
+
+    function log(msg) {
+      const el = document.getElementById('consoleLog');
+      el.textContent = `[${new Date().toLocaleTimeString()}] ${typeof msg === 'object' ? JSON.stringify(msg, null, 2) : msg}\n` + el.textContent;
+    }
+
+    async function loadData() {
+      const base = getBaseUrl();
+      try {
+        // Health
+        const hRes = await fetch(`${base}/api/health`);
+        const hData = await hRes.json();
+        const hb = document.getElementById('healthBadge');
+        hb.textContent = 'ONLINE (Local-First)';
+        hb.className = 'status-badge badge-ok';
+        document.getElementById('healthInfo').textContent = `Mode: ${hData.mode || 'local'} | Ts: ${hData.ts}`;
+        log('Health verified: ' + JSON.stringify(hData));
+
+        // MI
+        const miRes = await fetch(`${base}/api/mi/chief/profile`);
+        const miData = await miRes.json();
+        document.getElementById('miName').textContent = miData.displayName || 'K.I.T.T.';
+        document.getElementById('miMode').textContent = miData.mode || 'assistant';
+        document.getElementById('miConsent').textContent = miData.externalAIConsent?.allowOutbound ? 'ALLOWED' : 'BLOCKED (Default)';
+
+        // Game
+        const gRes = await fetch(`${base}/api/game/profile`);
+        const gData = await gRes.json();
+        document.getElementById('gameCoins').textContent = gData.player.coins;
+        document.getElementById('gameLevel').textContent = `${gData.player.level} (${gData.player.levelTitle})`;
+        document.getElementById('gameMonkey').textContent = gData.player.selectedMonkey.toUpperCase();
+
+        // Agents
+        const aRes = await fetch(`${base}/api/agents`);
+        const aData = await aRes.json();
+        const al = document.getElementById('agentsList');
+        al.innerHTML = aData.map(a => `
+          <div style="background: #0d1117; border: 1px solid var(--border); padding: 8px 12px; border-radius: 6px;">
+            <strong>${a.label}</strong>
+            <span class="status-badge ${a.status === 'running' ? 'badge-ok' : 'badge-stopped'}">${a.status}</span>
+          </div>
+        `).join('');
+
+        // Requests
+        const rRes = await fetch(`${base}/api/requests`);
+        const rData = await rRes.json();
+        const pending = rData.filter(r => r.status === 'pending_approval');
+        document.getElementById('pendingCount').textContent = pending.length;
+      } catch (err) {
+        const hb = document.getElementById('healthBadge');
+        hb.textContent = 'OFFLINE';
+        hb.className = 'status-badge badge-stopped';
+        log('Connection error: ' + err.message);
+      }
+    }
+
+    document.getElementById('btnRefresh').onclick = loadData;
+
+    document.getElementById('btnMiDigest').onclick = async () => {
+      try {
+        const res = await fetch(`${getBaseUrl()}/api/mi/chief/digest`);
+        const data = await res.json();
+        log(data);
+        alert(`Digest for ${data.user}:\nGenerated at: ${data.generatedAt}\nMemories processed: ${data.items ? data.items.length : 0}`);
+      } catch (e) { log(e.message); }
+    };
+
+    document.getElementById('btnGenMission').onclick = async () => {
+      try {
+        const res = await fetch(`${getBaseUrl()}/api/game/missions/generate`, { method: 'POST' });
+        const data = await res.json();
+        log(data);
+        alert(`⚡ New Mission: ${data.mission.title} (${data.mission.durationSec}s)`);
+        loadData();
+      } catch (e) { log(e.message); }
+    };
+
+    document.getElementById('btnClaimTick').onclick = async () => {
+      try {
+        const res = await fetch(`${getBaseUrl()}/api/game/rewards/tick`, { method: 'POST' });
+        const data = await res.json();
+        log(data);
+        if (data.ok) {
+          alert(`🍌 Claimed Tick: +${data.claimed.coins} Coins!`);
+        } else {
+          alert(data.error);
+        }
+        loadData();
+      } catch (e) { log(e.message); }
+    };
+
+    document.getElementById('btnArtanisPlan').onclick = async () => {
+      const goal = document.getElementById('artanisGoal').value.trim();
+      if (!goal) return alert('Enter a goal');
+      try {
+        const res = await fetch(`${getBaseUrl()}/api/artanis/plan`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ goal })
+        });
+        const data = await res.json();
+        document.getElementById('artanisOutput').textContent = JSON.stringify(data.plan, null, 2);
+        log(data);
+      } catch (e) { log(e.message); }
+    };
+
+    loadData();
+  </script>
+</body>
+</html>

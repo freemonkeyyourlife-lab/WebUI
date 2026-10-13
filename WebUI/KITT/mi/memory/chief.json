@@ -1,0 +1,72 @@
+[
+  {
+    "id": "mem-1791854436397-u54n",
+    "text": "Smoke test memory entry",
+    "category": "diagnostics",
+    "tags": [],
+    "sentiment": "neutral",
+    "importance": "normal",
+    "scope": "local",
+    "createdAt": "2026-10-13T01:20:36.397Z"
+  },
+  {
+    "id": "mem-1791854286374-caui",
+    "text": "Smoke test memory entry",
+    "category": "diagnostics",
+    "tags": [],
+    "sentiment": "neutral",
+    "importance": "normal",
+    "scope": "local",
+    "createdAt": "2026-10-13T01:18:06.374Z"
+  },
+  {
+    "id": "mem-1791854257936-oqbh",
+    "text": "Smoke test memory entry",
+    "category": "diagnostics",
+    "tags": [],
+    "sentiment": "neutral",
+    "importance": "normal",
+    "scope": "local",
+    "createdAt": "2026-10-13T01:17:37.936Z"
+  },
+  {
+    "id": "mem-1791854228706-yimi",
+    "text": "Smoke test memory entry",
+    "category": "diagnostics",
+    "tags": [],
+    "sentiment": "neutral",
+    "importance": "normal",
+    "scope": "local",
+    "createdAt": "2026-10-13T01:17:08.706Z"
+  },
+  {
+    "id": "mem-1791854190556-zskv",
+    "text": "Smoke test memory entry",
+    "category": "diagnostics",
+    "tags": [],
+    "sentiment": "neutral",
+    "importance": "normal",
+    "scope": "local",
+    "createdAt": "2026-10-13T01:16:30.556Z"
+  },
+  {
+    "id": "mem-1791853168795-9i70",
+    "text": "User prefers local-first operations",
+    "category": "preference",
+    "tags": [],
+    "sentiment": "neutral",
+    "importance": "normal",
+    "scope": "local",
+    "createdAt": "2026-10-13T00:59:28.795Z"
+  },
+  {
+    "id": "mem-1791853077377-h96d",
+    "text": "User prefers local-first operations",
+    "category": "preference",
+    "tags": [],
+    "sentiment": "neutral",
+    "importance": "normal",
+    "scope": "local",
+    "createdAt": "2026-10-13T00:57:57.377Z"
+  }
+]

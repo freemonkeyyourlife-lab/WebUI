@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>K.I.T.T. — Prompt Builder</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Prompt Builder & Template Library</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Parametric Prompts with {{placeholders}} & Direct Task Ingestion</p>
+      </div>
+      <nav class="nav-links">
+        <a href="/agents.html">Agents</a>
+        <a href="/prompt_builder.html" class="active">Prompt Builder</a>
+        <a href="/mi_settings.html">MI Profile</a>
+        <a href="/game.html">Free Monkeys GO!</a>
+        <a href="/file_upload.html">Files</a>
+      </nav>
+    </header>
+
+    <div class="grid" style="grid-template-columns: 350px 1fr;">
+      <!-- Catalog & Search -->
+      <section class="card">
+        <h3>Template Catalog</h3>
+        <input id="searchInput" placeholder="Search templates (title, tag)..." />
+        <div id="catalogList" style="max-height: 500px; overflow-y: auto; margin-top: 10px;">
+          Loading catalog...
+        </div>
+        <button id="newPromptBtn" class="btn-secondary" style="margin-top: 12px; width: 100%;">+ New Template</button>
+      </section>
+
+      <!-- Editor & Renderer -->
+      <section class="card">
+        <div class="card-header">
+          <h3 id="editorHeading">Template Editor</h3>
+          <div style="display: flex; gap: 8px;">
+            <button id="deleteBtn" class="btn-danger" style="display: none;">Delete</button>
+            <button id="saveBtn">Save Template</button>
+          </div>
+        </div>
+
+        <input type="hidden" id="promptId" />
+        <label>Title</label>
+        <input id="promptTitle" placeholder="e.g. Diagnostic Probe" />
+
+        <label>Description</label>
+        <input id="promptDesc" placeholder="Short description of this prompt's purpose" />
+
+        <label>Tags (comma separated)</label>
+        <input id="promptTags" placeholder="e.g. diagnostics, system, voice" />
+
+        <label>Template (use <code>{{variable_name}}</code> for dynamic slots)</label>
+        <textarea id="promptTemplate" rows="5" placeholder="K.I.T.T., perform local inspection on {{target}} with mode {{mode}}."></textarea>
+
+        <h4 style="margin-top: 16px; margin-bottom: 8px; color: var(--accent);">Fill Variables</h4>
+        <div id="variableInputsContainer">Type in the template above to detect variables...</div>
+
+        <h4 style="margin-top: 16px; margin-bottom: 8px;">Rendered Output Preview</h4>
+        <div id="renderedPreview" class="log-box" style="margin-bottom: 16px;"></div>
+
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <button id="insertRequestBtn" class="btn-success">Insert into Request Form</button>
+          <span id="actionFeedback" style="color: var(--status-running); font-size: 0.9rem;"></span>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const catalogList = document.getElementById('catalogList');
+    const newPromptBtn = document.getElementById('newPromptBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const deleteBtn = document.getElementById('deleteBtn');
+    const insertRequestBtn = document.getElementById('insertRequestBtn');
+    const actionFeedback = document.getElementById('actionFeedback');
+
+    const promptId = document.getElementById('promptId');
+    const promptTitle = document.getElementById('promptTitle');
+    const promptDesc = document.getElementById('promptDesc');
+    const promptTags = document.getElementById('promptTags');
+    const promptTemplate = document.getElementById('promptTemplate');
+    const variableInputsContainer = document.getElementById('variableInputsContainer');
+    const renderedPreview = document.getElementById('renderedPreview');
+
+    let currentVariables = [];
+    let currentValues = {};
+
+    function extractVars(text) {
+      const matches = text.match(/\{\{([a-zA-Z0-9_-]+)\}\}/g);
+      if (!matches) return [];
+      return Array.from(new Set(matches.map(m => m.replace(/\{\{|\}\}/g, '').trim())));
+    }
+
+    function updateVariableFields() {
+      const vars = extractVars(promptTemplate.value);
+      currentVariables = vars;
+
+      if (vars.length === 0) {
+        variableInputsContainer.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem;">No {{variables}} found in template.</p>';
+        updateRendered();
+        return;
+      }
+
+      variableInputsContainer.innerHTML = '';
+      vars.forEach(v => {
+        const row = document.createElement('div');
+        row.style.marginBottom = '8px';
+
+        const label = document.createElement('label');
+        label.style.fontSize = '0.85rem';
+        label.style.fontWeight = '600';
+        label.textContent = `{{${v}}}`;
+
+        const input = document.createElement('input');
+        input.dataset.var = v;
+        input.value = currentValues[v] || '';
+        input.placeholder = `Value for ${v}`;
+        input.className = 'var-field';
+        input.addEventListener('input', (e) => {
+          currentValues[v] = e.target.value;
+          updateRendered();
+        });
+
+        row.appendChild(label);
+        row.appendChild(input);
+        variableInputsContainer.appendChild(row);
+      });
+
+      updateRendered();
+    }
+
+    function updateRendered() {
+      let text = promptTemplate.value;
+      for (const v of currentVariables) {
+        const val = currentValues[v] !== undefined ? currentValues[v] : `{{${v}}}`;
+        text = text.split(`{{${v}}}`).join(val);
+      }
+      renderedPreview.textContent = text || '(empty rendered output)';
+    }
+
+    async function loadCatalog() {
+      const q = searchInput.value.trim();
+      const res = await fetch(`/api/prompts?q=${encodeURIComponent(q)}`);
+      const prompts = await res.json();
+
+      if (prompts.length === 0) {
+        catalogList.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem;">No templates found.</p>';
+        return;
+      }
+
+      catalogList.innerHTML = prompts.map(p => `
+        <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; margin-bottom: 8px; cursor: pointer;" onclick="selectPrompt('${p.id}')">
+          <strong>${p.title}</strong>
+          <p style="color: var(--text-muted); font-size: 0.8rem; margin: 4px 0;">${p.description || p.template.slice(0, 60)}</p>
+          <div>${(p.tags || []).map(t => `<span class="badge" style="background:#1d2d44; color:#a0c4ff; margin-right:4px;">${t}</span>`).join('')}</div>
+        </div>
+      `).join('');
+    }
+
+    window.selectPrompt = async function(id) {
+      const res = await fetch(`/api/prompts/${encodeURIComponent(id)}`);
+      if (!res.ok) return;
+      const p = await res.json();
+      promptId.value = p.id;
+      promptTitle.value = p.title;
+      promptDesc.value = p.description || '';
+      promptTags.value = (p.tags || []).join(', ');
+      promptTemplate.value = p.template;
+      deleteBtn.style.display = 'inline-block';
+      updateVariableFields();
+    };
+
+    function resetForm() {
+      promptId.value = '';
+      promptTitle.value = '';
+      promptDesc.value = '';
+      promptTags.value = '';
+      promptTemplate.value = '';
+      deleteBtn.style.display = 'none';
+      currentValues = {};
+      updateVariableFields();
+    }
+
+    saveBtn.addEventListener('click', async () => {
+      const payload = {
+        id: promptId.value || undefined,
+        title: promptTitle.value.trim(),
+        description: promptDesc.value.trim(),
+        tags: promptTags.value.split(',').map(t => t.trim()).filter(Boolean),
+        template: promptTemplate.value.trim(),
+        variables: extractVars(promptTemplate.value)
+      };
+
+      if (!payload.title || !payload.template) {
+        alert('Title and template are required');
+        return;
+      }
+
+      const res = await fetch('/api/prompts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.ok) {
+        actionFeedback.textContent = 'Template saved successfully!';
+        setTimeout(() => { actionFeedback.textContent = ''; }, 3000);
+        loadCatalog();
+        selectPrompt(data.prompt.id);
+      }
+    });
+
+    deleteBtn.addEventListener('click', async () => {
+      if (!promptId.value) return;
+      if (!confirm('Delete this template?')) return;
+      const res = await fetch(`/api/prompts/${encodeURIComponent(promptId.value)}`, {
+        method: 'DELETE'
+      });
+      const data = await res.json();
+      if (data.ok) {
+        resetForm();
+        loadCatalog();
+      }
+    });
+
+    insertRequestBtn.addEventListener('click', async () => {
+      const text = renderedPreview.textContent.trim();
+      if (!text || text === '(empty rendered output)') {
+        alert('No rendered text to insert.');
+        return;
+      }
+
+      const res = await fetch('/api/requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: promptTitle.value || 'Prompt Execution Request',
+          text,
+          sourceType: 'prompt_builder'
+        })
+      });
+
+      const data = await res.json();
+      actionFeedback.textContent = `Inserted as Request ${data.id}! Check Agents Dashboard.`;
+      setTimeout(() => { actionFeedback.textContent = ''; }, 4000);
+    });
+
+    searchInput.addEventListener('input', loadCatalog);
+    newPromptBtn.addEventListener('click', resetForm);
+    promptTemplate.addEventListener('input', updateVariableFields);
+
+    loadCatalog();
+  </script>
+</body>
+</html>

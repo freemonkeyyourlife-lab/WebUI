@@ -1,0 +1,578 @@
+openapi: 3.0.3
+info:
+  title: K.I.T.T. & FREE MONKEYS GO! Local-First API
+  version: 1.0.0
+  description: |
+    Local-first, approval-gated, loopback-default REST API for K.I.T.T., multi-agent coordination,
+    personal MI instance (memory, digest, consent enforcement), voice registration/training gates,
+    Artanis autonomous planner, and the FREE MONKEYS GO! urban micro-mission game module.
+servers:
+  - url: http://localhost:3005
+    description: Local loopback server
+paths:
+  /api/health:
+    get:
+      summary: Health check
+      description: Returns health status, timestamp, and local-first runtime flag.
+      responses:
+        '200':
+          description: Service is healthy and active.
+
+  /api/modules:
+    get:
+      summary: Module catalog
+      description: Returns registered K.I.T.T. functional modules and risk levels.
+      responses:
+        '200':
+          description: List of modules.
+
+  /api/agents:
+    get:
+      summary: List registered agents
+      description: Returns all agents with status, capabilities, and lifecycle states.
+      responses:
+        '200':
+          description: Array of registered agents.
+
+  /api/agents/{id}:
+    get:
+      summary: Get agent details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Agent record.
+        '404':
+          description: Agent not found.
+
+  /api/agents/{id}/capabilities:
+    get:
+      summary: Get agent capabilities
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of agent capabilities and approval requirements.
+
+  /api/agents/{id}/start:
+    post:
+      summary: Start agent lifecycle
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Agent started.
+
+  /api/agents/{id}/stop:
+    post:
+      summary: Stop agent lifecycle
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Agent stopped.
+
+  /api/agents/{id}/command:
+    post:
+      summary: Send command to agent
+      description: Dispatches command to capability handler; sensitive commands trigger approval gate.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                command:
+                  type: string
+                capability:
+                  type: string
+                params:
+                  type: object
+      responses:
+        '200':
+          description: Command executed or queued for approval.
+
+  /api/requests:
+    get:
+      summary: List all requests and approval-gated tasks
+      responses:
+        '200':
+          description: List of task records.
+    post:
+      summary: Submit a new request to the approval gate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                agentId:
+                  type: string
+                capability:
+                  type: string
+                params:
+                  type: object
+      responses:
+        '201':
+          description: Request created.
+
+  /api/requests/{id}/approve:
+    post:
+      summary: Approve and execute a pending request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                approver:
+                  type: string
+      responses:
+        '200':
+          description: Request approved and executed.
+
+  /api/prompts:
+    get:
+      summary: Search and list prompt templates
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Array of prompt templates.
+    post:
+      summary: Save or update a prompt template
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                template:
+                  type: string
+                tags:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: Prompt saved with extracted variables.
+
+  /api/prompts/{id}:
+    delete:
+      summary: Delete a prompt template
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Prompt deleted.
+
+  /api/mi/{user}/profile:
+    get:
+      summary: Get personal MI profile
+      parameters:
+        - name: user
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: MI profile.
+    post:
+      summary: Update personal MI profile
+      parameters:
+        - name: user
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Profile updated.
+
+  /api/mi/{user}/memory:
+    get:
+      summary: List local memories
+      parameters:
+        - name: user
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Array of memories.
+    post:
+      summary: Add a local memory item
+      parameters:
+        - name: user
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                category:
+                  type: string
+      responses:
+        '201':
+          description: Memory saved.
+
+  /api/mi/{user}/digest:
+    get:
+      summary: Generate memory digest
+      description: Synthesizes a structured daily digest from local memories and companion logs.
+      parameters:
+        - name: user
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Memory digest summary.
+
+  /api/mi/{user}/consent:
+    post:
+      summary: Update external AI consent policy
+      parameters:
+        - name: user
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                allowInbound:
+                  type: boolean
+                allowOutbound:
+                  type: boolean
+      responses:
+        '200':
+          description: Consent policy updated.
+
+  /api/mi/{user}/share-external:
+    post:
+      summary: Outbound sharing gate
+      description: Strictly blocks outbound transmissions (HTTP 403) unless consent and sharing level permit.
+      parameters:
+        - name: user
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: External share allowed.
+        '403':
+          description: Forbidden by consent policy.
+
+  /api/voice/register:
+    post:
+      summary: Register voice sample with mandatory consent flag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, consent]
+              properties:
+                name:
+                  type: string
+                consent:
+                  type: boolean
+                sampleBase64:
+                  type: string
+                metadata:
+                  type: object
+      responses:
+        '201':
+          description: Voice sample registered and job record created.
+        '400':
+          description: Consent missing or invalid metadata.
+
+  /api/voice/jobs/{id}/train:
+    post:
+      summary: Train voice model (approval-gated)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Voice training task submitted to approval gate.
+
+  /api/voice/preview:
+    get:
+      summary: Voice synthesis preview
+      description: Returns explicit not-synthesized status when local synthesis binaries are absent.
+      responses:
+        '200':
+          description: Voice preview status.
+
+  /api/artanis/status:
+    get:
+      summary: Artanis autonomous planner status
+      responses:
+        '200':
+          description: Agent status, personas count, and capabilities.
+
+  /api/artanis/plan:
+    post:
+      summary: Decompose goal into multi-agent tasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [goal]
+              properties:
+                goal:
+                  type: string
+      responses:
+        '201':
+          description: Plan decomposed across agents.
+
+  /api/artanis/plans/{id}/submit:
+    post:
+      summary: Submit decomposed plan to approval gate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Plan steps registered in approval gate.
+
+  /api/artanis/personas:
+    get:
+      summary: List digital buddy personas
+      responses:
+        '200':
+          description: Personas array.
+    post:
+      summary: Create or customize digital buddy persona
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Persona created.
+
+  /api/game/profile:
+    get:
+      summary: Player game profile and stats
+      responses:
+        '200':
+          description: Profile, stats, coins, XP, level, reward tick status.
+
+  /api/game/profile/settings:
+    post:
+      summary: Update game privacy and companion preferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Settings updated.
+
+  /api/game/monkeys:
+    get:
+      summary: List companion monkeys
+      description: Returns the 3 monkeys (GO!, Couchmonkey, MI Companion) with stats and bio.
+      responses:
+        '200':
+          description: Array of monkey companions.
+
+  /api/game/pois:
+    get:
+      summary: Get Points of Interest GeoJSON
+      responses:
+        '200':
+          description: GeoJSON FeatureCollection of POIs.
+    post:
+      summary: Add local point of interest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                title:
+                  type: string
+                category:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: POI created.
+
+  /api/game/missions:
+    get:
+      summary: List available and active micro-missions
+      responses:
+        '200':
+          description: Missions catalog.
+
+  /api/game/missions/generate:
+    post:
+      summary: Generate a 1-3 minute micro-mission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [search, fetch, mark, bring, build_care, time_pressure, trivia, social_help]
+                monkey:
+                  type: string
+      responses:
+        '201':
+          description: Mission generated.
+
+  /api/game/missions/{id}/accept:
+    post:
+      summary: Start mission and activate 1-3 min timer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Mission active with expiration timestamp.
+
+  /api/game/missions/{id}/complete:
+    post:
+      summary: Complete mission and award XP + coins
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                answer:
+                  type: string
+      responses:
+        '200':
+          description: Mission completed and rewards awarded.
+
+  /api/game/rewards/tick:
+    post:
+      summary: Claim 15-minute reward tick
+      responses:
+        '200':
+          description: Banana tick reward claimed.
+
+  /api/game/rewards/return:
+    post:
+      summary: Claim daily return bonus
+      responses:
+        '200':
+          description: Daily loyalty gift claimed.
+
+  /api/game/social/highfive:
+    post:
+      summary: Opt-in High-Five code exchange
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum: [generate, redeem]
+                code:
+                  type: string
+      responses:
+        '200':
+          description: Code generated or redeemed.

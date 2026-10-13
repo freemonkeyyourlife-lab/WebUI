@@ -36,8 +36,11 @@ const upload = multer({ storage });
 
 // Helpers
 function safeJoin(base, p) {
-  const resolved = path.resolve(base, p || '');
-  if (!resolved.startsWith(path.resolve(base))) throw new Error('Invalid path');
+  const baseResolved = path.resolve(base);
+  const resolved = path.resolve(baseResolved, p || '');
+  if (resolved !== baseResolved && !resolved.startsWith(baseResolved + path.sep)) {
+    throw new Error('Invalid path');
+  }
   return resolved;
 }
 
