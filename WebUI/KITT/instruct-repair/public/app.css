@@ -1,0 +1,87 @@
+:root {
+  color-scheme: dark;
+  font-family: system-ui, sans-serif;
+  background: #07111d;
+  color: #eaf3ff;
+  font-synthesis: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 860px;
+  margin: 32px auto;
+  padding: 0 20px;
+}
+
+h1, h2 {
+  color: #55b7ff;
+}
+
+.card {
+  margin: 16px 0;
+  padding: 20px;
+  border: 1px solid #294158;
+  border-radius: 10px;
+  background: #0d1b2a;
+}
+
+label {
+  display: block;
+  margin: 14px 0 6px;
+}
+
+input, select, textarea, button {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #49647e;
+  border-radius: 6px;
+  background: #07111d;
+  color: inherit;
+  font: inherit;
+}
+
+input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+}
+
+button {
+  margin-top: 16px;
+  border-color: #258bd1;
+  background: #12639b;
+  cursor: pointer;
+}
+
+.inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inline input {
+  width: auto;
+}
+
+.prompt {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.status {
+  min-height: 1.5em;
+  color: #a9d8ff;
+}
+
+a {
+  color: #80caff;
+}
+
+@media (max-width: 600px) {
+  body {
+    margin-top: 20px;
+    padding: 0 12px;
+  }
+}

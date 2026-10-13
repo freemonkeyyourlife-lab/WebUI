@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>K.I.T.T. — MI settings</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <h1>MI settings</h1>
+  <p>Profile data is stored locally. External AI access remains disabled unless explicitly enabled here.</p>
+  <section class="card">
+    <label for="user">Local user ID</label>
+    <input id="user" value="local" pattern="[A-Za-z0-9_-]+">
+    <button id="load" type="button">Load profile</button>
+  </section>
+  <form id="profile" class="card">
+    <label for="displayName">Display name</label>
+    <input id="displayName" name="displayName" required>
+    <label for="mode">Mode</label>
+    <select id="mode" name="mode">
+      <option value="assistant">Assistant</option>
+      <option value="observer">Observer</option>
+      <option value="listener">Listener</option>
+    </select>
+    <label class="inline"><input id="proactive" name="proactive" type="checkbox"> Proactive assistance</label>
+    <label for="proactiveFrequency">Proactive frequency</label>
+    <select id="proactiveFrequency" name="proactiveFrequency">
+      <option value="daily">Daily</option>
+      <option value="weekly">Weekly</option>
+      <option value="never">Never</option>
+    </select>
+    <label for="notifyChannels">Notification channels (comma separated)</label>
+    <input id="notifyChannels" name="notifyChannels">
+    <label for="voiceName">Voice profile name</label>
+    <input id="voiceName" name="voiceName">
+    <label for="voiceStyle">Voice style</label>
+    <input id="voiceStyle" name="voiceStyle">
+    <label for="retentionDays">Memory retention (days)</label>
+    <input id="retentionDays" name="retentionDays" type="number" min="0">
+    <h2>Map filters</h2>
+    <label class="inline"><input id="watchOffers" type="checkbox"> Watch offers</label>
+    <label class="inline"><input id="watchNeeds" type="checkbox"> Watch needs</label>
+    <label class="inline"><input id="watchJobs" type="checkbox"> Watch jobs</label>
+    <label for="sensitivity">Sensitivity</label>
+    <select id="sensitivity" name="sensitivity">
+      <option value="standard">Standard</option>
+      <option value="high">High</option>
+    </select>
+    <label for="sharingLevel">Sharing level</label>
+    <select id="sharingLevel" name="sharingLevel">
+      <option value="none">None</option>
+      <option value="private">Private</option>
+      <option value="selected">Selected</option>
+    </select>
+    <h2>Local memory and consent</h2>
+    <label class="inline"><input id="memoryEnabled" type="checkbox"> Enable local memory</label>
+    <label class="inline"><input id="allowOutbound" type="checkbox"> Allow outbound external AI sharing</label>
+    <label class="inline"><input id="allowInbound" type="checkbox"> Allow inbound external AI content</label>
+    <button type="submit">Save profile</button>
+  </form>
+  <p id="status" class="status" role="status"></p>
+  <script>
+    const user = document.getElementById('user');
+    const status = document.getElementById('status');
+    const profileForm = document.getElementById('profile');
+
+    function setProfile(profile) {
+      profileForm.displayName.value = profile.displayName || '';
+      profileForm.mode.value = profile.mode || 'assistant';
+      profileForm.proactive.checked = profile.proactive === true;
+      profileForm.proactiveFrequency.value = profile.proactiveFrequency || 'daily';
+      profileForm.notifyChannels.value = (profile.notifyChannels || []).join(', ');
+      profileForm.voiceName.value = profile.voiceProfile && profile.voiceProfile.voiceName || '';
+      profileForm.voiceStyle.value = profile.voiceProfile && profile.voiceProfile.style || '';
+      profileForm.retentionDays.value = profile.memory && profile.memory.retentionDays || 90;
+      profileForm.watchOffers.checked = !profile.mapFilters || profile.mapFilters.watchOffers !== false;
+      profileForm.watchNeeds.checked = !profile.mapFilters || profile.mapFilters.watchNeeds !== false;
+      profileForm.watchJobs.checked = !profile.mapFilters || profile.mapFilters.watchJobs !== false;
+      profileForm.sensitivity.value = profile.sensitivity || 'standard';
+      profileForm.sharingLevel.value = profile.sharingLevel || 'none';
+      profileForm.memoryEnabled.checked = !profile.memory || profile.memory.enabled !== false;
+      profileForm.allowOutbound.checked = profile.externalAIConsent && profile.externalAIConsent.allowOutbound === true;
+      profileForm.allowInbound.checked = profile.externalAIConsent && profile.externalAIConsent.allowInbound === true;
+    }
+
+    async function loadProfile() {
+      const response = await fetch(`/api/mi/${encodeURIComponent(user.value)}/profile`);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Could not load profile');
+      setProfile(data);
+      status.textContent = 'Profile loaded from local storage.';
+    }
+
+    document.getElementById('load').addEventListener('click', () => {
+      loadProfile().catch((error) => { status.textContent = error.message; });
+    });
+
+    profileForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const payload = {
+        displayName: profileForm.displayName.value.trim(),
+        mode: profileForm.mode.value,
+        proactive: profileForm.proactive.checked,
+        proactiveFrequency: profileForm.proactiveFrequency.value,
+        notifyChannels: profileForm.notifyChannels.value.split(',').map((item) => item.trim()).filter(Boolean),
+        voiceProfile: {
+          enabled: Boolean(profileForm.voiceName.value.trim()),
+          voiceName: profileForm.voiceName.value.trim(),
+          style: profileForm.voiceStyle.value.trim()
+        },
+        mapFilters: {
+          watchOffers: profileForm.watchOffers.checked,
+          watchNeeds: profileForm.watchNeeds.checked,
+          watchJobs: profileForm.watchJobs.checked
+        },
+        memory: {
+          enabled: profileForm.memoryEnabled.checked,
+          retentionDays: Number(profileForm.retentionDays.value) || 0
+        },
+        sensitivity: profileForm.sensitivity.value,
+        sharingLevel: profileForm.sharingLevel.value,
+        externalAIConsent: {
+          allowOutbound: profileForm.allowOutbound.checked,
+          allowInbound: profileForm.allowInbound.checked
+        }
+      };
+      try {
+        const response = await fetch(`/api/mi/${encodeURIComponent(user.value)}/profile`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Could not save profile');
+        setProfile(data.profile);
+        status.textContent = 'Profile saved locally.';
+      } catch (error) {
+        status.textContent = error.message;
+      }
+    });
+
+    loadProfile().catch((error) => { status.textContent = error.message; });
+  </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>K.I.T.T. — Prompt search</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <h1>Local prompt catalog</h1>
+  <p>Search and copy prompt templates stored on this device.</p>
+  <section class="card">
+    <label for="query">Search prompts</label>
+    <input id="query" type="search" autocomplete="off">
+    <p id="status" class="status" role="status"></p>
+  </section>
+  <main id="results" aria-live="polite"></main>
+  <script>
+    const query = document.getElementById('query');
+    const results = document.getElementById('results');
+    const status = document.getElementById('status');
+    let timer;
+
+    async function search() {
+      try {
+        const response = await fetch(`/api/prompts?q=${encodeURIComponent(query.value)}`);
+        const prompts = await response.json();
+        if (!response.ok) throw new Error(prompts.error || 'Search failed');
+        results.replaceChildren();
+        prompts.forEach((prompt) => {
+          const card = document.createElement('article');
+          card.className = 'card';
+          const title = document.createElement('h2');
+          title.textContent = prompt.title;
+          const category = document.createElement('p');
+          category.textContent = prompt.category;
+          const description = document.createElement('p');
+          description.textContent = prompt.description;
+          const content = document.createElement('pre');
+          content.className = 'prompt';
+          content.textContent = prompt.prompt;
+          const copy = document.createElement('button');
+          copy.type = 'button';
+          copy.textContent = 'Copy prompt';
+          copy.addEventListener('click', async () => {
+            await navigator.clipboard.writeText(prompt.prompt);
+            status.textContent = 'Prompt copied.';
+          });
+          card.append(title, category, description, content, copy);
+          results.append(card);
+        });
+        status.textContent = `${prompts.length} prompt(s) found.`;
+      } catch (error) {
+        status.textContent = error.message;
+      }
+    }
+
+    query.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(search, 150);
+    });
+    search();
+  </script>
+</body>
+</html>

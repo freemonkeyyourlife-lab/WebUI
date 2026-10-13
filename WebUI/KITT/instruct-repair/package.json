@@ -1,0 +1,17 @@
+{
+  "name": "kitt-instruct-repair",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local-first K.I.T.T. request and profile server",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "4.22.3",
+    "express-rate-limit": "8.7.1",
+    "multer": "2.4.0"
+  }
+}

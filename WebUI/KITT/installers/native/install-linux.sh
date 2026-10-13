@@ -1,24 +1,21 @@
 #!/usr/bin/env bash
-# install-linux.sh — setup K.I.T.T. services locally without Docker
-set -e
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
+set -euo pipefail
 
-# Create Python venv for voice worker / api
-python3 -m venv "$ROOT_DIR/.venv" || python -m venv "$ROOT_DIR/.venv"
-source "$ROOT_DIR/.venv/bin/activate"
+KITT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+APP_DIR="$KITT_DIR/instruct-repair"
 
-pip install --upgrade pip
-if [ -f "$ROOT_DIR/requirements.txt" ]; then
-  pip install -r "$ROOT_DIR/requirements.txt"
+if ! command -v node >/dev/null 2>&1 || ! node -e "process.exit(Number(process.versions.node.split('.')[0]) >= 18 ? 0 : 1)"; then
+  echo "Node.js 18 or newer is required." >&2
+  exit 1
+fi
+if ! command -v npm >/dev/null 2>&1; then
+  echo "npm is required." >&2
+  exit 1
 fi
 
-# Install node deps for web UI and instruct-repair service
-if command -v npm >/dev/null 2>&1; then
-  (cd "$ROOT_DIR/WebUI/KITT/instruct-repair" && npm install)
-  (cd "$ROOT_DIR/WebUI/KITT/installers/electron" && npm install)
-fi
+mkdir -p "$KITT_DIR/mi/users" "$KITT_DIR/mi/memory" "$KITT_DIR/mi/registry_out" \
+  "$KITT_DIR/mi/transcripts" "$KITT_DIR/voice/samples" "$KITT_DIR/voice/jobs" \
+  "$KITT_DIR/files" "$APP_DIR/data"
+(cd "$APP_DIR" && npm ci --omit=dev)
 
-echo "Installation complete. To start services run:"
-echo "  source $ROOT_DIR/.venv/bin/activate"
-echo "  node WebUI/KITT/instruct-repair/server.js"
-echo "  (and run the frontend with npm run dev if present)"
+echo "K.I.T.T. is installed. Start it with: $KITT_DIR/start-kitt.sh"

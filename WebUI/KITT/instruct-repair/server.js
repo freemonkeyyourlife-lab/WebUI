@@ -7,6 +7,7 @@ const registry = require('../skills/registry_loader');
 
 const app = express();
 const PORT = process.env.PORT || 3005;
+const HOST = process.env.HOST || '127.0.0.1';
 const DATA_DIR = path.join(__dirname, 'data');
 const TASKS_FILE = path.join(DATA_DIR, 'tasks.json');
 
@@ -15,11 +16,15 @@ app.use(express.json({ limit: '8mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Mount file handlers and MI API routes (provide flexible file ops + MI settings)
+// Mount local-first APIs and file handlers.
 const fileHandlers = require('./api_file_handlers');
+const agentsRoutes = require('./routes/agents_api');
 const miRoutes = require('./routes/mi_api');
+const promptsRoutes = require('./routes/prompts_api');
 app.use('/api/files', fileHandlers);
+app.use('/api/agents', agentsRoutes);
 app.use('/api/mi', miRoutes);
+app.use('/api/prompts', promptsRoutes);
 
 ensureStorage();
 
@@ -231,15 +236,6 @@ app.post('/api/voice/register', (req, res) => {
   res.status(201).json({ voice: entry, job });
 });
 
-app.get('*', (req, res) => {
-  // allow file upload page and mi settings page as direct routes
-  const reqPath = req.path || '';
-  if (reqPath === '/file_upload.html' || reqPath === '/mi_settings.html') {
-    return res.sendFile(path.join(__dirname, 'public', reqPath));
-  }
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-app.listen(PORT, () => {
-  console.log(`K.I.T.T. Instruct & Repair Service running on http://localhost:${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`K.I.T.T. Instruct & Repair Service running on http://${HOST}:${PORT}`);
 });

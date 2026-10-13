@@ -1,0 +1,28 @@
+{
+  "prompts": [
+    {
+      "id": "local-task-plan",
+      "title": "Plan a local task",
+      "category": "Planning",
+      "description": "Create a bounded plan that does not run actions automatically.",
+      "prompt": "Plan this task using local resources only: {{task}}. List assumptions, steps, and checks. Do not execute actions; identify anything requiring approval.",
+      "tags": ["local", "approval", "planning"]
+    },
+    {
+      "id": "code-review",
+      "title": "Review a code change",
+      "category": "Development",
+      "description": "Focus a review on correctness and regressions.",
+      "prompt": "Review this change for correctness, regressions, and security: {{change}}. Report only actionable findings and cite affected files or lines.",
+      "tags": ["code", "review", "security"]
+    },
+    {
+      "id": "local-summary",
+      "title": "Summarize local notes",
+      "category": "Memory",
+      "description": "Summarize provided notes without sharing them externally.",
+      "prompt": "Summarize these notes locally and preserve their uncertainty: {{notes}}. Do not infer consent to share or transmit any content.",
+      "tags": ["memory", "local", "privacy"]
+    }
+  ]
+}
