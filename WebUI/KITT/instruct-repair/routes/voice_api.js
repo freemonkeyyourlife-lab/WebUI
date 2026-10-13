@@ -38,16 +38,31 @@ function safeId(id) {
   return sanitized || 'default';
 }
 
+function cleanupUploadedFile(file) {
+  if (!file || !file.filename) return;
+  const safeName = path.basename(String(file.filename)).replace(/[^a-zA-Z0-9_.-]/g, '');
+  if (!safeName) return;
+  const targetPath = path.join(SAMPLES_DIR, safeName);
+  const base = path.resolve(SAMPLES_DIR);
+  const resolved = path.resolve(targetPath);
+  if (resolved.startsWith(base + path.sep)) {
+    if (fs.existsSync(resolved)) {
+      try { fs.unlinkSync(resolved); } catch (e) {}
+    }
+  }
+}
+
 // Setup multer storage for audio samples
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, SAMPLES_DIR);
   },
   filename: function (req, file, cb) {
-    const rawExt = path.extname(file.originalname).toLowerCase();
-    const ext = (rawExt === '.mp3' || rawExt === '.ogg') ? rawExt : '.wav';
-    const voiceId = safeId(req.body.voiceId || `sample-${Date.now()}`);
-    cb(null, `${voiceId}${ext}`);
+    const rawExt = String(path.extname(file.originalname || '')).toLowerCase();
+    const allowedExts = ['.wav', '.mp3', '.ogg'];
+    const safeExt = allowedExts.includes(rawExt) ? rawExt : '.wav';
+    const rand = Math.random().toString(36).replace(/[^a-z0-9]/g, '').slice(0, 8);
+    cb(null, `sample-${Date.now()}-${rand}${safeExt}`);
   }
 });
 const upload = multer({
@@ -86,9 +101,8 @@ router.post('/register', upload.single('file'), (req, res) => {
   const consentGiven = body.consent === true || body.consent === 'true' || body.consent === '1';
 
   if (!consentGiven) {
-    // If a file was uploaded, remove it since consent was refused
-    if (req.file && fs.existsSync(req.file.path)) {
-      try { fs.unlinkSync(req.file.path); } catch (e) {}
+    if (req.file) {
+      cleanupUploadedFile(req.file);
     }
     auditHelper.logAction('voice_register_rejected', body.ownerId || 'anonymous', { reason: 'consent_missing' });
     return res.status(400).json({
@@ -98,8 +112,8 @@ router.post('/register', upload.single('file'), (req, res) => {
 
   const name = (body.name || '').trim();
   if (!name || name.length < 2) {
-    if (req.file && fs.existsSync(req.file.path)) {
-      try { fs.unlinkSync(req.file.path); } catch (e) {}
+    if (req.file) {
+      cleanupUploadedFile(req.file);
     }
     return res.status(400).json({ error: 'Metadata Error: Voice name is required and must have at least 2 characters.' });
   }
@@ -110,8 +124,9 @@ router.post('/register', upload.single('file'), (req, res) => {
   let sampleSize = 0;
 
   if (req.file) {
-    sampleFileName = req.file.filename;
-    samplePath = req.file.path;
+    const safeName = path.basename(String(req.file.filename)).replace(/[^a-zA-Z0-9_.-]/g, '');
+    sampleFileName = safeName;
+    samplePath = path.join(SAMPLES_DIR, safeName);
     sampleSize = req.file.size;
   } else if (body.sampleBase64) {
     // Decode base64 sample
