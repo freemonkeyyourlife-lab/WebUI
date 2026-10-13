@@ -1,24 +1,38 @@
-# PowerShell installer for Windows (install-windows.ps1)
+$ErrorActionPreference = "Stop"
 
-param(
-  [string]$RootDir = "$(Split-Path -Parent $MyInvocation.MyCommand.Definition)\..\..\.."
-)
+$KittDir = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
+$AppDir = Join-Path $KittDir "instruct-repair"
+$Node = Get-Command node -ErrorAction SilentlyContinue
+$Npm = Get-Command npm -ErrorAction SilentlyContinue
 
-# Create Python venv
-python -m venv "$RootDir\.venv"
-& "$RootDir\.venv\Scripts\Activate.ps1"
-
-pip install --upgrade pip
-if (Test-Path "$RootDir\requirements.txt") { pip install -r "$RootDir\requirements.txt" }
-
-# Install node deps
-if (Get-Command npm -ErrorAction SilentlyContinue) {
-  Push-Location "$RootDir\WebUI\KITT\instruct-repair"
-  npm install
-  Pop-Location
-  Push-Location "$RootDir\WebUI\KITT\installers\electron"
-  npm install
-  Pop-Location
+if (-not $Node -or [int]((& node -p "process.versions.node.split('.')[0]")) -lt 18) {
+    throw "Node.js 18 or newer is required."
+}
+if (-not $Npm) {
+    throw "npm is required."
 }
 
-Write-Host "Installation complete. Start services with:`n  & $RootDir\.venv\Scripts\Activate.ps1`n  node WebUI/KITT/instruct-repair/server.js"
+@(
+    "mi\users",
+    "mi\memory",
+    "mi\registry_out",
+    "mi\transcripts",
+    "voice\samples",
+    "voice\jobs",
+    "files",
+    "instruct-repair\data"
+) | ForEach-Object {
+    New-Item -ItemType Directory -Path (Join-Path $KittDir $_) -Force | Out-Null
+}
+
+Push-Location $AppDir
+try {
+    npm ci --omit=dev
+} finally {
+    Pop-Location
+}
+
+Write-Host "K.I.T.T. is installed."
+Write-Host "Start: & `"$KittDir\start-kitt.ps1`""
+Write-Host "Stop: & `"$KittDir\stop-kitt.ps1`""
+Write-Host "Health: & `"$KittDir\check-health.ps1`""

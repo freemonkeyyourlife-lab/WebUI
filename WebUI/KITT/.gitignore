@@ -1,0 +1,16 @@
+.env
+instruct-repair/node_modules/
+instruct-repair/kitt-server.log
+instruct-repair/kitt-server-error.log
+instruct-repair/kitt-server.pid
+instruct-repair/data/*.json
+mi/audit.log
+mi/memory/*.json
+mi/registry_out/*.json
+mi/transcripts/*.jsonl
+mi/users/*.json
+voice/jobs/*.json
+voice/samples/*
+!voice/samples/.gitkeep
+files/*
+!files/.gitkeep
