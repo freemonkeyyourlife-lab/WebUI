@@ -1,12 +1,18 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const { rateLimit } = require('express-rate-limit');
 
 const router = express.Router();
-const requestLimit = require('./request_limit');
 const CATALOG_FILE = path.join(__dirname, '..', '..', 'prompts', 'catalog.json');
 
-router.use(requestLimit);
+router.use(rateLimit({
+  windowMs: 60 * 1000,
+  limit: 120,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many local requests; try again shortly.' }
+}));
 
 router.get('/', (req, res) => {
   try {

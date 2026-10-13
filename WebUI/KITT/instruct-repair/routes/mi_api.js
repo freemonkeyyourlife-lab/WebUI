@@ -1,9 +1,16 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const { rateLimit } = require('express-rate-limit');
 
 const router = express.Router();
-const requestLimit = require('./request_limit');
+const requestLimit = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 120,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many local requests; try again shortly.' }
+});
 const KITT_DIR = path.join(__dirname, '..', '..');
 const USERS_DIR = path.join(KITT_DIR, 'mi', 'users');
 const MEMORY_DIR = path.join(KITT_DIR, 'mi', 'memory');
