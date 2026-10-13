@@ -106,18 +106,29 @@
         return;
       }
 
-      variableInputsContainer.innerHTML = vars.map(v => `
-        <div style="margin-bottom: 8px;">
-          <label style="font-size: 0.85rem; font-weight: 600;">{{${v}}}</label>
-          <input data-var="${v}" value="${currentValues[v] || ''}" placeholder="Value for ${v}" class="var-field" />
-        </div>
-      `).join('');
+      variableInputsContainer.innerHTML = '';
+      vars.forEach(v => {
+        const row = document.createElement('div');
+        row.style.marginBottom = '8px';
 
-      document.querySelectorAll('.var-field').forEach(input => {
+        const label = document.createElement('label');
+        label.style.fontSize = '0.85rem';
+        label.style.fontWeight = '600';
+        label.textContent = `{{${v}}}`;
+
+        const input = document.createElement('input');
+        input.dataset.var = v;
+        input.value = currentValues[v] || '';
+        input.placeholder = `Value for ${v}`;
+        input.className = 'var-field';
         input.addEventListener('input', (e) => {
-          currentValues[e.target.dataset.var] = e.target.value;
+          currentValues[v] = e.target.value;
           updateRendered();
         });
+
+        row.appendChild(label);
+        row.appendChild(input);
+        variableInputsContainer.appendChild(row);
       });
 
       updateRendered();

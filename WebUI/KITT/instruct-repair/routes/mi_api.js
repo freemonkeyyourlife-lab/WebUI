@@ -56,37 +56,47 @@ function defaultProfile(userId) {
   };
 }
 
+function safeUser(userId) {
+  const sanitized = String(userId || '').replace(/[^a-zA-Z0-9_-]/g, '');
+  return sanitized || 'default';
+}
+
 function userProfilePath(userId) {
-  return path.join(USERS_DIR, `${userId}.json`);
+  const safe = safeUser(userId);
+  return path.join(USERS_DIR, `${safe}.json`);
 }
 
 function readProfile(userId) {
-  const p = userProfilePath(userId);
+  const safe = safeUser(userId);
+  const p = userProfilePath(safe);
   if (!fs.existsSync(p)) {
-    const fresh = defaultProfile(userId);
+    const fresh = defaultProfile(safe);
     fs.writeFileSync(p, JSON.stringify(fresh, null, 2));
     return fresh;
   }
   try {
     return JSON.parse(fs.readFileSync(p, 'utf8'));
   } catch (e) {
-    return defaultProfile(userId);
+    return defaultProfile(safe);
   }
 }
 
 function writeProfile(userId, obj) {
-  const p = userProfilePath(userId);
+  const safe = safeUser(userId);
+  const p = userProfilePath(safe);
   obj.updatedAt = new Date().toISOString();
   fs.writeFileSync(p, JSON.stringify(obj, null, 2));
-  auditHelper.logAction('profile_update', userId, { profile: obj });
+  auditHelper.logAction('profile_update', safe, { profile: obj });
 }
 
 function memoryFilePath(userId) {
-  return path.join(MEMORY_DIR, `${userId}.json`);
+  const safe = safeUser(userId);
+  return path.join(MEMORY_DIR, `${safe}.json`);
 }
 
 function readMemory(userId) {
-  const p = memoryFilePath(userId);
+  const safe = safeUser(userId);
+  const p = memoryFilePath(safe);
   if (!fs.existsSync(p)) return [];
   try {
     return JSON.parse(fs.readFileSync(p, 'utf8'));
@@ -96,7 +106,8 @@ function readMemory(userId) {
 }
 
 function writeMemory(userId, items) {
-  const p = memoryFilePath(userId);
+  const safe = safeUser(userId);
+  const p = memoryFilePath(safe);
   fs.writeFileSync(p, JSON.stringify(items, null, 2));
 }
 
@@ -198,7 +209,8 @@ function handleMemoryExport(req, res) {
     memories: memory
   };
 
-  const filename = `${userId}-memory-export-${Date.now()}.json`;
+  const safe = safeUser(userId);
+  const filename = `${safe}-memory-export-${Date.now()}.json`;
   const exportPath = path.join(REGISTRY_OUT, filename);
   fs.writeFileSync(exportPath, JSON.stringify(exportPayload, null, 2));
 

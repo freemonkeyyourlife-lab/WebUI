@@ -73,22 +73,23 @@ class CapabilityRouter {
   }
 
   async execute(agentId, capabilityName, params = {}) {
-    const handler = this.handlers[capabilityName];
-    if (!handler) {
-      throw new Error(`No handler registered for capability '${capabilityName}'`);
+    const safeCap = String(capabilityName || '').trim();
+    if (!Object.prototype.hasOwnProperty.call(this.handlers, safeCap) || typeof this.handlers[safeCap] !== 'function') {
+      throw new Error(`No handler registered for capability '${safeCap}'`);
     }
 
-    const output = await handler(agentId, params);
+    const handler = this.handlers[safeCap];
+    const output = await handler.call(this, agentId, params);
     logAudit({
       action: 'capability_executed',
       userId: params.userId || 'local',
       status: 'success',
-      details: { agentId, capability: capabilityName, params, outputSummary: output.summary || 'ok' }
+      details: { agentId, capability: safeCap, params, outputSummary: output.summary || 'ok' }
     });
 
     return {
       agentId,
-      capability: capabilityName,
+      capability: safeCap,
       executedAt: new Date().toISOString(),
       ...output
     };

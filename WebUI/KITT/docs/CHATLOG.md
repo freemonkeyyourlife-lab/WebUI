@@ -183,6 +183,33 @@
 
 ---
 
+### Entry: 2026-10-13 — Security Hardening & CodeQL Remediation
+- **Summary**:
+  - Addressed CodeQL security findings across server, routes, capability router, and UI.
+  - Sanitized path parameters in `routes/mi_api.js`, `routes/voice_api.js`, and `api_file_handlers.js` using alphanumeric-only `safeId` and boundary-checked path validation to prevent path traversal attacks.
+  - Secured static file fallback in `server.js` by checking resolved paths against allowed directory boundaries.
+  - Hardened dynamic capability dispatch in `capability_router.js` using `Object.prototype.hasOwnProperty.call` to prevent prototype pollution and arbitrary method execution.
+  - Fixed DOM XSS in `public/prompt_builder.html` by replacing `innerHTML` template string interpolation with safe DOM element creation using `textContent`.
+  - Re-ran complete smoke test suite (`smoke-test.sh`): 100% assertions passed.
+- **Files Modified**:
+  - `WebUI/KITT/instruct-repair/api_file_handlers.js`
+  - `WebUI/KITT/instruct-repair/capability_router.js`
+  - `WebUI/KITT/instruct-repair/public/prompt_builder.html`
+  - `WebUI/KITT/instruct-repair/routes/mi_api.js`
+  - `WebUI/KITT/instruct-repair/routes/voice_api.js`
+  - `WebUI/KITT/instruct-repair/server.js`
+  - `WebUI/KITT/docs/CHATLOG.md`
+- **Block Status**:
+  - Stage 0: 100%
+  - Stage 1: 100%
+  - Stage 2: 100%
+  - Stage 3: 100%
+  - Stage 4: 100%
+  - Stage 5: 100%
+  - Delivery & Smoke Tests: 100%
+
+---
+
 ### Entry: 2026-10-13 — Stage 5: Base44 + GitHub Preparation & Delivery Smoke Tests (Completed)
 - **What Was Built**:
   - Authored `WebUI/KITT/docs/BASE44_INTEGRATION.md` detailing the manual integration steps required to connect the GitHub repository to Base44, configure environment variables, import the OpenAPI spec, bind local loopback endpoints, and export frontend web components.

@@ -172,11 +172,12 @@ app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: `Endpoint ${req.method} ${req.path} not found` });
   }
-  const candidate = path.join(__dirname, 'public', req.path.replace(/^\//, ''));
-  if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
-    return res.sendFile(candidate);
+  const publicDir = path.resolve(__dirname, 'public');
+  const safePath = path.resolve(publicDir, '.' + path.normalize(req.path));
+  if (safePath.startsWith(publicDir) && fs.existsSync(safePath) && fs.statSync(safePath).isFile()) {
+    return res.sendFile(safePath);
   }
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 app.listen(PORT, () => {

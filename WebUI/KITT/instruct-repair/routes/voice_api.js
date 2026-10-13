@@ -33,14 +33,20 @@ if (!fs.existsSync(sample1File)) {
   fs.writeFileSync(sample1File, JSON.stringify(seedTranscript, null, 2), 'utf8');
 }
 
+function safeId(id) {
+  const sanitized = String(id || '').replace(/[^a-zA-Z0-9_-]/g, '');
+  return sanitized || 'default';
+}
+
 // Setup multer storage for audio samples
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, SAMPLES_DIR);
   },
   filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname) || '.wav';
-    const voiceId = req.body.voiceId || `sample-${Date.now()}`;
+    const rawExt = path.extname(file.originalname).toLowerCase();
+    const ext = (rawExt === '.mp3' || rawExt === '.ogg') ? rawExt : '.wav';
+    const voiceId = safeId(req.body.voiceId || `sample-${Date.now()}`);
     cb(null, `${voiceId}${ext}`);
   }
 });
@@ -98,7 +104,7 @@ router.post('/register', upload.single('file'), (req, res) => {
     return res.status(400).json({ error: 'Metadata Error: Voice name is required and must have at least 2 characters.' });
   }
 
-  const voiceId = body.voiceId || `voice-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+  const voiceId = safeId(body.voiceId || `voice-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`);
   let sampleFileName = null;
   let samplePath = null;
   let sampleSize = 0;
@@ -109,7 +115,8 @@ router.post('/register', upload.single('file'), (req, res) => {
     sampleSize = req.file.size;
   } else if (body.sampleBase64) {
     // Decode base64 sample
-    const ext = body.sampleExt || '.wav';
+    const rawExt = body.sampleExt || '.wav';
+    const ext = (rawExt === '.mp3' || rawExt === '.ogg') ? rawExt : '.wav';
     sampleFileName = `${voiceId}${ext}`;
     samplePath = path.join(SAMPLES_DIR, sampleFileName);
     const buffer = Buffer.from(body.sampleBase64, 'base64');
@@ -144,7 +151,7 @@ router.post('/register', upload.single('file'), (req, res) => {
   writeVoices(voices);
 
   // Job record in voice/jobs
-  const jobId = `job-${voiceId}`;
+  const jobId = safeId(`job-${voiceId}`);
   const jobRecord = {
     jobId,
     voiceId,
@@ -166,7 +173,7 @@ router.post('/register', upload.single('file'), (req, res) => {
 
   // If initial transcript was provided, store it
   if (body.transcript) {
-    const transcriptId = `transcript-${voiceId}`;
+    const transcriptId = safeId(`transcript-${voiceId}`);
     const transcriptData = {
       id: transcriptId,
       voiceId,
@@ -201,7 +208,7 @@ router.get('/jobs', (req, res) => {
 
 // GET /api/voice/jobs/:id
 router.get('/jobs/:id', (req, res) => {
-  const jobFile = path.join(JOBS_DIR, `${req.params.id}.json`);
+  const jobFile = path.join(JOBS_DIR, `${safeId(req.params.id)}.json`);
   if (!fs.existsSync(jobFile)) {
     return res.status(404).json({ error: 'Voice job not found' });
   }
@@ -238,10 +245,10 @@ router.get('/:voiceId/preview', handlePreview);
 // POST /api/voice/transcripts - Save transcript with optional cue segments
 router.post('/transcripts', (req, res) => {
   const body = req.body || {};
-  const id = body.id || `transcript-${Date.now()}`;
+  const id = safeId(body.id || `transcript-${Date.now()}`);
   const transcriptRecord = {
     id,
-    voiceId: body.voiceId || null,
+    voiceId: body.voiceId ? safeId(body.voiceId) : null,
     text: body.text || '',
     segments: Array.isArray(body.segments) ? body.segments : [
       { start: '00:00:00,000', end: '00:00:03,500', text: body.text || 'K.I.T.T. Local Voice Transcript' }
@@ -255,7 +262,8 @@ router.post('/transcripts', (req, res) => {
 
 // GET /api/voice/transcripts/:id - Get transcript JSON
 router.get('/transcripts/:id', (req, res) => {
-  const tFile = path.join(TRANSCRIPTS_DIR, `${req.params.id}.json`);
+  const id = safeId(req.params.id);
+  const tFile = path.join(TRANSCRIPTS_DIR, `${id}.json`);
   if (!fs.existsSync(tFile)) {
     return res.status(404).json({ error: 'Transcript not found' });
   }
@@ -269,7 +277,8 @@ router.get('/transcripts/:id', (req, res) => {
 
 // SRT export from transcript when available
 router.get('/transcripts/:id/srt', (req, res) => {
-  const tFile = path.join(TRANSCRIPTS_DIR, `${req.params.id}.json`);
+  const id = safeId(req.params.id);
+  const tFile = path.join(TRANSCRIPTS_DIR, `${id}.json`);
   if (!fs.existsSync(tFile)) {
     return res.status(404).json({ error: 'Transcript not found' });
   }
@@ -296,7 +305,7 @@ router.get('/transcripts/:id/srt', (req, res) => {
 
 // Training only after explicit approval: POST /api/voice/jobs/:id/train or POST /api/voice/:voiceId/train
 router.post('/jobs/:id/train', (req, res) => {
-  const jobId = req.params.id;
+  const jobId = safeId(req.params.id);
   const jobFile = path.join(JOBS_DIR, `${jobId}.json`);
   if (!fs.existsSync(jobFile)) {
     return res.status(404).json({ error: 'Voice job not found' });
