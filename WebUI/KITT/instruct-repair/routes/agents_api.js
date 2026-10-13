@@ -181,14 +181,14 @@ router.post('/:id/command', async (req, res) => {
   if (!agent) return res.status(404).json({ error: 'agent not found' });
 
   const payload = req.body || {};
-  const commandName = payload.command || payload.action || 'system_status';
-  const capabilityName = payload.capability || commandName;
+  const capabilityName = payload.capability || payload.command || payload.action || 'system_status';
+  const commandName = payload.command || payload.action || capabilityName;
   const params = payload.params || {};
   const userId = payload.userId || 'chief';
 
   // Find matching capability in agent
   const caps = agent.capabilities || [];
-  let cap = caps.find((c) => c.name === capabilityName || c.name === commandName);
+  let cap = caps.find((c) => c.name === capabilityName);
 
   // If no exact match, fallback to first capability or create ad-hoc requiresApproval check
   if (!cap) {

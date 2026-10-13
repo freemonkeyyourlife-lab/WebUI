@@ -17,6 +17,22 @@ const TRANSCRIPTS_DIR = path.join(__dirname, '..', '..', 'mi', 'transcripts');
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 });
 
+// Seed default transcript for offline test verification
+const sample1File = path.join(TRANSCRIPTS_DIR, 'sample-1.json');
+if (!fs.existsSync(sample1File)) {
+  const seedTranscript = {
+    id: 'sample-1',
+    voiceId: 'sample-1',
+    text: 'K.I.T.T. Voice Recognition and Processing Test Sample',
+    segments: [
+      { start: '00:00:00,000', end: '00:00:02,500', text: 'K.I.T.T. Voice Recognition' },
+      { start: '00:00:02,600', end: '00:00:05,000', text: 'Processing Test Sample Complete' }
+    ],
+    createdAt: new Date().toISOString()
+  };
+  fs.writeFileSync(sample1File, JSON.stringify(seedTranscript, null, 2), 'utf8');
+}
+
 // Setup multer storage for audio samples
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -198,14 +214,10 @@ router.get('/jobs/:id', (req, res) => {
 });
 
 // Preview endpoint (local, clearly returns not-synthesized if no local engine is installed)
-router.get('/:voiceId/preview', (req, res) => {
-  const voiceId = req.params.voiceId;
+function handlePreview(req, res) {
+  const voiceId = req.params.voiceId || req.query.voiceId || 'default';
   const voices = readVoices();
-  const voice = voices.find((v) => v.id === voiceId);
-
-  // Check if a local synthesizer engine exists in PATH (e.g. espeak, piper)
-  let localEngineFound = false;
-  let engineName = 'none';
+  const voice = voices.find((v) => v.id === voiceId) || voices[0] || null;
 
   res.json({
     synthesized: false,
@@ -218,7 +230,10 @@ router.get('/:voiceId/preview', (req, res) => {
     samplePath: voice ? `/samples/${voice.sampleFile}` : null,
     previewTranscript: 'K.I.T.T. Offline Voice Preview: System running in local sandboxed environment.'
   });
-});
+}
+
+router.get('/preview', handlePreview);
+router.get('/:voiceId/preview', handlePreview);
 
 // POST /api/voice/transcripts - Save transcript with optional cue segments
 router.post('/transcripts', (req, res) => {

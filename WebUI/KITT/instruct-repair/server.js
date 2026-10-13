@@ -113,6 +113,10 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', service: 'kitt-instruct-repair', mode: 'safe-approval-gated' });
 });
 
+app.get('/api/modules', (req, res) => {
+  res.json(moduleCatalog);
+});
+
 app.get('/api/requests', (req, res) => {
   const tasks = readRequests();
   res.json(tasks);
@@ -127,26 +131,27 @@ app.get('/api/requests/:id', (req, res) => {
 
 app.post('/api/requests', (req, res) => {
   const payload = req.body || {};
-  const text = payload.text || payload.Request || payload.prompt || '';
+  const text = payload.text || payload.Request || payload.prompt || payload.capability || payload.command || '';
   const link = payload.link || '';
 
-  if (!text && !link) {
+  if (!text && !link && !payload.capability && !payload.command) {
     return res.status(400).json({ error: 'Provide text, a link or a request payload.' });
   }
 
   const suggestedSkill = registry.suggestSkillForText(`${text} ${link}`);
   const task = createRequest({
-    title: (payload.title || 'New instruction request').slice(0, 120),
+    title: (payload.title || payload.capability || payload.command || 'New instruction request').slice(0, 120),
     sourceType: payload.sourceType || (link ? 'link' : 'text'),
     text,
     link,
     agentId: payload.agentId || null,
-    capability: payload.requestedCapability || suggestedSkill?.id || classifyRequest(payload),
+    capability: payload.requestedCapability || payload.capability || suggestedSkill?.id || classifyRequest(payload),
+    params: payload.params || {},
     requiresApproval: payload.requiresApproval !== undefined ? payload.requiresApproval : true,
     status: 'pending_approval'
   });
 
-  res.status(201).json(task);
+  res.status(201).json({ ok: true, request: task, id: task.id, ...task });
 });
 
 app.post('/api/requests/:id/approve', async (req, res) => {

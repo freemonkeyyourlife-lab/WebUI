@@ -2,10 +2,10 @@
   "player": {
     "id": "player-chief",
     "username": "Chief Monkey",
-    "level": 1,
-    "levelTitle": "Rookie Banana Scout",
-    "xp": 95,
-    "coins": 150,
+    "level": 2,
+    "levelTitle": "Urban Branch Climber",
+    "xp": 200,
+    "coins": 195,
     "selectedMonkey": "go",
     "inventory": [
       {
@@ -227,8 +227,68 @@
         "completedAt": null
       }
     ],
-    "completedCount": 1,
+    "completedCount": 3,
     "history": [
+      {
+        "id": "mis-1791854436540-eil7",
+        "type": "search",
+        "title": "Perimeter Visual Search",
+        "description": "Scan your immediate surroundings and spot an item that is vivid bright yellow (like a banana peel or sign).",
+        "durationSec": 120,
+        "difficulty": "easy",
+        "reward": {
+          "xp": 45,
+          "coins": 20
+        },
+        "assignedMonkey": "go",
+        "monkeyAvatar": "🐒⚡",
+        "monkeyComment": "Timer is ticking! Pump those legs!",
+        "targetPoi": {
+          "id": "poi-retro-garage",
+          "title": "Retro Garage & Sound Lab",
+          "category": "hub",
+          "coordinates": [
+            11.58,
+            48.142
+          ]
+        },
+        "triviaData": null,
+        "status": "completed",
+        "createdAt": "2026-10-13T01:20:36.540Z",
+        "acceptedAt": "2026-10-13T01:20:36.565Z",
+        "expiresAt": "2026-10-13T01:22:36.565Z",
+        "completedAt": "2026-10-13T01:20:36.570Z"
+      },
+      {
+        "id": "mis-1791854286511-02dl",
+        "type": "search",
+        "title": "Architectural Detail Scan",
+        "description": "Locate any circular clock face, gauge, or dial within visible range.",
+        "durationSec": 180,
+        "difficulty": "medium",
+        "reward": {
+          "xp": 60,
+          "coins": 25
+        },
+        "assignedMonkey": "go",
+        "monkeyAvatar": "🐒⚡",
+        "monkeyComment": "Timer is ticking! Pump those legs!",
+        "targetPoi": {
+          "id": "poi-retro-garage",
+          "title": "Retro Garage & Sound Lab",
+          "category": "hub",
+          "coordinates": [
+            11.58,
+            48.142
+          ]
+        },
+        "triviaData": null,
+        "status": "completed",
+        "createdAt": "2026-10-13T01:18:06.511Z",
+        "acceptedAt": "2026-10-13T01:18:06.534Z",
+        "expiresAt": "2026-10-13T01:21:06.534Z",
+        "completedAt": "2026-10-13T01:18:06.540Z"
+      },
       {
         "id": "mis-1791853779656-7414",
         "type": "trivia",
@@ -274,17 +334,26 @@
   "social": {
     "activeHighFiveCodes": [
       {
-        "code": "HF-801C25",
+        "code": "HF-727389",
         "creatorId": "player-chief",
-        "createdAt": 1791853779661,
-        "expiresAt": 1791854379661,
-        "redeemed": true,
+        "createdAt": 1791854286549,
+        "expiresAt": 1791854886549,
+        "redeemed": false,
         "reward": {
           "coins": 20,
           "xp": 35
-        },
-        "redeemedBy": "player-chief",
-        "redeemedAt": 1791853779662
+        }
+      },
+      {
+        "code": "HF-0D14A5",
+        "creatorId": "player-chief",
+        "createdAt": 1791854436580,
+        "expiresAt": 1791855036580,
+        "redeemed": false,
+        "reward": {
+          "coins": 20,
+          "xp": 35
+        }
       }
     ],
     "invites": []

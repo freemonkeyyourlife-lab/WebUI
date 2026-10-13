@@ -8,3 +8,9 @@ yarn-error.log*
 __pycache__/
 *.py[cod]
 .env
+WebUI/KITT/voice/jobs/job-voice-*.json
+WebUI/KITT/voice/samples/*.wav
+WebUI/KITT/mi/registry_out/*.json
+!WebUI/KITT/mi/registry_out/chief-memory-export-1791853168809.json
+!WebUI/KITT/voice/jobs/job-voice-1791853168803-ji3p.json
+!WebUI/KITT/voice/samples/voice-1791853168803-ji3p.wav

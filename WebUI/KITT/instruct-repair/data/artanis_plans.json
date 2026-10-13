@@ -1,5 +1,169 @@
 [
   {
+    "planId": "plan-1791854436488-6nzw",
+    "goal": "Inspect local storage and announce telemetry",
+    "status": "submitted",
+    "createdAt": "2026-10-13T01:20:36.488Z",
+    "stepCount": 4,
+    "requiresApproval": false,
+    "steps": [
+      {
+        "step": 1,
+        "agentId": "listener",
+        "capability": "parse_instructions",
+        "title": "Analyze and parse instruction syntax",
+        "params": {
+          "text": "Inspect local storage and announce telemetry"
+        },
+        "requiresApproval": false
+      },
+      {
+        "step": 2,
+        "agentId": "observer",
+        "capability": "inspect_environment",
+        "title": "Verify system resources and isolation boundaries",
+        "params": {},
+        "requiresApproval": false
+      },
+      {
+        "step": 3,
+        "agentId": "kitt",
+        "capability": "orchestrate_agents",
+        "title": "Synchronize agent execution state",
+        "params": {
+          "goal": "Inspect local storage and announce telemetry"
+        },
+        "requiresApproval": false
+      },
+      {
+        "step": 4,
+        "agentId": "talker",
+        "capability": "speak_local",
+        "title": "Emit local speech completion notification",
+        "params": {
+          "text": "Plan execution prepared: Inspect local storage and announce "
+        },
+        "requiresApproval": false
+      }
+    ],
+    "submittedTasks": [
+      {
+        "step": 1,
+        "taskId": "req-1791854436513-d36d2f",
+        "agentId": "listener",
+        "capability": "parse_instructions",
+        "requiresApproval": false,
+        "status": "pending_approval"
+      },
+      {
+        "step": 2,
+        "taskId": "req-1791854436513-09fab2",
+        "agentId": "observer",
+        "capability": "inspect_environment",
+        "requiresApproval": false,
+        "status": "pending_approval"
+      },
+      {
+        "step": 3,
+        "taskId": "req-1791854436514-9a74d6",
+        "agentId": "kitt",
+        "capability": "orchestrate_agents",
+        "requiresApproval": false,
+        "status": "pending_approval"
+      },
+      {
+        "step": 4,
+        "taskId": "req-1791854436514-f4e7c7",
+        "agentId": "talker",
+        "capability": "speak_local",
+        "requiresApproval": false,
+        "status": "pending_approval"
+      }
+    ]
+  },
+  {
+    "planId": "plan-1791854286462-0jzk",
+    "goal": "Inspect local storage and announce telemetry",
+    "status": "submitted",
+    "createdAt": "2026-10-13T01:18:06.462Z",
+    "stepCount": 4,
+    "requiresApproval": false,
+    "steps": [
+      {
+        "step": 1,
+        "agentId": "listener",
+        "capability": "parse_instructions",
+        "title": "Analyze and parse instruction syntax",
+        "params": {
+          "text": "Inspect local storage and announce telemetry"
+        },
+        "requiresApproval": false
+      },
+      {
+        "step": 2,
+        "agentId": "observer",
+        "capability": "inspect_environment",
+        "title": "Verify system resources and isolation boundaries",
+        "params": {},
+        "requiresApproval": false
+      },
+      {
+        "step": 3,
+        "agentId": "kitt",
+        "capability": "orchestrate_agents",
+        "title": "Synchronize agent execution state",
+        "params": {
+          "goal": "Inspect local storage and announce telemetry"
+        },
+        "requiresApproval": false
+      },
+      {
+        "step": 4,
+        "agentId": "talker",
+        "capability": "speak_local",
+        "title": "Emit local speech completion notification",
+        "params": {
+          "text": "Plan execution prepared: Inspect local storage and announce "
+        },
+        "requiresApproval": false
+      }
+    ],
+    "submittedTasks": [
+      {
+        "step": 1,
+        "taskId": "req-1791854286485-9b7c21",
+        "agentId": "listener",
+        "capability": "parse_instructions",
+        "requiresApproval": false,
+        "status": "pending_approval"
+      },
+      {
+        "step": 2,
+        "taskId": "req-1791854286486-7dd6fc",
+        "agentId": "observer",
+        "capability": "inspect_environment",
+        "requiresApproval": false,
+        "status": "pending_approval"
+      },
+      {
+        "step": 3,
+        "taskId": "req-1791854286486-7a7c4b",
+        "agentId": "kitt",
+        "capability": "orchestrate_agents",
+        "requiresApproval": false,
+        "status": "pending_approval"
+      },
+      {
+        "step": 4,
+        "taskId": "req-1791854286487-2a618b",
+        "agentId": "talker",
+        "capability": "speak_local",
+        "requiresApproval": false,
+        "status": "pending_approval"
+      }
+    ]
+  },
+  {
     "planId": "plan-1791853377703-49n4",
     "goal": "Perform network scan and speak summary",
     "status": "submitted",

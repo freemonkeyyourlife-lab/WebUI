@@ -1,6 +1,6 @@
 {
   "userId": "chief",
-  "displayName": "K.I.T.T.",
+  "displayName": "K.I.T.T. Prime",
   "mode": "assistant",
   "proactive": true,
   "mutedUntil": null,
@@ -36,5 +36,5 @@
   "sharingLevel": "none",
   "sensitivity": "medium",
   "createdAt": "2026-10-13T00:57:57.369Z",
-  "updatedAt": "2026-10-13T00:57:57.370Z"
+  "updatedAt": "2026-10-13T01:20:36.416Z"
 }

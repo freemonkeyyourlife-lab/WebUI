@@ -1,5 +1,19 @@
 [
   {
+    "id": "prompt-1791854156670-b3bd",
+    "title": "Smoke Test Prompt",
+    "description": "",
+    "template": "Hello {{name}}, code is {{code}}",
+    "variables": [
+      "name",
+      "code"
+    ],
+    "tags": [
+      "test"
+    ],
+    "updatedAt": "2026-10-13T01:15:56.670Z"
+  },
+  {
     "id": "prompt-diag",
     "title": "System Diagnostics",
     "description": "Trigger local diagnostic probe on a specific subsystem",

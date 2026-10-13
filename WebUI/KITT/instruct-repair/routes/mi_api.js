@@ -446,7 +446,12 @@ router.post('/:user/command', async (req, res) => {
   });
 });
 
-// Audit view endpoint
+// Audit view endpoints (system-wide and per-user)
+router.get('/audit', (req, res) => {
+  const logs = auditHelper.getRecentLogs(100);
+  res.json(logs);
+});
+
 router.get('/:user/audit', (req, res) => {
   const userId = req.params.user;
   const logs = auditHelper.getRecentLogs(100);

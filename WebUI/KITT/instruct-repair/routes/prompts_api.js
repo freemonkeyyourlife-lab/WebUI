@@ -100,7 +100,7 @@ router.post('/', (req, res) => {
     details: { id, title: promptRecord.title }
   });
 
-  res.status(201).json({ ok: true, prompt: promptRecord });
+  res.status(201).json({ ok: true, prompt: promptRecord, item: promptRecord, id: promptRecord.id, ...promptRecord });
 });
 
 // DELETE prompt template

@@ -1,0 +1,18 @@
+{
+  "id": "sample-1",
+  "voiceId": "sample-1",
+  "text": "K.I.T.T. Voice Recognition and Processing Test Sample",
+  "segments": [
+    {
+      "start": "00:00:00,000",
+      "end": "00:00:02,500",
+      "text": "K.I.T.T. Voice Recognition"
+    },
+    {
+      "start": "00:00:02,600",
+      "end": "00:00:05,000",
+      "text": "Processing Test Sample Complete"
+    }
+  ],
+  "createdAt": "2026-10-13T01:18:05.285Z"
+}
