@@ -191,5 +191,9 @@ module.exports = {
   createRequest,
   approveRequest,
   resolveRequest,
+  readTasks: readRequests,
+  getTask: getRequest,
+  createTask: createRequest,
+  approveTask: approveRequest,
   TASKS_FILE
 };

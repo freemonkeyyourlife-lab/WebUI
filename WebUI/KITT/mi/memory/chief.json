@@ -1,0 +1,22 @@
+[
+  {
+    "id": "mem-1791853168795-9i70",
+    "text": "User prefers local-first operations",
+    "category": "preference",
+    "tags": [],
+    "sentiment": "neutral",
+    "importance": "normal",
+    "scope": "local",
+    "createdAt": "2026-10-13T00:59:28.795Z"
+  },
+  {
+    "id": "mem-1791853077377-h96d",
+    "text": "User prefers local-first operations",
+    "category": "preference",
+    "tags": [],
+    "sentiment": "neutral",
+    "importance": "normal",
+    "scope": "local",
+    "createdAt": "2026-10-13T00:57:57.377Z"
+  }
+]

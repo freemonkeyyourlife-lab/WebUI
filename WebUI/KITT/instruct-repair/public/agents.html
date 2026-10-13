@@ -22,6 +22,23 @@
       </nav>
     </header>
 
+    <!-- M.I. Companion Integration Card -->
+    <section class="card" style="margin-bottom: 24px; border-left: 4px solid var(--accent);">
+      <div class="card-header">
+        <h2>M.I. Companion Status & Memory Hub</h2>
+        <a href="/mi_settings.html" class="btn-secondary" style="text-decoration:none; display:inline-block; padding: 6px 12px;">Open Full MI Hub</a>
+      </div>
+      <div id="miStatusSummary" style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 10px; font-size: 0.9rem;">
+        <div>Instance: <strong id="miName">Loading...</strong> (<span id="miMode">-</span>)</div>
+        <div>Proactive: <span id="miProactive">-</span></div>
+        <div>Outbound Sharing: <span id="miConsent">-</span></div>
+        <div>Local Memories: <strong id="miMemCount">0</strong></div>
+      </div>
+      <div id="miRecentDigest" style="margin-top: 8px; font-size: 0.85rem; color: var(--text-muted); font-style: italic;">
+        Loading latest memory digest...
+      </div>
+    </section>
+
     <!-- Pending Approvals Section -->
     <section class="card" style="margin-bottom: 24px; border-left: 4px solid var(--status-pending);">
       <div class="card-header">
@@ -209,13 +226,40 @@
       logToConsole(`Agent ${id} Command History`, history);
     }
 
-    document.getElementById('refreshApprovalsBtn').addEventListener('click', loadApprovals);
+    async function loadMiStatus() {
+      try {
+        const [profRes, digestRes, memRes] = await Promise.all([
+          fetch('/api/mi/chief/profile'),
+          fetch('/api/mi/chief/digest'),
+          fetch('/api/mi/chief/memory')
+        ]);
+        const prof = await profRes.json();
+        const digest = await digestRes.json();
+        const mem = await memRes.json();
+
+        document.getElementById('miName').textContent = prof.displayName || 'K.I.T.T.';
+        document.getElementById('miMode').textContent = prof.mode || 'assistant';
+        document.getElementById('miProactive').textContent = prof.proactive ? (prof.proactiveFrequency || 'daily') : 'off';
+        const allowsOut = prof.externalAIConsent && prof.externalAIConsent.allowOutbound;
+        document.getElementById('miConsent').textContent = allowsOut ? `allowed (${prof.sharingLevel})` : 'blocked (local-only)';
+        document.getElementById('miMemCount').textContent = Array.isArray(mem) ? mem.length : 0;
+        document.getElementById('miRecentDigest').textContent = digest.digestText || 'No memories recorded yet.';
+      } catch (e) {
+        console.error('Failed to load MI status:', e);
+      }
+    }
+
+    document.getElementById('refreshApprovalsBtn').addEventListener('click', () => {
+      loadApprovals();
+      loadMiStatus();
+    });
     document.getElementById('clearConsoleBtn').addEventListener('click', () => {
       outputConsole.textContent = 'Cleared.';
     });
 
     loadApprovals();
     loadAgents();
+    loadMiStatus();
     setInterval(loadApprovals, 5000);
   </script>
 </body>

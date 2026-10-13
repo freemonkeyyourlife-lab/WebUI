@@ -20,6 +20,7 @@ const fileHandlers = require('./api_file_handlers');
 const miRoutes = require('./routes/mi_api');
 const agentsRoutes = require('./routes/agents_api');
 const promptsRoutes = require('./routes/prompts_api');
+const voiceRoutes = require('./routes/voice_api');
 const { readRequests, createRequest, approveRequest, resolveRequest } = require('./requests_store');
 const { logAudit } = require('./audit_helper');
 
@@ -32,6 +33,7 @@ app.use('/api/files', fileHandlers);
 app.use('/api/mi', miRoutes);
 app.use('/api/agents', agentsRoutes);
 app.use('/api/prompts', promptsRoutes);
+app.use('/api/voice', voiceRoutes);
 
 ensureStorage();
 
@@ -156,59 +158,14 @@ app.post('/api/requests/:id/resolve', (req, res) => {
   res.json(result);
 });
 
-// Voice register endpoint (exists earlier) - keep compatibility
-app.post('/api/voice/register', (req, res) => {
-  const payload = req.body || {};
-  const name = (payload.name || '').trim();
-  const filePath = payload.file_path || payload.path || '';
-  const owner = payload.owner || 'local';
-  const consent = payload.consent === true || payload.consent === 'true';
-
-  if (!name || !filePath) return res.status(400).json({ error: 'name and file_path are required' });
-  if (!consent) return res.status(400).json({ error: 'consent flag must be true to register voice sample' });
-
-  const samplesDir = path.join(__dirname, '..', 'voice', 'samples');
-  const resolved = path.isAbsolute(filePath) ? filePath : path.join(samplesDir, filePath);
-  if (!fs.existsSync(resolved)) return res.status(404).json({ error: 'audio file not found', path: resolved });
-
-  const metaFile = path.join(__dirname, '..', 'voice', 'metadata.json');
-  let meta = [];
-  try { meta = JSON.parse(fs.readFileSync(metaFile, 'utf8')); } catch (e) { meta = []; }
-
-  const voiceId = `voice-${Date.now()}-${Math.random().toString(16).slice(2,6)}`;
-  const entry = {
-    id: voiceId,
-    name,
-    owner,
-    file: resolved,
-    consent: true,
-    createdAt: new Date().toISOString(),
-    status: 'registered'
-  };
-  meta.push(entry);
-  fs.writeFileSync(metaFile, JSON.stringify(meta, null, 2));
-
-  const jobsDir = path.join(__dirname, '..', 'voice', 'jobs');
-  const job = {
-    id: `job-${Date.now()}-${Math.random().toString(16).slice(2,6)}`,
-    voiceId,
-    mode: payload.mode || 'rvc',
-    status: 'queued',
-    audio: resolved,
-    createdAt: new Date().toISOString(),
-    logs: []
-  };
-  const jobFile = path.join(jobsDir, `${job.id}.json`);
-  fs.writeFileSync(jobFile, JSON.stringify(job, null, 2));
-
-  res.status(201).json({ voice: entry, job });
-});
-
-app.get('*', (req, res) => {
-  // allow file upload page and mi settings page as direct routes
-  const reqPath = req.path || '';
-  if (reqPath === '/file_upload.html' || reqPath === '/mi_settings.html') {
-    return res.sendFile(path.join(__dirname, 'public', reqPath));
+app.get('*', (req, res, next) => {
+  // If requesting an API route that didn't match, return 404 JSON
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: `Endpoint ${req.method} ${req.path} not found` });
+  }
+  const candidate = path.join(__dirname, 'public', req.path.replace(/^\//, ''));
+  if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
+    return res.sendFile(candidate);
   }
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

@@ -59,7 +59,40 @@
 - **Block Status**:
   - Stage 0 (Chat/build log & audit helper): 100%
   - Stage 1 (K.I.T.T. & agents with capabilities): 100%
-  - Stage 2 (MI/MIO finish & integration): 0%
+  - Stage 2 (MI/MIO finish & integration): 100%
+  - Stage 3 (Artanis agent & module): 0%
+  - Stage 4 (FREE MONKEYS GO! game module): 0%
+  - Stage 5 (Base44 & GitHub preparation): 0%
+  - Delivery & Smoke Tests: 0%
+
+### [2026-10-13] Stage 2: MI/MIO Finish, Consent Gate, Voice Workflow & Dashboard Integration
+- **Summary**:
+  - Completed local MI profile management with proactive notification scheduling honoring `notifyChannels` and `proactiveFrequency`, including instant mute/unmute switch.
+  - Implemented persistent memory CRUD (`GET/POST/DELETE /api/mi/:user/memory/:id`) and JSON export (`/api/mi/:user/memory/export`) into `mi/registry_out`.
+  - Built automated Daily Memory Digest synthesizer (`GET /api/mi/:user/digest`) summarizing memory categories and recent focus points.
+  - Implemented strict consent enforcement (`POST /api/mi/:user/share-external`): blocks outbound sharing with HTTP 403 unless `externalAIConsent.allowOutbound` is true and `sharingLevel` is not `none`.
+  - Implemented MI natural language command interpreter (`POST /api/mi/:user/command`), classifying intents and routing commands to KITT agent capabilities via the approval gate for sensitive actions.
+  - Built complete local Voice Workflow in `WebUI/KITT/instruct-repair/routes/voice_api.js`:
+    - `POST /api/voice/register`: Enforces mandatory `consent: true` flag under Voice Usage Policy (§53 UrhG private use), validates metadata, creates job record in `voice/jobs`, and stores audio sample in `voice/samples`.
+    - `GET /api/voice/:voiceId/preview`: Offline preview endpoint clearly reporting `not-synthesized` status in environments without local TTS/RVC binaries.
+    - `POST /api/voice/transcripts` & `GET /api/voice/transcripts/:id/srt`: Timed speech cue transcript storage and standard SubRip (.srt) file export.
+    - `POST /api/voice/jobs/:id/train`: Local model training strictly gated behind explicit human approval via `requests_store`.
+  - Created comprehensive `WebUI/KITT/instruct-repair/public/mi_settings.html` providing visual profile management, proactive notification schedule controls, consent toggles, memory CRUD, digest viewer, and live audit log stream.
+  - Integrated live MI status and quick-nav into `WebUI/KITT/instruct-repair/public/agents.html`.
+- **Files Modified / Created**:
+  - `WebUI/KITT/instruct-repair/routes/mi_api.js`
+  - `WebUI/KITT/instruct-repair/routes/voice_api.js`
+  - `WebUI/KITT/instruct-repair/public/mi_settings.html`
+  - `WebUI/KITT/instruct-repair/public/agents.html`
+  - `WebUI/KITT/instruct-repair/server.js`
+  - `WebUI/KITT/instruct-repair/audit_helper.js`
+  - `WebUI/KITT/instruct-repair/requests_store.js`
+  - `WebUI/KITT/instruct-repair/capability_router.js`
+  - `WebUI/KITT/docs/CHATLOG.md`
+- **Block Status**:
+  - Stage 0 (Chat/build log & audit helper): 100%
+  - Stage 1 (K.I.T.T. & agents with capabilities): 100%
+  - Stage 2 (MI/MIO finish & integration): 100%
   - Stage 3 (Artanis agent & module): 0%
   - Stage 4 (FREE MONKEYS GO! game module): 0%
   - Stage 5 (Base44 & GitHub preparation): 0%

@@ -1,5 +1,76 @@
 [
   {
+    "id": "req-1791853168807-e7e956",
+    "title": "Voice Model Training Approval: Chief Voice",
+    "sourceType": "voice_training",
+    "agentId": "talker",
+    "command": "model_trainer",
+    "capability": "model_trainer",
+    "params": {
+      "jobId": "job-voice-1791853168803-ji3p",
+      "voiceId": "voice-1791853168803-ji3p"
+    },
+    "text": "Approve local AI voice model training for Chief Voice",
+    "status": "pending_approval",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T00:59:28.807Z",
+    "plan": {
+      "taskId": "req-1791853168807-e7e956",
+      "category": "agent_execution",
+      "module": "Agent: talker",
+      "risk": "high",
+      "requestedCapability": "model_trainer",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": null
+  },
+  {
+    "id": "req-1791853168801-a5f94e",
+    "title": "MI User [chief] command: Execute System Command",
+    "sourceType": "mi_command",
+    "agentId": "kitt",
+    "command": "execute_system_command",
+    "capability": "execute_system_command",
+    "params": {
+      "command": "Reboot the system"
+    },
+    "text": "Reboot the system",
+    "status": "pending_approval",
+    "requiresApproval": true,
+    "createdAt": "2026-10-13T00:59:28.801Z",
+    "plan": {
+      "taskId": "req-1791853168801-a5f94e",
+      "category": "agent_execution",
+      "module": "Agent: kitt",
+      "risk": "high",
+      "requestedCapability": "execute_system_command",
+      "acceptanceCriteria": [
+        "Executed strictly on local loopback interface",
+        "No data shared externally without explicit user consent",
+        "Approval required for sensitive capabilities"
+      ],
+      "actions": [
+        "Validate local agent parameters",
+        "Check capability permission boundary",
+        "Execute handler upon human approval",
+        "Log audit record to local disk"
+      ],
+      "nextStep": "Awaiting explicit POST /api/requests/:id/approve"
+    },
+    "result": null
+  },
+  {
     "id": "req-1791852722989-967174",
     "title": "Agent [kitt] command: Execute System Command",
     "sourceType": "agent",

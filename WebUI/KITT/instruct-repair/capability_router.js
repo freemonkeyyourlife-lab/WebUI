@@ -40,6 +40,38 @@ class CapabilityRouter {
     };
   }
 
+  getCapability(capabilityName) {
+    const sensitive = ['execute_system_command', 'config_override', 'broadcast_remote', 'ingest_external_stream', 'model_trainer'];
+    const labels = {
+      orchestrate_agents: 'Orchestrate Agents',
+      system_status: 'System Status',
+      execute_system_command: 'Execute System Command',
+      config_override: 'Configuration Override',
+      monitor_filesystem: 'Monitor Filesystem',
+      inspect_environment: 'Inspect Environment',
+      network_scan: 'Network Scan',
+      parse_instructions: 'Parse Instructions',
+      transcribe_audio: 'Transcribe Audio',
+      ingest_external_stream: 'Ingest External Stream',
+      speak_local: 'Speak Locally',
+      relay_message: 'Relay Message',
+      broadcast_remote: 'Broadcast Remote',
+      plan_decomposition: 'Plan Decomposition',
+      persona_extractor: 'Persona Extractor',
+      model_trainer: 'Model Trainer'
+    };
+    if (!this.handlers[capabilityName]) return null;
+    return {
+      name: capabilityName,
+      label: labels[capabilityName] || capabilityName,
+      requiresApproval: sensitive.includes(capabilityName)
+    };
+  }
+
+  async executeCapability(agentId, capabilityName, params = {}) {
+    return this.execute(agentId, capabilityName, params);
+  }
+
   async execute(agentId, capabilityName, params = {}) {
     const handler = this.handlers[capabilityName];
     if (!handler) {

@@ -1,0 +1,17 @@
+[
+  {
+    "id": "voice-1791853168803-ji3p",
+    "name": "Chief Voice",
+    "ownerId": "chief",
+    "language": "de",
+    "gender": "neutral",
+    "style": "authoritative-friendly",
+    "consent": true,
+    "consentTimestamp": "2026-10-13T00:59:28.803Z",
+    "sampleFile": "voice-1791853168803-ji3p.wav",
+    "sampleSize": 44,
+    "status": "registered",
+    "trainingStatus": "training_queued",
+    "createdAt": "2026-10-13T00:59:28.803Z"
+  }
+]

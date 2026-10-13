@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>M.I. Profile & Memory Hub - K.I.T.T.</title>
+  <link rel="stylesheet" href="/app.css" />
+  <style>
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
+    .badge-ok { background: #00c853; color: #000; }
+    .badge-warn { background: #ffd600; color: #000; }
+    .badge-danger { background: #d50000; color: #fff; }
+    .mem-item { border-bottom: 1px solid var(--border); padding: 8px 0; display: flex; justify-content: space-between; align-items: center; }
+    .notif-item { background: rgba(0,0,0,0.25); border-left: 3px solid var(--accent); padding: 8px; margin: 6px 0; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="nav-links">
+      <a href="/index.html" class="logo">⚡ K.I.T.T. Local</a>
+      <a href="/agents.html" class="nav-link">Agents & Capabilities</a>
+      <a href="/mi_settings.html" class="nav-link active">MI & Memory Hub</a>
+      <a href="/prompt_builder.html" class="nav-link">Prompt Builder</a>
+    </div>
+  </header>
+
+  <main class="page">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h1>M.I. Personal Instance & Memory Hub</h1>
+        <p class="text-muted">Local-first companion profile, memory retention, consent gate, and audit logs.</p>
+      </div>
+      <div>
+        <label style="display: inline-block; margin-right: 8px;">Active User:
+          <input id="userIdInput" value="chief" style="width: 120px; padding: 4px 8px; display: inline-block;" />
+        </label>
+        <button id="switchUserBtn" class="btn btn-secondary">Switch</button>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Profile & Proactive Panel -->
+      <section class="card">
+        <h2>👤 MI Profile Configuration</h2>
+        <label>Display Name
+          <input id="displayName" placeholder="K.I.T.T." />
+        </label>
+        <label>Companion Mode
+          <select id="profileMode">
+            <option value="assistant">Assistant (Local Task Runner)</option>
+            <option value="friend">Friend (Empathetic / Conversational)</option>
+            <option value="secretary">Secretary (Organizer / Reminder)</option>
+            <option value="tactical">Tactical (Safety & Diagnostics)</option>
+          </select>
+        </label>
+
+        <h3>⏰ Proactive Notification Schedule</h3>
+        <label>
+          <input id="proactiveToggle" type="checkbox" style="width:auto; margin-right: 8px;" />
+          Enable Proactive Reminders
+        </label>
+        <label>Frequency
+          <select id="proactiveFreq">
+            <option value="hourly">Hourly Checks</option>
+            <option value="daily">Daily Digest</option>
+            <option value="weekly">Weekly Sync</option>
+            <option value="off">Off</option>
+          </select>
+        </label>
+        <label>Channels (Comma-separated)
+          <input id="notifyChannels" value="ui, audio" />
+        </label>
+
+        <div style="display: flex; gap: 8px; margin-top: 10px;">
+          <button id="saveProfileBtn" class="btn btn-primary">Save Profile</button>
+          <button id="mute1hBtn" class="btn btn-secondary">Mute 1 Hour</button>
+          <button id="unmuteBtn" class="btn btn-secondary">Unmute</button>
+        </div>
+        <div id="muteStatus" style="margin-top: 8px; font-size: 0.85em; color: var(--accent);"></div>
+      </section>
+
+      <!-- Consent & Outbound Sharing Gate -->
+      <section class="card">
+        <h2>🔒 Consent & Sharing Boundaries</h2>
+        <p class="text-muted" style="font-size: 0.9em;">
+          Strict local-first guarantee: All outbound sharing paths are blocked by default unless explicit consent and non-zero sharing level are enabled.
+        </p>
+
+        <label>
+          <input id="allowInbound" type="checkbox" style="width:auto; margin-right: 8px;" />
+          Allow Inbound Peer Queries (LAN only)
+        </label>
+
+        <label>
+          <input id="allowOutbound" type="checkbox" style="width:auto; margin-right: 8px;" />
+          Allow Outbound AI Calls (Consent Gated)
+        </label>
+
+        <label>Sharing Level
+          <select id="sharingLevel">
+            <option value="none">none (Full local isolation)</option>
+            <option value="metadata_only">metadata_only</option>
+            <option value="anonymized">anonymized</option>
+            <option value="full_with_consent">full_with_consent</option>
+            <option value="peer_direct">peer_direct (Direct loopback)</option>
+          </select>
+        </label>
+
+        <div style="margin-top: 12px; display: flex; gap: 8px;">
+          <button id="saveConsentBtn" class="btn btn-primary">Update Consent</button>
+          <button id="testOutboundBtn" class="btn btn-secondary">Test Outbound Path</button>
+        </div>
+        <div id="consentStatus" style="margin-top: 10px; font-size: 0.9em;"></div>
+      </section>
+    </div>
+
+    <!-- Natural Language Command to KITT Router -->
+    <section class="card">
+      <h2>🗣️ MI Command Interpreter (Routes to K.I.T.T. Agents)</h2>
+      <p class="text-muted" style="font-size: 0.9em;">
+        Type an instruction. Safe commands execute immediately; sensitive commands route automatically through the approval gate.
+      </p>
+      <div style="display: flex; gap: 8px;">
+        <input id="miCmdInput" placeholder="e.g. 'Status check', 'Say welcome chief', 'Network scan', 'Reboot system'..." style="flex: 1;" />
+        <button id="sendMiCmdBtn" class="btn btn-primary">Send Command</button>
+      </div>
+      <div id="miCmdOutput" style="margin-top: 10px; font-size: 0.9em;"></div>
+    </section>
+
+    <!-- Memory Management & Daily Digest -->
+    <div class="grid-2">
+      <section class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2>🧠 Local Memory Store</h2>
+          <div style="display: flex; gap: 6px;">
+            <button id="exportMemoryBtn" class="btn btn-secondary" style="font-size: 0.8em; padding: 4px 8px;">Export JSON</button>
+          </div>
+        </div>
+
+        <div style="margin: 10px 0; display: flex; gap: 6px;">
+          <input id="newMemText" placeholder="Record a memory or preference..." style="flex: 1;" />
+          <input id="newMemCategory" placeholder="Category" value="preference" style="width: 100px;" />
+          <button id="addMemBtn" class="btn btn-primary">+</button>
+        </div>
+
+        <div id="memoryList" style="max-height: 320px; overflow-y: auto;">
+          <p class="text-muted">Loading memories...</p>
+        </div>
+      </section>
+
+      <!-- Daily Digest & Notifications -->
+      <section class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2>📰 MI Memory Digest</h2>
+          <button id="refreshDigestBtn" class="btn btn-secondary" style="font-size: 0.8em; padding: 4px 8px;">Generate Digest</button>
+        </div>
+        <div id="digestBox" style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 6px; padding: 12px; margin-top: 10px; min-height: 120px;">
+          <p class="text-muted">Click 'Generate Digest' to synthesize recent memory entries.</p>
+        </div>
+
+        <h3 style="margin-top: 16px;">Active Scheduled Notifications</h3>
+        <div id="notifBox">
+          <p class="text-muted">Loading notifications...</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Local Audit Subsystem Log -->
+    <section class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>📜 Local Audit Trail</h2>
+        <button id="refreshAuditBtn" class="btn btn-secondary" style="font-size: 0.8em; padding: 4px 8px;">Refresh Log</button>
+      </div>
+      <p class="text-muted" style="font-size: 0.85em;">All profile changes, memory actions, and security checks are appended to the local audit ledger.</p>
+      <div id="auditLogBox" style="max-height: 240px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; font-family: monospace; font-size: 0.85em;">
+        Loading audit entries...
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let activeUser = 'chief';
+
+    const userIdInput = document.getElementById('userIdInput');
+    const displayName = document.getElementById('displayName');
+    const profileMode = document.getElementById('profileMode');
+    const proactiveToggle = document.getElementById('proactiveToggle');
+    const proactiveFreq = document.getElementById('proactiveFreq');
+    const notifyChannels = document.getElementById('notifyChannels');
+    const allowInbound = document.getElementById('allowInbound');
+    const allowOutbound = document.getElementById('allowOutbound');
+    const sharingLevel = document.getElementById('sharingLevel');
+    const muteStatus = document.getElementById('muteStatus');
+    const consentStatus = document.getElementById('consentStatus');
+    const memoryList = document.getElementById('memoryList');
+    const digestBox = document.getElementById('digestBox');
+    const notifBox = document.getElementById('notifBox');
+    const auditLogBox = document.getElementById('auditLogBox');
+
+    async function loadAll() {
+      activeUser = userIdInput.value.trim() || 'chief';
+      await Promise.all([
+        loadProfile(),
+        loadMemory(),
+        loadDigest(),
+        loadNotifications(),
+        loadAudit()
+      ]);
+    }
+
+    async function loadProfile() {
+      try {
+        const res = await fetch(`/api/mi/${encodeURIComponent(activeUser)}/profile`);
+        const p = await res.json();
+        displayName.value = p.displayName || '';
+        profileMode.value = p.mode || 'assistant';
+        proactiveToggle.checked = !!p.proactive;
+        proactiveFreq.value = p.proactiveFrequency || 'daily';
+        notifyChannels.value = (p.notifyChannels || ['ui', 'audio']).join(', ');
+        allowInbound.checked = !!(p.externalAIConsent && p.externalAIConsent.allowInbound);
+        allowOutbound.checked = !!(p.externalAIConsent && p.externalAIConsent.allowOutbound);
+        sharingLevel.value = p.sharingLevel || 'none';
+
+        if (p.mutedUntil && new Date(p.mutedUntil) > new Date()) {
+          muteStatus.textContent = `Proactive muted until: ${new Date(p.mutedUntil).toLocaleTimeString()}`;
+        } else {
+          muteStatus.textContent = p.proactive ? 'Proactive notifications active' : 'Proactive notifications disabled';
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function saveProfile() {
+      const payload = {
+        displayName: displayName.value,
+        mode: profileMode.value,
+        proactive: proactiveToggle.checked,
+        proactiveFrequency: proactiveFreq.value,
+        notifyChannels: notifyChannels.value.split(',').map(s => s.trim()).filter(Boolean)
+      };
+      await fetch(`/api/mi/${encodeURIComponent(activeUser)}/profile`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      await loadProfile();
+      await loadAudit();
+    }
+
+    async function saveConsent() {
+      const payload = {
+        externalAIConsent: {
+          allowInbound: allowInbound.checked,
+          allowOutbound: allowOutbound.checked
+        },
+        sharingLevel: sharingLevel.value
+      };
+      const res = await fetch(`/api/mi/${encodeURIComponent(activeUser)}/consent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      consentStatus.innerHTML = `<span class="badge badge-ok">✓ Consent updated</span> (Outbound: ${data.externalAIConsent.allowOutbound ? 'Enabled' : 'Blocked'}, Sharing: ${data.sharingLevel})`;
+      await loadAudit();
+    }
+
+    async function testOutboundPath() {
+      consentStatus.textContent = 'Testing outbound sharing path...';
+      try {
+        const res = await fetch(`/api/mi/${encodeURIComponent(activeUser)}/share-external`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target: 'remote_peer' })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          consentStatus.innerHTML = `<span class="badge badge-warn">Permitted</span> ${data.message}`;
+        } else {
+          consentStatus.innerHTML = `<span class="badge badge-danger">BLOCKED</span> ${data.error}`;
+        }
+      } catch (e) {
+        consentStatus.textContent = 'Error testing sharing path: ' + e.message;
+      }
+      await loadAudit();
+    }
+
+    async function loadMemory() {
+      try {
+        const res = await fetch(`/api/mi/${encodeURIComponent(activeUser)}/memory`);
+        const items = await res.json();
+        if (!items || items.length === 0) {
+          memoryList.innerHTML = '<p class="text-muted">No memories recorded yet.</p>';
+          return;
+        }
+        memoryList.innerHTML = items.map(m => `
+          <div class="mem-item">
+            <div>
+              <span class="badge badge-ok">${m.category || 'general'}</span>
+              <span>${m.text}</span>
+              <div class="text-muted" style="font-size:0.75em;">${new Date(m.createdAt).toLocaleString()}</div>
+            </div>
+            <button class="btn btn-secondary" onclick="deleteMemory('${m.id}')" style="padding: 2px 6px; font-size: 0.8em;">✕</button>
+          </div>
+        `).join('');
+      } catch (e) {
+        memoryList.textContent = 'Failed to load memory: ' + e.message;
+      }
+    }
+
+    async function addMemory() {
+      const text = document.getElementById('newMemText').value.trim();
+      const category = document.getElementById('newMemCategory').value.trim() || 'general';
+      if (!text) return;
+      await fetch(`/api/mi/${encodeURIComponent(activeUser)}/memory`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, category })
+      });
+      document.getElementById('newMemText').value = '';
+      await loadMemory();
+      await loadDigest();
+      await loadAudit();
+    }
+
+    window.deleteMemory = async function(id) {
+      if (!confirm('Delete memory item ' + id + '?')) return;
+      await fetch(`/api/mi/${encodeURIComponent(activeUser)}/memory/${id}`, { method: 'DELETE' });
+      await loadMemory();
+      await loadDigest();
+      await loadAudit();
+    };
+
+    async function exportMemory() {
+      const res = await fetch(`/api/mi/${encodeURIComponent(activeUser)}/memory/export`);
+      const data = await res.json();
+      alert(`Exported ${data.entryCount} memories to ${data.filename}`);
+      await loadAudit();
+    }
+
+    async function loadDigest() {
+      try {
+        const res = await fetch(`/api/mi/${encodeURIComponent(activeUser)}/digest`);
+        const d = await res.json();
+        digestBox.innerHTML = `
+          <strong>${d.displayName} Digest (${d.proactiveMode}):</strong>
+          <p style="margin: 6px 0;">${d.digestText}</p>
+          <div class="text-muted" style="font-size: 0.8em;">Total memories: ${d.totalMemories} | Generated: ${new Date(d.generatedAt).toLocaleTimeString()}</div>
+        `;
+      } catch (e) {
+        digestBox.textContent = 'Error generating digest: ' + e.message;
+      }
+    }
+
+    async function loadNotifications() {
+      try {
+        const res = await fetch(`/api/mi/${encodeURIComponent(activeUser)}/notifications`);
+        const n = await res.json();
+        if (!n.active || !n.notifications || n.notifications.length === 0) {
+          notifBox.innerHTML = `<p class="text-muted">No pending notifications (${n.reason || 'idle'}).</p>`;
+          return;
+        }
+        notifBox.innerHTML = n.notifications.map(item => `
+          <div class="notif-item">
+            <strong>${item.title}</strong>
+            <p style="margin: 3px 0; font-size: 0.85em;">${item.message}</p>
+            <div class="text-muted" style="font-size: 0.75em;">Channels: ${item.channels.join(', ')} | ${new Date(item.timestamp).toLocaleTimeString()}</div>
+          </div>
+        `).join('');
+      } catch (e) {
+        notifBox.textContent = 'Error loading notifications: ' + e.message;
+      }
+    }
+
+    async function toggleMute(minutes) {
+      await fetch(`/api/mi/${encodeURIComponent(activeUser)}/notifications/mute`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ minutes })
+      });
+      await loadProfile();
+      await loadNotifications();
+      await loadAudit();
+    }
+
+    async function loadAudit() {
+      try {
+        const res = await fetch(`/api/mi/${encodeURIComponent(activeUser)}/audit`);
+        const list = await res.json();
+        if (!list || list.length === 0) {
+          auditLogBox.textContent = 'No audit entries yet.';
+          return;
+        }
+        auditLogBox.innerHTML = list.slice(0, 30).map(l => `
+          <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding: 4px 0;">
+            <span style="color: var(--accent);">[${new Date(l.timestamp).toLocaleTimeString()}]</span>
+            <strong>${l.action}</strong> by <em>${l.actor}</em>
+            <span style="color: var(--muted);">${JSON.stringify(l.details || {})}</span>
+          </div>
+        `).join('');
+      } catch (e) {
+        auditLogBox.textContent = 'Error loading audit logs: ' + e.message;
+      }
+    }
+
+    async function sendMiCommand() {
+      const text = document.getElementById('miCmdInput').value.trim();
+      if (!text) return;
+      const out = document.getElementById('miCmdOutput');
+      out.textContent = 'Interpreting command...';
+      try {
+        const res = await fetch(`/api/mi/${encodeURIComponent(activeUser)}/command`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        const d = await res.json();
+        if (d.requiresApproval) {
+          out.innerHTML = `<span class="badge badge-warn">APPROVAL REQUIRED</span> ${d.message} (<a href="/agents.html" style="color:var(--accent);">Approve in Agents Dashboard</a>)`;
+        } else {
+          out.innerHTML = `<span class="badge badge-ok">EXECUTED</span> Routed to agent <strong>${d.targetAgent}</strong> [${d.matchedCapability}]: <pre style="margin-top:4px;">${JSON.stringify(d.result, null, 2)}</pre>`;
+        }
+        document.getElementById('miCmdInput').value = '';
+      } catch (e) {
+        out.textContent = 'Error: ' + e.message;
+      }
+      await loadAudit();
+    }
+
+    // Event listeners
+    document.getElementById('switchUserBtn').addEventListener('click', loadAll);
+    document.getElementById('saveProfileBtn').addEventListener('click', saveProfile);
+    document.getElementById('saveConsentBtn').addEventListener('click', saveConsent);
+    document.getElementById('testOutboundBtn').addEventListener('click', testOutboundPath);
+    document.getElementById('addMemBtn').addEventListener('click', addMemory);
+    document.getElementById('exportMemoryBtn').addEventListener('click', exportMemory);
+    document.getElementById('refreshDigestBtn').addEventListener('click', loadDigest);
+    document.getElementById('refreshAuditBtn').addEventListener('click', loadAudit);
+    document.getElementById('mute1hBtn').addEventListener('click', () => toggleMute(60));
+    document.getElementById('unmuteBtn').addEventListener('click', () => toggleMute(0));
+    document.getElementById('sendMiCmdBtn').addEventListener('click', sendMiCommand);
+
+    loadAll();
+  </script>
+</body>
+</html>

@@ -76,8 +76,18 @@ function readAuditLog(filter = {}) {
   }
 }
 
+function logAction(action, userId, details, status = 'success') {
+  return logAudit({ action, userId, details, status });
+}
+
+function getRecentLogs(limit = 100, filterType = null) {
+  return readAuditLog({ limit, action: filterType });
+}
+
 module.exports = {
   logAudit,
+  logAction,
   readAuditLog,
+  getRecentLogs,
   AUDIT_FILE
 };

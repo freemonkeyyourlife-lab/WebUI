@@ -1,0 +1,36 @@
+{
+  "jobId": "job-voice-1791853168803-ji3p",
+  "voiceId": "voice-1791853168803-ji3p",
+  "voiceName": "Chief Voice",
+  "ownerId": "chief",
+  "samplePath": "/home/runner/work/WebUI/WebUI/WebUI/KITT/voice/samples/voice-1791853168803-ji3p.wav",
+  "consent": true,
+  "status": "training_queued",
+  "trainingApproved": true,
+  "createdAt": "2026-10-13T00:59:28.803Z",
+  "steps": [
+    {
+      "step": "consent_verification",
+      "status": "completed",
+      "timestamp": "2026-10-13T00:59:28.803Z"
+    },
+    {
+      "step": "sample_ingestion",
+      "status": "completed",
+      "timestamp": "2026-10-13T00:59:28.803Z"
+    },
+    {
+      "step": "training_approval",
+      "status": "pending",
+      "note": "Requires explicit human approval before running"
+    },
+    {
+      "step": "training_approval",
+      "status": "completed",
+      "approvedBy": "chief",
+      "timestamp": "2026-10-13T00:59:28.808Z"
+    }
+  ],
+  "approvedAt": "2026-10-13T00:59:28.808Z",
+  "approver": "chief"
+}

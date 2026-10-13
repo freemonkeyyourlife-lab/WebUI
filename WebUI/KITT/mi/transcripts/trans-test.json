@@ -1,0 +1,13 @@
+{
+  "id": "trans-test",
+  "voiceId": null,
+  "text": "K.I.T.T. ist voll einsatzbereit.",
+  "segments": [
+    {
+      "start": "00:00:00,000",
+      "end": "00:00:03,500",
+      "text": "K.I.T.T. ist voll einsatzbereit."
+    }
+  ],
+  "createdAt": "2026-10-13T00:59:28.806Z"
+}
