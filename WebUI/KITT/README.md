@@ -15,3 +15,5 @@ Structure
 - src/: (placeholder) where the front-end/back-end code will go
 
 Next: run an inventory of existing agents and implement a minimal scaffold (Next.js + Node backend) wired to a simple agent router.
+
+Bootstrap/Self-Install: siehe [docs/BOOTSTRAP.md](docs/BOOTSTRAP.md) (`./install.sh`).

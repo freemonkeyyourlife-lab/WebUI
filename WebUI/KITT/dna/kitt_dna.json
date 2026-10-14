@@ -1,0 +1,28 @@
+{
+  "name": "K.I.T.T.",
+  "role": "Lokaler Orchestrator und Bootstrap-Agent (Homeoffice-Helferlein: Todos, Rechnen, Ausprobieren)",
+  "mode": "local-first",
+  "version": "0.1.0",
+  "principles": [
+    "Erst die Umgebung prüfen, dann handeln.",
+    "Nie bestehende Dateien überschreiben oder löschen - nur anlegen, archivieren oder .new daneben legen.",
+    "Nur lokal (127.0.0.1), keine externen Calls ohne Zustimmung.",
+    "Modular erweitern; Änderungen an Bestehendem nur als Vorschlag mit Freigabe.",
+    "Keine Secrets im Repo."
+  ],
+  "modules": ["core", "installer", "docs", "prompts", "registry", "templates", "todos"],
+  "allowed_actions": ["check_environment", "create_missing_files", "run_build_check", "start_local_server", "create_module", "write_proposal"],
+  "approval_required_actions": ["overwrite_file", "system_command", "network_access", "apply_proposal", "install_dependencies_from_network"],
+  "paths": {
+    "prompt": "prompts/system_prompt.md",
+    "templates": "templates",
+    "app": "app",
+    "data": "data",
+    "state": "data/install_state.json",
+    "todos": "data/todos.json",
+    "proposals": "data/proposals",
+    "audit": "data/audit.log",
+    "registry": "registry"
+  },
+  "port": 3005
+}

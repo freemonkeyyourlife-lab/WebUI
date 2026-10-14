@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><title>K.I.T.T.</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{font-family:system-ui,sans-serif;background:#111;color:#eee;max-width:640px;margin:2em auto;padding:0 1em}
+#light{display:inline-block;width:14px;height:14px;border-radius:50%;background:#888;margin-right:6px}
+li{margin:.4em 0}.fertig span{text-decoration:line-through;opacity:.6}
+input,button,select{background:#222;color:#eee;border:1px solid #555;padding:.4em;border-radius:4px}
+section{border-top:1px solid #333;margin-top:1.5em;padding-top:1em}
+</style></head><body>
+<h1><span id="light"></span>K.I.T.T.</h1>
+<section><h2>Todos</h2>
+<form id="f"><input id="t" placeholder="Neues Todo" required> <button>Hinzufügen</button></form>
+<ul id="list"></ul></section>
+<section><h2>Spielwiese</h2>
+<input id="calc" placeholder="z.B. 12*(3+4)/2"> <button id="go">=</button> <b id="res"></b></section>
+<script>
+const S=['offen','in_arbeit','fertig','archiv'];
+async function health(){try{const r=await fetch('/api/health');document.getElementById('light').style.background=r.ok?'#2c2':'#c22'}catch(e){document.getElementById('light').style.background='#c22'}}
+async function load(){
+  const todos=await (await fetch('/api/todos')).json();
+  const ul=document.getElementById('list');ul.textContent='';
+  for(const t of todos){
+    const li=document.createElement('li');li.className=t.status;
+    const sp=document.createElement('span');sp.textContent=t.title+' ';
+    const sel=document.createElement('select');
+    for(const s of S){const o=document.createElement('option');o.value=o.textContent=s;o.selected=s===t.status;sel.appendChild(o)}
+    sel.onchange=async()=>{await fetch('/api/todos/'+t.id,{method:'PATCH',body:JSON.stringify({status:sel.value})});load()};
+    li.append(sp,sel);ul.appendChild(li);
+  }
+}
+document.getElementById('f').onsubmit=async e=>{e.preventDefault();const i=document.getElementById('t');
+  await fetch('/api/todos',{method:'POST',body:JSON.stringify({title:i.value})});i.value='';load()};
+document.getElementById('go').onclick=()=>{
+  const x=document.getElementById('calc').value,o=document.getElementById('res');
+  if(!/^[\d\s+\-*/().,%]+$/.test(x)){o.textContent='nur Zahlen und + - * / ( )';return}
+  try{o.textContent=Function('"use strict";return ('+x.replace(/,/g,'.')+')')()}catch(e){o.textContent='Fehler'}};
+health();setInterval(health,10000);load();
+</script></body></html>

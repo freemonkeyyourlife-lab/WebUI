@@ -1,0 +1,7 @@
+{
+  "name": "kitt-local",
+  "version": "0.1.0",
+  "private": true,
+  "description": "K.I.T.T. minimales lokales Grundgerüst",
+  "scripts": { "start": "node server.js" }
+}
