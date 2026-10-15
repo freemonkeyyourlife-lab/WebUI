@@ -20,7 +20,7 @@ function saveTodos(list) {
 }
 function send(res, code, body, type) {
   res.writeHead(code, { 'Content-Type': type || 'application/json; charset=utf-8' });
-  res.end(typeof body === 'string' ? body : JSON.stringify(body));
+  res.end(typeof body === 'string' || Buffer.isBuffer(body) ? body : JSON.stringify(body));
 }
 function body(req) {
   return new Promise((resolve, reject) => {
