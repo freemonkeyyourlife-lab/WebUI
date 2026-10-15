@@ -9,7 +9,11 @@ data/proposals/<id>-antwort.md - bestehende Dateien werden nie geändert.
 import argparse
 import json
 import os
+import re
+import shutil
+import subprocess
 import sys
+import tempfile
 import time
 import urllib.request
 from pathlib import Path
@@ -29,6 +33,34 @@ def ask(model, system, text):
     req = urllib.request.Request(HOST + "/api/chat", json.dumps(payload).encode(), {"Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=3600) as r:  # kleines Modell darf dauern
         return json.load(r)["message"]["content"]
+
+
+def check_code(answer):
+    """Prüft den ersten Codeblock (js/python) auf Syntaxfehler. -> (ok, meldung)"""
+    m = re.search(r"```(\w*)\n(.*?)```", answer, re.S)
+    if not m:
+        return True, "kein Codeblock"
+    lang, code = m.group(1).lower(), m.group(2)
+    if lang in ("js", "javascript", "node") and shutil.which("node"):
+        ext, cmd = ".js", [shutil.which("node"), "--check"]
+    elif lang in ("py", "python"):
+        ext, cmd = ".py", [sys.executable, "-m", "py_compile"]
+    else:
+        return True, "Sprache nicht prüfbar"
+    with tempfile.NamedTemporaryFile("w", suffix=ext, delete=False) as t:
+        t.write(code)
+    r = subprocess.run(cmd + [t.name], capture_output=True, text=True)
+    return r.returncode == 0, r.stderr.strip()[:500]
+
+
+def ask_checked(model, system, text, tries=3):
+    answer, note = "", ""
+    for i in range(tries):
+        answer = ask(model, system, text if not note else text + "\n\nDein letzter Code hatte einen Fehler, bitte korrigieren:\n" + note)
+        ok, note = check_code(answer)
+        if ok:
+            return answer, "Prüfung ok (Versuch %d): %s" % (i + 1, note or "ok")
+    return answer, "Prüfung FEHLGESCHLAGEN nach %d Versuchen: %s" % (tries, note)
 
 
 def run_once(root, model):
@@ -52,13 +84,13 @@ def run_once(root, model):
         f.write_text(json.dumps(cur, indent=2, ensure_ascii=False), encoding="utf-8")
         print("Arbeite an:", r["text"][:60])
         try:
-            answer = ask(model, system, r["text"])
+            answer, check = ask_checked(model, system, r["text"])
         except Exception as e:  # Ollama aus / Modell fehlt
             print("Fehler:", e)
             audit(root, "worker-fehler %s %s" % (r["id"], e))
             return 1
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text("# Auftrag\n%s\n\n# Antwort (%s, %s)\n%s\n" % (r["text"], model, now(), answer), encoding="utf-8")
+        out.write_text("# Auftrag\n%s\n\n# Antwort (%s, %s)\nPrüfung: %s\n\n%s\n" % (r["text"], model, now(), check, answer), encoding="utf-8")
         audit(root, "worker-antwort %s %s" % (r["id"], out.name))
         print("Fertig ->", out)
         done += 1
