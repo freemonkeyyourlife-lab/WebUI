@@ -10,6 +10,7 @@ const HOST = '127.0.0.1';
 const DATA = path.join(HOME, 'data');
 const TODOS = path.join(DATA, 'todos.json');
 const STATUSES = ['offen', 'in_arbeit', 'fertig', 'archiv'];
+const REQUESTS = path.join(DATA, 'requests.json');
 
 function readJson(file, fallback) {
   try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (e) { return fallback; }
@@ -71,6 +72,32 @@ async function handle(req, res) {
     todo.updated = new Date().toISOString();
     saveTodos(list);
     return send(res, 200, todo);
+  }
+  if (p === '/api/requests' && req.method === 'GET') {
+    return send(res, 200, readJson(REQUESTS, []).filter((r) => r.status !== 'archiv'));
+  }
+  if (p === '/api/requests' && req.method === 'POST') {
+    const b = await body(req);
+    const text = String(b.text || '').trim();
+    if (!text) return send(res, 400, { error: 'text fehlt' });
+    const list = readJson(REQUESTS, []);
+    const r = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), text, status: 'offen', created: new Date().toISOString() };
+    list.push(r);
+    fs.mkdirSync(DATA, { recursive: true });
+    fs.writeFileSync(REQUESTS, JSON.stringify(list, null, 2));
+    return send(res, 201, r);
+  }
+  const rm = p.match(/^\/api\/requests\/([\w-]+)$/);
+  if (rm && req.method === 'PATCH') {
+    const b = await body(req);
+    const list = readJson(REQUESTS, []);
+    const r = list.find((x) => x.id === rm[1]);
+    if (!r) return send(res, 404, { error: 'nicht gefunden' });
+    if (!STATUSES.includes(b.status)) return send(res, 400, { error: 'status ungueltig' });
+    r.status = b.status;
+    r.updated = new Date().toISOString();
+    fs.writeFileSync(REQUESTS, JSON.stringify(list, null, 2));
+    return send(res, 200, r);
   }
   if (p === '/' || p === '/index.html') {
     try { return send(res, 200, fs.readFileSync(path.join(__dirname, 'public', 'index.html')), 'text/html; charset=utf-8'); } catch (e) { return send(res, 404, { error: 'index.html fehlt' }); }

@@ -12,6 +12,9 @@ section{border-top:1px solid #333;margin-top:1.5em;padding-top:1em}
 <section><h2>Todos</h2>
 <form id="f"><input id="t" placeholder="Neues Todo" required> <button>Hinzufügen</button></form>
 <ul id="list"></ul></section>
+<section><h2>Aufträge an K.I.T.T.</h2>
+<form id="rf"><textarea id="rt" rows="3" style="width:100%;background:#222;color:#eee" placeholder="Was soll K.I.T.T. bauen?" required></textarea><button>Auftrag speichern</button></form>
+<ul id="rlist"></ul></section>
 <section><h2>Spielwiese</h2>
 <input id="calc" placeholder="z.B. 12*(3+4)/2"> <button id="go">=</button> <b id="res"></b></section>
 <script>
@@ -35,5 +38,20 @@ document.getElementById('go').onclick=()=>{
   const x=document.getElementById('calc').value,o=document.getElementById('res');
   if(!/^[\d\s+\-*/().,%]+$/.test(x)){o.textContent='nur Zahlen und + - * / ( )';return}
   try{o.textContent=Function('"use strict";return ('+x.replace(/,/g,'.')+')')()}catch(e){o.textContent='Fehler'}};
+async function loadReq(){
+  const rs=await (await fetch('/api/requests')).json();
+  const ul=document.getElementById('rlist');ul.textContent='';
+  for(const r of rs){
+    const li=document.createElement('li');li.className=r.status;
+    const sp=document.createElement('span');sp.textContent=r.text+' ';
+    const sel=document.createElement('select');
+    for(const s of S){const o=document.createElement('option');o.value=o.textContent=s;o.selected=s===r.status;sel.appendChild(o)}
+    sel.onchange=async()=>{await fetch('/api/requests/'+r.id,{method:'PATCH',body:JSON.stringify({status:sel.value})});loadReq()};
+    li.append(sp,sel);ul.appendChild(li);
+  }
+}
+document.getElementById('rf').onsubmit=async e=>{e.preventDefault();const i=document.getElementById('rt');
+  await fetch('/api/requests',{method:'POST',body:JSON.stringify({text:i.value})});i.value='';loadReq()};
+loadReq();
 health();setInterval(health,10000);load();
 </script></body></html>
