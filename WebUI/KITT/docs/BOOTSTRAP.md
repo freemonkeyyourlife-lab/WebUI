@@ -19,3 +19,6 @@ Voraussetzung: Node 18+, Python 3.8+. Zweiter Lauf ändert nichts. Test: `./smok
 
 ## Anpassen
 DNA-Felder in `dna/kitt_dna.json` ändern; im Prompt `{{feld}}` verwenden (Listen werden aufgelistet). Der Server liefert beides unter `/api/dna`. API: `/api/health`, `/api/status`, `/api/todos` (GET/POST, PATCH `/api/todos/:id`; Status `offen|in_arbeit|fertig|archiv`, kein Löschen).
+
+## Lokales Modell (Ollama)
+`OLLAMA_MODEL=NAME python3 core/worker.py [--once]` schickt offene Aufträge (Box im Browser) an Ollama auf 127.0.0.1 und legt die Antwort als `data/proposals/<id>-antwort.md` ab. Nichts wird überschrieben; der Auftrag wird `in_arbeit`. Kein externer Call.
