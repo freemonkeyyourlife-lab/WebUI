@@ -17,3 +17,5 @@ Structure
 Next: run an inventory of existing agents and implement a minimal scaffold (Next.js + Node backend) wired to a simple agent router.
 
 Bootstrap/Self-Install: siehe [docs/BOOTSTRAP.md](docs/BOOTSTRAP.md) (`./install.sh`).
+
+Alle Befehle an einem Platz: [docs/ANLEITUNG.md](docs/ANLEITUNG.md).
