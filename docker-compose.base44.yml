@@ -1,0 +1,27 @@
+# Base44 development environment for the K.I.T.T. Instruct & Repair service.
+# Runs the Node/Express app FROM THE CLONED SOURCE with live reload.
+services:
+  web:
+    image: node:22
+    container_name: kitt-web
+    working_dir: /app/WebUI/KITT/instruct-repair
+    volumes:
+      # Bind-mount the cloned source so edits are reflected without rebuilds.
+      - ./:/app
+    ports:
+      - "3000:3000"
+    environment:
+      # Web entry point must be reachable on host port 3000.
+      - PORT=3000
+      # Pass the sandbox flag through to the service (gated overrides use === "1").
+      - BASE44_PREVIEW_MODE
+    # Install deps from the bind-mounted package.json, then run the dev server
+    # with polling (bind mounts often need it for file-watch events to fire).
+    command: ["sh", "-ec", "npm install --no-audit --no-fund && exec ./node_modules/.bin/nodemon --legacy-watch server.js"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 45s
+    restart: on-failure

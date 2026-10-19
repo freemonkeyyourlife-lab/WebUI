@@ -218,6 +218,7 @@ router.post('/extract_text', (req, res) => {
 
 // 11) webhook registration
 const webhooksFile = path.join(__dirname, 'data', 'file_webhooks.json');
+if (!fs.existsSync(path.dirname(webhooksFile))) fs.mkdirSync(path.dirname(webhooksFile), { recursive: true });
 if (!fs.existsSync(webhooksFile)) fs.writeFileSync(webhooksFile, JSON.stringify([], null, 2));
 
 router.post('/webhook_register', (req, res) => {

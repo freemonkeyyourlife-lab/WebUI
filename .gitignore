@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Runtime data (created at startup)
+WebUI/KITT/instruct-repair/data/
+WebUI/KITT/instruct-repair/mi/
+WebUI/KITT/mi/
+WebUI/KITT/voice/samples/
+WebUI/KITT/voice/jobs/
+WebUI/KITT/files/
+
+# Logs
+*.log
+WebUI/KITT/instruct-repair/kitt-server.log
+
+# Base44 local defaults (placeholders) are committed on purpose
+!.env.base44-defaults

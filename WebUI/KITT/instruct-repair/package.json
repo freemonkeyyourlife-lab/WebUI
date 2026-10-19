@@ -1,0 +1,21 @@
+{
+  "name": "kitt-instruct-repair",
+  "version": "0.1.0",
+  "private": true,
+  "description": "K.I.T.T. Instruct & Repair Service — safe, approval-gated local task orchestration.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon --legacy-watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
