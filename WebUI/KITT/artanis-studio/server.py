@@ -39,6 +39,12 @@ class Handler(BaseHTTPRequestHandler):
             except ValueError:return self.reply(400,{"error":"Invalid job ID"})
             try:return self.reply(200,request(COMFY,"/history/"+pid))
             except Exception as exc:return self.reply(502,{"error":str(exc)})
+        if path=="/api/checkpoints":
+            try:
+                info=request(COMFY,"/object_info/CheckpointLoaderSimple",timeout=10)
+                values=info["CheckpointLoaderSimple"]["input"]["required"]["ckpt_name"][0]
+                return self.reply(200,{"checkpoints":values})
+            except Exception as exc:return self.reply(502,{"error":str(exc)})
         if path=="/api/queue":
             try:return self.reply(200,request(COMFY,"/queue"))
             except Exception as exc:return self.reply(502,{"error":str(exc)})
@@ -73,6 +79,30 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 obj=request(OLLAMA,"/api/chat",{"model":model,"stream":False,"messages":[{"role":"system","content":"Du bist TANIA, deutschsprachige Regie- und Kreativassistentin fuer FREE MONKEYS. Hilf mit Szenen, Storyboards, Prompts und Produktion. Behaupte niemals, Bilder oder Videos erzeugt zu haben, wenn kein Werkzeug ausgefuehrt wurde."},{"role":"user","content":msg}]},timeout=180)
                 return self.reply(200,{"answer":obj.get("message",{}).get("content","")})
+            except Exception as exc:return self.reply(502,{"error":str(exc)})
+        if self.path=="/api/text-to-image":
+            prompt=str(data.get("prompt","")).strip()[:3000]
+            checkpoint=str(data.get("checkpoint",""))[:300]
+            if not prompt or not checkpoint:return self.reply(400,{"error":"Prompt und Checkpoint erforderlich"})
+            try:
+                available=request(COMFY,"/object_info/CheckpointLoaderSimple",timeout=10)
+                choices=available["CheckpointLoaderSimple"]["input"]["required"]["ckpt_name"][0]
+                if checkpoint not in choices:return self.reply(400,{"error":"Checkpoint nicht in ComfyUI installiert"})
+                width=int(data.get("width",768));height=int(data.get("height",768))
+                if width not in (512,768,1024) or height not in (512,768,1024):return self.reply(400,{"error":"Ungültige Bildgröße"})
+                import secrets
+                workflow={
+                    "1":{"class_type":"CheckpointLoaderSimple","inputs":{"ckpt_name":checkpoint}},
+                    "2":{"class_type":"CLIPTextEncode","inputs":{"text":prompt,"clip":["1",1]}},
+                    "3":{"class_type":"CLIPTextEncode","inputs":{"text":"blurry, low quality, watermark","clip":["1",1]}},
+                    "4":{"class_type":"EmptyLatentImage","inputs":{"width":width,"height":height,"batch_size":1}},
+                    "5":{"class_type":"KSampler","inputs":{"seed":secrets.randbelow(2**48),"steps":22,"cfg":7.0,"sampler_name":"euler","scheduler":"normal","denoise":1.0,"model":["1",0],"positive":["2",0],"negative":["3",0],"latent_image":["4",0]}},
+                    "6":{"class_type":"VAEDecode","inputs":{"samples":["5",0],"vae":["1",2]}},
+                    "7":{"class_type":"SaveImage","inputs":{"filename_prefix":"ARTANIS","images":["6",0]}}
+                }
+                return self.reply(200,request(COMFY,"/prompt",{"prompt":workflow,"client_id":str(uuid.uuid4())},timeout=30))
+            except urllib.error.HTTPError as exc:
+                return self.reply(502,{"error":"ComfyUI rejected generation","details":exc.read(8192).decode(errors="replace")})
             except Exception as exc:return self.reply(502,{"error":str(exc)})
         if self.path=="/api/generate":
             workflow=data.get("workflow")
