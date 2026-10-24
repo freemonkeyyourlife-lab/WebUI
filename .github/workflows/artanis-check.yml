@@ -1,0 +1,21 @@
+name: ARTANIS Studio checks
+on:
+  push:
+    branches:
+      - dev/artanis-bild-video-v01
+  pull_request:
+    paths:
+      - 'WebUI/KITT/artanis-studio/**'
+      - '.github/workflows/artanis-check.yml'
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Python syntax
+        run: python3 -m py_compile WebUI/KITT/artanis-studio/server.py
+      - name: Verify studio files
+        run: |
+          test -s WebUI/KITT/artanis-studio/index.html
+          test -s WebUI/KITT/artanis-studio/studio.html
+          test -s WebUI/KITT/artanis-studio/README.md
