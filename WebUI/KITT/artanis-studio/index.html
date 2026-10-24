@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ARTANIS × TANIA – Bild & Video</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;background:#10131b;color:#f1f3f9}
+header{padding:18px 24px;border-bottom:1px solid #343947;display:flex;justify-content:space-between;align-items:center}header strong{font-size:21px}
+main{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);gap:20px;padding:20px;max-width:1500px;margin:auto}
+.panel,.stage{background:#1c2230;border:1px solid #353d50;border-radius:14px;padding:18px}
+label{display:block;margin:13px 0 5px;font-size:14px}input,select,button{font:inherit}input[type=file],input[type=text],input[type=number],select{width:100%;background:#111622;color:white;border:1px solid #4a5265;border-radius:8px;padding:9px}
+input[type=range]{width:100%}button{background:#667cff;border:0;color:white;border-radius:9px;padding:12px;cursor:pointer;margin:5px 4px 5px 0}button.secondary{background:#3d465a}button:disabled{opacity:.45;cursor:wait}
+canvas{width:100%;max-height:65vh;object-fit:contain;background:#080a0f;border-radius:10px}
+small,.muted{color:#aeb7cb}#status{min-height:40px;margin-top:12px}h2{margin:0 0 10px}h3{margin-bottom:6px}
+@media(max-width:850px){main{grid-template-columns:1fr}}
+</style></head><body>
+<header><strong>ARTANIS × TANIA</strong><span class="muted">Bild- & Videostudio · Lokal</span></header>
+<main><section class="panel"><h2>Werkzeuge</h2>
+<label>Bild öffnen</label><input id="file" type="file" accept="image/*">
+<label>Format</label><select id="ratio"><option value="original">Original</option><option value="9:16">9:16 · Shorts</option><option value="16:9">16:9 · Querformat</option><option value="1:1">1:1 · Quadrat</option></select>
+<label>Helligkeit <output id="brightnessValue">100%</output></label><input id="brightness" type="range" min="20" max="180" value="100">
+<label>Kontrast <output id="contrastValue">100%</output></label><input id="contrast" type="range" min="20" max="180" value="100">
+<label>Sättigung <output id="saturationValue">100%</output></label><input id="saturation" type="range" min="0" max="200" value="100">
+<label>Text auf dem Bild</label><input id="caption" type="text" placeholder="Optionaler Titel">
+<button id="png">Bild als PNG speichern</button><button class="secondary" id="reset">Filter zurücksetzen</button>
+<hr style="border-color:#343947">
+<h3>Video aus Bild</h3><small>Langsamer Kamerazoom mit optionalem Titel. Ausgabe als WebM (Browser-Unterstützung erforderlich).</small>
+<label>Dauer in Sekunden</label><input id="duration" type="number" min="2" max="30" value="6">
+<label>Bewegung</label><select id="motion"><option value="zoom">Langsamer Zoom</option><option value="pan">Seitliche Kamerafahrt</option><option value="still">Standbild</option></select>
+<button id="video">Video erzeugen & speichern</button>
+<p id="status" role="status">Bitte ein Bild auswählen.</p>
+</section><section class="stage"><h2>Vorschau</h2><canvas id="preview" width="720" height="1280"></canvas>
+<p class="muted">Alle Bilddaten bleiben in deinem Browser. Keine Uploads an einen Server.</p>
+<p class="muted">Dies ist ein erster echter Bildeditor und Bild-zu-Video-Exporter, noch keine KI-Bildgenerierung oder KI-Videogenerierung.</p></section></main>
+<script>
+"use strict";
+const $=id=>document.getElementById(id), canvas=$("preview"),ctx=canvas.getContext("2d");
+let source=null,working=false;
+const setStatus=s=>$("status").textContent=s;
+const filters=()=>["brightness","contrast","saturation"].map(id=>{const v=$(id).value;$(id+"Value").textContent=v+"%";return id==="saturation"?"saturate("+v+"%)":id+"("+v+"%)"}).join(" ");
+function dimensions(){
+ const ratio=$("ratio").value;
+ if(ratio==="original"&&source)return [source.naturalWidth,source.naturalHeight];
+ const [w,h]=ratio==="16:9"?[1280,720]:ratio==="1:1"?[960,960]:[720,1280];
+ return [w,h];
+}
+function paint(target,progress=0,motion="still"){
+ const c=target.canvas,w=c.width,h=c.height;
+ target.clearRect(0,0,w,h);target.fillStyle="#080a0f";target.fillRect(0,0,w,h);
+ if(!source){target.fillStyle="#aeb7cb";target.font="24px system-ui";target.textAlign="center";target.fillText("Bild auswählen",w/2,h/2);return}
+ const fit=Math.min(w/source.naturalWidth,h/source.naturalHeight);
+ const scale=motion==="zoom"?1+progress*.14:1;
+ const sw=source.naturalWidth*fit*scale,sh=source.naturalHeight*fit*scale;
+ const dx=(w-sw)/2+(motion==="pan"?(progress-.5)*w*.09:0);
+ target.filter=filters();target.drawImage(source,dx,(h-sh)/2,sw,sh);target.filter="none";
+ const caption=$("caption").value.trim();
+ if(caption){const font=Math.max(20,Math.round(w*.048));target.font="bold "+font+"px system-ui";target.textAlign="center";target.lineWidth=font*.14;target.strokeStyle="#000";target.fillStyle="#fff";target.strokeText(caption,w/2,h*.88,w*.9);target.fillText(caption,w/2,h*.88,w*.9)}
+}
+function render(){if(working)return;const [w,h]=dimensions();canvas.width=w;canvas.height=h;paint(ctx)}
+$("file").addEventListener("change",async e=>{
+ const file=e.target.files[0];if(!file)return;
+ if(!file.type.startsWith("image/")){setStatus("Keine Bilddatei.");return}
+ const url=URL.createObjectURL(file),img=new Image();
+ img.onload=()=>{source=img;URL.revokeObjectURL(url);render();setStatus("Bild geladen: "+file.name)};
+ img.onerror=()=>{URL.revokeObjectURL(url);setStatus("Bild konnte nicht geladen werden.")};
+ img.src=url;
+});
+for(const id of ["brightness","contrast","saturation","caption","ratio"])$(id).addEventListener("input",render);
+$("reset").onclick=()=>{for(const id of ["brightness","contrast","saturation"])$(id).value=100;$("caption").value="";render()};
+function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),30000)}
+$("png").onclick=()=>{if(!source){setStatus("Bitte zuerst ein Bild öffnen.");return}canvas.toBlob(b=>b?download(b,"artanis-bild.png"):setStatus("PNG-Export fehlgeschlagen."),"image/png")};
+$("video").onclick=async()=>{
+ if(!source){setStatus("Bitte zuerst ein Bild öffnen.");return}
+ if(working)return;
+ if(!canvas.captureStream||!window.MediaRecorder){setStatus("Dieser Browser unterstützt keinen Videoexport.");return}
+ const seconds=Math.max(2,Math.min(30,Number($("duration").value)||6));
+ const mime=["video/webm;codecs=vp9","video/webm;codecs=vp8","video/webm"].find(x=>MediaRecorder.isTypeSupported(x));
+ if(!mime){setStatus("WebM-Aufnahme wird hier nicht unterstützt.");return}
+ working=true;$("video").disabled=true;setStatus("Video wird aufgenommen …");
+ const stream=canvas.captureStream(30),chunks=[];
+ let recorder;
+ try{
+ recorder=new MediaRecorder(stream,{mimeType:mime});
+ recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+ recorder.onerror=()=>setStatus("Fehler bei der Videoaufnahme.");
+ recorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());working=false;$("video").disabled=false;render();if(chunks.length){download(new Blob(chunks,{type:mime}),"artanis-video.webm");setStatus("Video gespeichert.")}else setStatus("Kein Video erzeugt.")};
+ const start=performance.now();recorder.start(200);
+ const motion=$("motion").value;
+ function frame(now){if(!working)return;const p=Math.min(1,(now-start)/(seconds*1000));paint(ctx,p,motion);if(p<1)requestAnimationFrame(frame);else if(recorder.state!=="inactive")recorder.stop()}
+ requestAnimationFrame(frame);
+ }catch(err){stream.getTracks().forEach(t=>t.stop());working=false;$("video").disabled=false;setStatus("Videoexport fehlgeschlagen: "+err.message)}
+};
+render();
+</script></body></html>
