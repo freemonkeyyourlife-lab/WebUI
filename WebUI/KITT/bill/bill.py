@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""BILL V0.1: read-only project inventory and Python syntax validation."""
+"""BILL V0.2: read-only project inventory and Python/JSON validation."""
 import argparse
 import ast
 import json
@@ -19,7 +19,7 @@ def main():
     parser.add_argument("path", nargs="?", default=".")
     args = parser.parse_args()
     if args.command == "status":
-        print(json.dumps({"name":"BILL","version":"0.1","inventory":True,"python_syntax_check":True,"ai_coding":False,"auto_repair":False,"server_deploy":False}, indent=2))
+        print(json.dumps({"name":"BILL","version":"0.2","inventory":True,"python_syntax_check":True,"json_syntax_check":True,"ai_coding":False,"auto_repair":False,"server_deploy":False}, indent=2))
         return 0
     root = Path(args.path).expanduser().resolve()
     if not root.is_dir():
@@ -29,16 +29,21 @@ def main():
         print(json.dumps({"root":str(root),"count":len(found),"files":[str(p.relative_to(root)) for p in found]}, ensure_ascii=False, indent=2))
         return 0
     failures = []
-    checked = 0
+    checked = {"python":0,"json":0}
     for p in found:
-        if p.suffix != ".py":
+        if p.suffix not in (".py", ".json"):
             continue
-        checked += 1
+        kind = "python" if p.suffix == ".py" else "json"
+        checked[kind] += 1
         try:
-            ast.parse(p.read_text(encoding="utf-8"), filename=str(p))
-        except (SyntaxError, UnicodeError, OSError) as exc:
+            source = p.read_text(encoding="utf-8")
+            if kind == "python":
+                ast.parse(source, filename=str(p))
+            else:
+                json.loads(source)
+        except (SyntaxError, ValueError, UnicodeError, OSError) as exc:
             failures.append({"file":str(p.relative_to(root)),"error":str(exc)})
-    print(json.dumps({"python_files_checked":checked,"failures":failures,"ok":not failures}, ensure_ascii=False, indent=2))
+    print(json.dumps({"checked":checked,"failures":failures,"ok":not failures}, ensure_ascii=False, indent=2))
     return 1 if failures else 0
 
 if __name__ == "__main__":
