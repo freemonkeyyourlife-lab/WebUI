@@ -1,9 +1,24 @@
-# ARTANIS × TANIA – Bild- und Videostudio V0.1
+# ARTANIS × TANIA – KI-Studio
 
-Öffne `index.html` in Chrome oder starte lokal `python3 -m http.server 8767` in diesem Ordner und öffne `http://localhost:8767`.
+Start (Linux, Python 3, keine zusätzlichen Python-Pakete):
 
-**Bereits umgesetzt:** Bild laden, Seitenformat, Helligkeit/Kontrast/Sättigung, Titeltext, PNG-Export, animierter Kamerazoom/Schwenk, WebM-Videoexport (MediaRecorder im Browser). Alle Bilddaten werden lokal im Browser verarbeitet.
+```bash
+cd WebUI/KITT/artanis-studio
+python3 server.py
+```
 
-**Noch nicht umgesetzt:** Text-zu-Bild-KI, generatives Bild-zu-Video, Video-zu-Video, Ollama/ComfyUI-Anbindung, Sprachsteuerung, automatisches Zusammenschneiden und Chatsteuerung.
+Im Browser **http://127.0.0.1:8767/studio.html** öffnen.
 
-Keine Installation, keine Zugangsdaten und keine Serververbindung erforderlich. Vorhandene ARTANIS-Dateien werden nicht verändert. Browser-Funktionstest auf dem Zielgerät steht noch aus.
+**Vorhanden im Code:**
+- Chat über lokales Ollama (Standard: http://127.0.0.1:11434).
+- ComfyUI API-Workflow als JSON laden, über /prompt ausführen, Status über /history abfragen, Bild- und Videodateien herunterladen.
+- Bildeditor über / mit Filtern, Text, PNG und einfachem WebM-Videoexport.
+- Nur an 127.0.0.1 gebunden; keine öffentliche Freigabe.
+
+**Voraussetzungen:** Ollama mit lokalem Modell und ComfyUI mit passenden installierten Bild-/Videomodellen und Nodes. ComfyUI-Workflow in **API format** exportieren. Ohne passende Modelle keine generative Bild- oder Videoproduktion.
+
+**Noch offen:** Zielsystem-Integrationstest, Modellinstallation, fertige FREE MONKEYS Produktions-Workflows, automatischer Schnitt, Figurenkonsistenz, Audio/MJ, direkte Chat-zu-Medien-Steuerung.
+
+Konfiguration optional: ARTANIS_PORT, OLLAMA_URL, COMFYUI_URL, ARTANIS_MODEL.
+
+Die Dateien liegen im separaten Branch dev/artanis-bild-video-v01 und verändern die bestehende Installation nicht.
