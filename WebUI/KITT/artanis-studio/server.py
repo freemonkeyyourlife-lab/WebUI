@@ -62,8 +62,8 @@ class Handler(BaseHTTPRequestHandler):
                     self.send_header("Content-Length",str(len(raw)));self.end_headers();self.wfile.write(raw)
             except Exception as exc:self.reply(502,{"error":str(exc)})
             return
-        if path in ("/","/index.html","/studio.html","/bild.html","/medien.html"):
-            p=ROOT/("medien.html" if path=="/medien.html" else "studio.html" if path=="/studio.html" else "bild.html" if path in ("/","/bild.html") else "index.html")
+        if path in ("/","/index.html","/studio.html","/bild.html","/medien.html","/personen.html"):
+            p=ROOT/("personen.html" if path=="/personen.html" else "medien.html" if path=="/medien.html" else "studio.html" if path=="/studio.html" else "bild.html" if path in ("/","/bild.html") else "index.html")
             raw=p.read_bytes();self.send_response(200);self.send_header("Content-Type","text/html; charset=utf-8");self.send_header("Content-Length",str(len(raw)));self.end_headers();self.wfile.write(raw)
             return
         self.reply(404,{"error":"Not found"})
