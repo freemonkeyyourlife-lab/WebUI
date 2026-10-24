@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "status": "manuell_startbar",
+  "auftraege": [
+    {"gebiet": "Wanderer", "query": "web crawler language:Python", "limit": 10},
+    {"gebiet": "Archiv", "query": "document archive full text search", "limit": 10},
+    {"gebiet": "Statistik und Analyse", "query": "data analysis dashboard", "limit": 10},
+    {"gebiet": "Simulationen", "query": "simulation framework language:Python", "limit": 10},
+    {"gebiet": "Werbung und Social", "query": "social media analytics", "limit": 10},
+    {"gebiet": "Betriebswirtschaft", "query": "business management erp", "limit": 10},
+    {"gebiet": "Entwicklung", "query": "coding agent local", "limit": 10}
+  ]
+}
